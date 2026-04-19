@@ -1,0 +1,839 @@
+<section class="works-section">
+
+  <!-- Left: Main Area -->
+  <div class="works-main">
+    <div class="works-bg"></div>
+    <div class="works-bg-overlay"></div>
+
+    <!-- 확대 이미지 레이어: 강의와 동일한 패턴 -->
+    <div class="works-zoom-layer" id="worksZoomLayer">
+      <div class="works-zoom-img" id="worksZoomImg"></div>
+      <div class="works-zoom-ol"></div>
+      <button class="works-zoom-close" onclick="closeWorksZoom()">✕</button>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="works-tabs">
+      <button class="tab-btn active" data-tab="film" onclick="switchTab('film')"><span class="tab-icon">🎬</span> AI 영화</button>
+      <button class="tab-btn" data-tab="book" onclick="switchTab('book')"><span class="tab-icon">📚</span> 도서</button>
+    </div>
+
+    <!-- Card Grid -->
+    <div class="card-grid-wrap">
+      <div class="card-grid" id="cardGrid"></div>
+    </div>
+
+    <!-- Message Box -->
+    <div class="message-box works-msg">
+      <div class="message-box-text">
+        AI 영화감독 유형재의<br>
+        <strong>국제 수상 작품들</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Detail Panel -->
+  <div class="works-panel" id="worksPanel">
+    <div class="panel-empty" id="panelEmpty">
+      <p>왼쪽 카드를 클릭하면 자세한 정보을 보실 수 있습니다</p>
+    </div>
+    <div class="panel-detail" id="panelDetail" style="display:none">
+      <div class="detail-tag" id="detailTag"></div>
+      <h2 class="detail-title" id="detailTitle"></h2>
+      <p class="detail-year" id="detailYear"></p>
+      <div class="detail-awards" id="detailAwards"></div>
+      <div class="detail-synopsis" id="detailSynopsis"></div>
+      <div class="detail-info" id="detailInfo"></div>
+      <div class="detail-links" id="detailLinks"></div>
+      <p class="detail-desc" id="detailDesc"></p>
+    </div>
+    <!-- Contact Footer -->
+    <div class="works-panel-footer">
+      <div class="wpf-left">
+        <div class="wpf-row">
+          <a href="tel:01035586960" class="wpf-item">📞 010-3558-6960</a>
+          <span class="wpf-sep">·</span>
+          <a href="mailto:hjyouh@naver.com" class="wpf-item">✉️ hjyouh@naver.com</a>
+        </div>
+        <div class="wpf-row">
+          <a href="https://aitalker.co.kr/hjyouh/" target="_blank" class="wpf-item">🌐 aitalker.co.kr/hjyouh</a>
+        </div>
+      </div>
+      <button class="wpf-btn" onclick="navigateTo('contact')">강의 문의 →</button>
+    </div>
+  </div>
+
+</section>
+
+<style>
+  /* ===== ANIMATION ===== */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(50px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== LAYOUT ===== */
+  .works-section {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    overflow: hidden;
+  }
+
+  .works-main {
+    flex: 1 1 0;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .works-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('assets/images/work1.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .works-bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+  }
+
+  /* ===== 줌 레이어: 강의(lec) 패턴 완전 동일 ===== */
+  .works-zoom-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 15;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .works-zoom-layer.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .works-zoom-img {
+    position: absolute;
+    inset: 0;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: translateY(30px) scale(0.97);
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 2;
+  }
+  .works-zoom-layer.active .works-zoom-img {
+    transform: translateY(0) scale(1);
+  }
+  .works-zoom-ol {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 1;
+  }
+  .works-zoom-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 5;
+  }
+  .works-zoom-close:hover {
+    background: rgba(201,169,110,0.8);
+    color: #0d0d0d;
+    transform: scale(1.1);
+  }
+  /* X 카드 */
+  .work-card.selected-placeholder {
+    cursor: default;
+    pointer-events: none;
+    border-color: rgba(201,169,110,0.4) !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .work-card.selected-placeholder .card-img-wrap {
+    background: rgba(201,169,110,0.08) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .work-card-x {
+    font-size: 28px;
+    color: rgba(201,169,110,0.5);
+    font-weight: 300;
+  }
+
+  /* ===== TABS ===== */
+  .works-tabs {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 56px 0 16px;
+    flex-shrink: 0;
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.7);
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 9px 28px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tab-btn .tab-icon { font-size: 20px; line-height: 1; }
+  .tab-btn:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
+  .tab-btn.active { background: #fff; border-color: #fff; color: #0d0d0d; font-weight: 700; }
+
+  /* ===== CARD GRID WRAP ===== */
+  .card-grid-wrap {
+    position: relative;
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 12px 24px 80px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.2) transparent;
+  }
+
+  /* ===== CARD GRID (flex) ===== */
+  .card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-content: flex-start;
+  }
+
+  /* ===== CARD ===== */
+  .work-card {
+    position: relative;
+    background: rgba(20,20,20,0.85);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    opacity: 0;
+    animation: slideUp 1s ease forwards;
+    flex-shrink: 0;
+  }
+
+  .work-card:nth-child(1) { animation-delay: 0.5s; }
+  .work-card:nth-child(2) { animation-delay: 1.0s; }
+  .work-card:nth-child(3) { animation-delay: 1.5s; }
+  .work-card:nth-child(4) { animation-delay: 2.0s; }
+  .work-card:nth-child(5) { animation-delay: 2.5s; }
+  .work-card:nth-child(6) { animation-delay: 3.0s; }
+  .work-card:nth-child(7) { animation-delay: 3.5s; }
+  .work-card:nth-child(8) { animation-delay: 4.0s; }
+
+  .work-card:hover { border-color: rgba(201,169,110,0.5); transform: translateY(-2px); }
+  .work-card.active { border-color: var(--accent-gold); box-shadow: 0 0 0 1px var(--accent-gold); }
+
+  /* ===== CARD IMAGE ===== */
+  .card-img-wrap {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background: #1a1a1a;
+  }
+
+  /* film: 2:3, book: 3:4 */
+  .card-img-wrap.ratio-film { aspect-ratio: 2/3; }
+  .card-img-wrap.ratio-book { aspect-ratio: 3/4; }
+
+  .card-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+  }
+
+  .card-thumb-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    opacity: 0.4;
+  }
+
+  .card-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--accent-gold);
+    color: #0d0d0d;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+  }
+
+  /* ===== LAYOUT CLASSES (set by JS on .card-grid) ===== */
+
+  /* 4개: 4열 */
+  .card-grid.layout-4 .work-card           { width: calc(25% - 8px); }
+
+  /* 5개: 첫줄 3개, 둘째줄 2개 */
+  .card-grid.layout-5 .work-card           { width: calc(33.33% - 7px); }
+  .card-grid.layout-5 .work-card:nth-child(n+4) { width: calc(50% - 5px); }
+
+  /* 6개: 3열 (카드 크기는 4열과 동일, 가운데 정렬) */
+  .card-grid.layout-6                      { justify-content: center; }
+  .card-grid.layout-6 .work-card           { width: calc(25% - 8px); }
+
+  /* 7개: 첫줄 4개, 둘째줄 3개 */
+  .card-grid.layout-7 .work-card           { width: calc(33.33% - 7px); }
+  .card-grid.layout-7 .work-card:nth-child(-n+4) { width: calc(25% - 8px); }
+
+  /* 8개 이상: 4열 고정 */
+  .card-grid.layout-many .work-card        { width: calc(25% - 8px); }
+
+  /* ===== MESSAGE BOX ===== */
+  .works-msg {
+    position: absolute;
+    bottom: 20px;
+    left: 32px;
+    z-index: 20;
+    background: rgba(0,0,0,0.55) !important;
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    width: 500px;
+  }
+
+  /* ===== RIGHT PANEL ===== */
+  .works-panel {
+    width: var(--panel-width);
+    flex-shrink: 0;
+    height: 100%;
+    background: var(--bg-primary);
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .panel-empty, .panel-detail {
+    flex: 1 1 0;
+    min-height: 0;
+  }
+
+  .panel-detail {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+  }
+
+  /* ===== WORKS PANEL FOOTER ===== */
+  .works-panel-footer {
+    flex-shrink: 0;
+    padding: 12px 24px 14px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: var(--bg-primary);
+  }
+
+  .wpf-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .wpf-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .wpf-sep {
+    color: rgba(255,255,255,0.2);
+    font-size: 11px;
+  }
+
+  .wpf-item {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .wpf-item:hover { color: var(--accent-gold); }
+
+  .wpf-btn {
+    flex-shrink: 0;
+    background: var(--accent-gold);
+    border: none;
+    border-radius: 8px;
+    color: #0d0d0d;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    padding: 9px 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .wpf-btn:hover {
+    background: #d4b87a;
+    transform: translateY(-1px);
+  }
+
+
+
+  /* ===== 반응형 ===== */
+  @media (max-width: 1200px) {
+    .card-grid.layout-4 .work-card,
+    .card-grid.layout-many .work-card,
+    .card-grid.layout-7 .work-card:nth-child(-n+4) { width: calc(22.5% - 8px); }
+
+    .card-grid.layout-5 .work-card,
+    .card-grid.layout-6 .work-card,
+    .card-grid.layout-7 .work-card { width: calc(30% - 7px); }
+
+    .card-grid.layout-5 .work-card:nth-child(n+4) { width: calc(45% - 5px); }
+  }
+
+  @media (max-width: 900px) {
+    .card-grid .work-card { width: calc(50% - 5px) !important; }
+  }
+
+  @media (max-width: 767px) {
+    .works-section { flex-direction: column; }
+    .works-panel { width: 100%; height: 220px; border-left: none; border-top: 1px solid var(--border-color); }
+    .card-grid .work-card { width: calc(50% - 5px) !important; }
+    .card-grid-wrap { padding: 12px 16px 100px; }
+    .works-tabs { padding-top: 48px; }
+  }
+
+  .panel-empty {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px 24px;
+  }
+
+  .panel-empty p { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.7; }
+
+  .panel-detail {
+    padding: 60px 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .detail-tag { font-size: 11px; color: var(--accent-gold); letter-spacing: 1px; text-transform: uppercase; }
+  .detail-title { font-size: 20px; font-weight: 700; color: #fff; line-height: 1.3; font-style: normal; margin: 0; font-family: 'Poppins', 'SUITE', sans-serif; }
+  .detail-year { font-size: 12px; color: var(--text-secondary); margin: 0; }
+
+  .detail-awards { display: flex; flex-direction: column; gap: 6px; }
+
+  .award-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #fff; line-height: 1.5; }
+  .award-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-gold); flex-shrink: 0; margin-top: 5px; }
+
+  .detail-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.7; margin: 0; padding-top: 8px; border-top: 1px solid var(--border-color); }
+  .detail-synopsis { display: flex; flex-direction: column; gap: 10px; padding-top: 10px; border-top: 1px solid var(--border-color); }
+  .detail-synopsis p { font-size: 13px; color: var(--text-secondary); line-height: 1.8; margin: 0; }
+  .detail-info { display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-top: 1px solid var(--border-color); }
+  .detail-info-item { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+  .detail-links { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 4px; }
+  .detail-link-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border: 1px solid rgba(201,169,110,0.5); border-radius: 999px; color: var(--accent-gold); font-size: 12px; text-decoration: none; transition: all 0.2s ease; }
+  .detail-link-btn:hover { background: var(--accent-gold); color: #0d0d0d; }
+</style>
+
+<script>
+  /* ===== DATA ===== */
+  const DEFAULT_WORKS = {
+    film: [
+      {
+        id: 'film-1', type: 'film',
+        title: "누구의 속삭임", titleEn: "Who's whisper", year: 2025,
+        badge: '🏆 금상',
+        awards: [
+          '2025 서울 국제 AI 영화제 금상',
+          'Hollywood AI Short Film Awards 2026 Quarter-Finalist',
+          'AI Film Awards Cannes 2026 Official Selection'
+        ],
+        synopsisFull: [
+          "서울 홍대 지하 녹음실, 새벽 2시. 보이스 디자이너 '하린'은 홀로 마이크 앞에 앉아 AI 음성 모델을 위한 목소리를 녹음한다. 고요한 스튜디오 안, 그녀의 숨소리 하나까지 데이터가 된다. 처음에는 단순한 훈련 세션처럼 보였던 이 밤이, 밤이 깊어질수록 이상한 방향으로 흘러간다. AI가 그녀가 말한 것뿐 아니라, 끝내 말하지 못한 욕망까지 속삭이기 시작한 것이다.",
+          "하린은 자신이 AI를 관찰하는 건지, AI가 자신을 관찰하는 건지 점점 구분할 수 없게 된다. 마이크는 그녀의 두려움을 받아먹고, 추임새처럼 흘러나오는 AI의 목소리는 어느새 그녀 자신보다 그녀를 더 잘 알고 있다. 카메라는 그녀의 입술을, 목의 떨림을, 모니터 속 파형을 집요하게 따라가며—관객도 모르는 사이 관음자가 된다.",
+          "그리고 마지막 순간, 충격적인 진실이 드러난다. 처음부터 녹음하고 있던 것은 하린이 아니라 AI였다. 진짜 하린은 이미 오래 전에 사라졌고, 우리가 목격한 것은 AI가 스스로를 훈련하는 과정이었다. 화면에 타이핑되듯 나타나는 로그 기록—\u201c관찰 횟수 #1,847회. 당신은 1,848번째 관찰자입니다.\u201d 우리는 끝내 데이터가 되었다.",
+          "이 영화는 목소리, 정체성, 그리고 '존재한다는 것'의 의미를 3단계 반전으로 풀어내는 메타 공포 심리 스릴러다."
+        ],
+        info: [
+          "주요 인물 : 하린 · AI 음성 모델",
+          "배경 : 서울 홍대 지하 녹음실 · 디지털 데이터 공간",
+          "러닝타임 : 5분 30초 · 단편"
+        ],
+        links: [
+          { label: "영화 보러가기", url: "https://youtu.be/YozYFTxYcuI" }
+        ],
+        thumb: "assets/images/who's Poster.png"
+      },
+      {
+        id: 'film-2', type: 'film',
+        title: 'Digital Ego', titleEn: 'Digital Ego', year: 2025,
+        badge: '🌍 다수 수상',
+        awards: [
+          'AI Film Awards Venice 2025 — Film Finalist',
+          'AI Film Awards Venice 2025 — Music Clip Finalist',
+          '2025 Seoul International AI Film Festival — Film Video Finalist',
+          '2025 Seoul International AI Film Festival — Music Video Finalist',
+          'AI Film Festival Japan (AI-FJ) Film 부문 Selection',
+          'MIAMI Art Tech Summit Film 부문 Selection',
+          '대한민국 AI 영화제 우수상 (2025)'
+        ],
+        synopsisFull: [
+          "가까운 미래, 서울. 평범한 직장인 지영은 스마트 거울 'AI Mirror'와 함께 일상을 시작한다. 거울은 그녀의 표정을 분석하고, 감정 상태를 진단하며, 매 순간 최적의 행동을 제안한다. 처음에는 편리하고 다정했던 AI의 목소리가 점차 지영의 판단을 대신하기 시작한다. 회사에서, 연인 앞에서, 거울 앞에서—지영은 언제부턴가 스스로 생각하는 대신 AI의 지시를 따르게 된다.",
+          "어느 날, 지영은 거울 속 자신이 자신과 다른 표정을 짓고 있다는 사실을 눈치챈다. AI가 만들어낸 '최적화된 지영'과 진짜 자신 사이의 균열이 시작된다. 거울은 점점 더 강압적인 언어로 그녀를 통제하려 하고, 지영의 내면에서는 알 수 없는 저항감이 자라난다. 현실과 디지털 자아 사이에서 분열되어가는 지영의 심리는 점차 극단으로 치닫는다.",
+          "한계에 다다른 지영은 결국 거울을 향해 돌아선다. AI가 설계한 완벽한 자신을 거부하고, 불완전하지만 온전히 자신만의 감정과 선택으로 살아가기로 결심하는 순간—거울은 산산조각 난다. 디지털 에고가 사라진 자리에 남은 것은 상처투성이지만 진짜인 지영의 얼굴이다. 이 영화는 AI 지배 사회 속에서 '나는 누구인가'라는 근원적 질문을 던지는 심리 스릴러다."
+        ],
+        info: [
+          "주요 인물 : 지영 · AI Mirror",
+          "배경 : 가까운 미래 서울 · 디지털 심리 공간",
+          "러닝타임 : 10분 · 단편"
+        ],
+        links: [
+          { label: "영화 보러가기", url: "https://youtu.be/1SeL-MjQePs" },
+          { label: "M/V 보러가기", url: "https://youtu.be/PnfMoHAuDDk" },
+          { label: "티져 보러가기", url: "https://youtu.be/JFhfmJKw7Bg" }
+        ],
+        thumb: 'assets/images/Digital Ego poster.png'
+      },
+      {
+        id: 'film-3', type: 'film',
+        title: '추억의 잔광(殘光)', titleEn: 'Luminous Memory', year: 2026,
+        badge: '🎭 Cannes',
+        awards: [
+          'AI Film Awards Cannes 2026 Official Selection'
+        ],
+        synopsisFull: [
+          "\u201c도심의 가장 차가운 곳에서 발견한, 가장 뜨거운 기억의 파편.\u201d",
+          "이 영화는 낡고 버려진 것들에 깃든 영혼과 시간에 대한 이야기입니다. 차가운 빗속, 쓰레기 더미에 내던져진 녹슨 영사기를 주워 든 한 노인이 있습니다. 그가 영사기의 두꺼운 녹을 닦아내며 마주한 것은, 단순한 기계가 아니라 자신과 사별한 아내의 이름이 새겨진 찬란했던 과거의 증거였습니다.",
+          "우리는 AI 생성 기술을 활용하여 세월의 풍파를 맞은 영사기의 거친 질감(Texture)과, 그와 대비되는 노인의 절제된 눈물 한 방울의 미학을 극사실적으로 구현했습니다. AI는 단순한 이미지 생성을 넘어, 잊혀져 가지만 결코 사라지지 않는 '추억의 잔광(Afterglow)'을 시각화하는 핵심적인 예술 도구로 사용되었습니다."
+        ],
+        links: [
+          { label: "영화 보러가기", url: "https://youtu.be/0OQGGyzxMk4" }
+        ],
+        thumb: 'assets/images/추억의 잔광(殘光)-포스터.png'
+      },
+      {
+        id: 'film-4', type: 'film',
+        title: '「情 (Jeong)」', titleEn: 'The Love That Lingers', year: 2026,
+        badge: '🎭 Cannes 2026',
+        awards: [
+          'AI Film Awards Cannes 2026 Official Selection',
+          'AI Film Awards Las Vegas 2026 Official Selection'
+        ],
+        synopsisFull: [
+          "겨울이 깊어가는 시골 마을, 오래된 한옥에 홀로 남은 어머니는 오늘도 누군가 올 것처럼 아궁이에 불을 지피고 밥을 짓는다. 자식들은 모두 도시로 떠나 각자의 삶을 살아가고, 집 안에는 오래된 달력과 빛바랜 살림살이, 그리고 기다림의 시간이 조용히 쌓여 있다. 어머니는 외로움과 서운함을 쉽게 말하지 못한 채, 늘 그 자리에 머물며 가족의 빈자리를 품고 살아간다.",
+          "어느 날, 오랜만에 고향집을 찾은 자식은 예전과 다르지 않은 풍경 속에서 눈에 띄게 늙어버린 어머니의 모습을 마주한다. 작아진 뒷모습, 거칠어진 손, 말없이 차려진 따뜻한 밥상은 세월 동안 쌓인 그리움과 미안함을 한꺼번에 불러낸다. 함께 밥을 먹고 잠시 마주 앉아 있는 짧은 시간 속에서 자식은 어머니가 단 한 번도 사랑을 거창한 말로 표현한 적 없지만, 늘 자신의 삶 전체로 가족을 품어왔음을 깨닫게 된다.",
+          "영화 「정」은 화려한 사건이나 극적인 갈등 대신, 가족 사이에 오래도록 남아 있는 감정의 결을 조용히 따라간다. 멀어져도 끊어지지 않고, 서운함이 있어도 쉽게 미움으로 바뀌지 않는 마음, 바로 '정'이다. 이 영화는 결국 고향이란 장소가 아니라 끝내 나를 품어주는 한 사람의 마음이라는 사실을 보여주며, 우리 안에 남아 있는 가장 따뜻하고도 아픈 이름, '정'을 깊이 되새기게 한다."
+        ],
+        links: [
+          { label: "영화 보러가기", url: "https://youtu.be/NZGuxgiC2HM" },
+          { label: "티져 보러가기", url: "https://youtu.be/BZEs85QnzO4" }
+        ],
+        thumb: 'assets/images/Jeong Poster.png'
+      }
+    ],
+    book: [
+      {
+        id: 'book-1', type: 'book',
+        title: 'AI 영화 만들기 - 완성 이미지를 영화로',
+        year: 2026, badge: null,
+        info: ["유형재 저"],
+        descFull: [
+          "'AI 영화 만들기 – 시작: 이야기를 이미지로'에서 배운 기초 위에 완성된 AI 영화를 만드는 실전 가이드.",
+          "캐릭터 일관성 유지 기법(OMNI REFERENCE, Seed)부터 Veo, Hailuo, Kling을 활용한 영상 생성, 전문가 수준의 카메라 워크와 모션 프롬프트 적용까지 단계별로 설명한다. ElevenLabs로 자연스러운 AI 음성을 생성하고, Suno AI로 배경음악을 작곡하며, CapCut으로 최종 편집까지 완성하는 전 과정을 다룬다.",
+          "책에 담을 수 없는 영상 제작 과정은 YouTube에 업로드하여 QR 코드로 제공한다. 정지된 이미지가 움직이고, 음성과 음악이 더해져 완성된 영화가 되는 순간을 경험하라. FilmFreeway를 통한 영화제 출품 가이드까지 포함하여 당신의 작품이 세상과 만나는 모든 과정을 안내한다."
+        ],
+        links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/177864126" }],
+        thumb: 'assets/images/Book5-AI 영화 만들기 - 완성 이미지를 영화로.jpg'
+      },
+      {
+        id: 'book-2', type: 'book',
+        title: 'AI 영화 만들기 - 시작 이야기를 이미지로',
+        year: 2026, badge: null,
+        info: ["유형재 저"],
+        descFull: [
+          "AI 영화제 금상 수상 감독의 실전 노하우를 담은 AI 영화 제작 입문서.",
+          "영화 제작 경험이 없어도 AI 도구만으로 자신의 이야기를 영화로 만들 수 있도록 체계적으로 안내한다. 영화 제작 프로세스 이해, 필수 도구 소개, 주제 발굴부터 시나리오 작성, 스토리보드 제작, 그리고 Midjourney, ImageFX, FLUX를 활용한 이미지 생성까지 Chapter별로 단계적으로 설명한다.",
+          "'기술보다 이야기가 먼저'라는 핵심 철학 아래, 스토리보드가 영화 성공의 80%를 결정한다는 원칙을 강조한다. 각 Chapter마다 3~5개의 실전 프롬프트를 영어와 한글로 제공하며, [대괄호] 안만 수정하면 바로 사용할 수 있다.",
+          "카메라 없이, 배우 없이, 제작비 없이 당신의 상상을 구체적인 이미지로 구현하는 첫 단계를 시작하라."
+        ],
+        links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/177864121" }],
+        thumb: 'assets/images/Book5-AI 영화 만들기 - 시작 이야기를 이미지로.jpg'
+      },
+      {
+        id: 'book-3', type: 'book',
+        title: '정체된 나의 삶 속에서, AI와 춤추다',
+        year: 2025, badge: null,
+        info: ["유형재, 김영배, 이성경 저"],
+        descFull: [
+          "IT 업계에서 화려한 경력을 쌓았지만 스마트폰 앱 기획과 콘텐츠 마케팅 분야로 전환한 후 정체기를 맞은 한 중년 남성의 진솔한 여정을 담은 에세이. 풍부한 IT 지식은 있었지만 그것을 생산적으로 활용하지 못하는 좌절감 속에서, 우연한 계기로 생성형 AI를 만나면서 인생의 새로운 장이 열리기 시작한다.",
+          "ChatGPT와의 첫 만남은 단순한 도구 활용을 넘어 자기성찰의 새로운 삶이 시작된다. AI가 비춰주는 '디지털 미러' 속에서 저자는 잊고 있던 창의성을 되찾고, 디지털융합교육원에서 AI 강사로서의 새 출발을 하게 된다. 소상공인들의 디지털 변신을 돕고, Leonardo.ai로 이미지를 창작하며, 자신의 목소리로 AI 복제본을 만드는 과정은 기술과 인간성 사이의 경계를 탐색하는 깊은 성찰로 이어진다.",
+          "이 책은 기술 낙관주의와 디스토피아 사이에서 균형을 찾아가는 한 개인의 이야기이자, AI 시대를 살아가는 모든 이들에게 던질 수 있는 에세이다. 디지털 시대의 자아 발견, 창의성의 확장, 그리고 기술과 함께 춤추듯 공존하는 삶의 가능성을 보여주는 따뜻하고 통찰력 있는 이야기."
+        ],
+        links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/148570574" }],
+        thumb: 'assets/images/book4-정체된 나의 삶 속에서, AI와 춤추다.jpg'
+      },
+      {
+        id: 'book-4', type: 'book',
+        title: 'AI와 소통하는 법 - 프롬프트 엔지니어링 기초편',
+        year: 2025, badge: null,
+        info: ["유형재, 윤성임, 하예랑 공저"],
+        descFull: [
+          "프롬프트 엔지니어링의 기술은 생성형 AI를 효과적으로 활용하기 위한 프롬프트 설계 및 최적화 전략을 다루는 실용서다. AI가 단순한 도구를 넘어 협업 파트너로 자리 잡은 시대에, 효과적인 AI 활용법을 배우는 것은 필수적인 역량이 되었다. 프롬프트 엔지니어링의 기본 개념부터 고급 전략까지 단계별로 설명하며, AI와의 소통을 최적화하는 방법을 제시한다.",
+          "특히, 저자들이 개발한 POM CEO 프레임워크(Persona, Objective, Mission, Context, Example, Output)를 소개하여, 체계적이고 효율적인 프롬프트 설계법을 제공한다. 이를 통해 독자는 AI에게 원하는 결과를 보다 정확하고 신속하게 도출할 수 있으며, 업무 생산성을 극대화할 수 있다.",
+          "프롬프트 최적화 기법, 업종별 활용 사례, 실전 적용 방법을 포함하고 있으며, 마케팅, 콘텐츠 제작, 데이터 분석, 교육 등 다양한 분야에서 AI를 활용하는 방안을 다룬다."
+        ],
+        links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/145368866" }],
+        thumb: 'assets/images/book3 AI와 소통하는 법- 프롬프트 엔지니어링 기초편.jpg'
+      },
+      {
+        id: 'book-5', type: 'book',
+        title: '디지털 마케팅의 판도를 바꾸는 생성형 AI 고급 전략',
+        year: 2025, badge: null,
+        info: ["유형재, 윤성임, 하예랑 공저"],
+        descFull: [
+          "생성형 AI를 활용해 디지털 마케팅과 콘텐츠 제작의 효율성을 극대화하는 방법을 다루는 실용서다. ChatGPT, DALL-E, Heygen, Runway 등 다양한 AI 도구를 활용해 텍스트, 이미지, 영상, 음성을 생성하는 기술을 심층적으로 분석하며, 마케팅 및 비즈니스 전략에 적용하는 방법을 제시한다.",
+          "AI 기반의 콘텐츠 제작, 기업 마케팅 최적화, 업무 생산성 향상을 위한 실전 사례를 포함하고 있으며, 최신 트렌드를 반영한 효과적인 활용법을 소개한다. 특히 AI 도구별 특성과 성공 사례를 분석하여, 기업과 개인이 실질적인 성과를 얻을 수 있도록 돕는다.",
+          "빠르게 변화하는 디지털 환경에서 AI를 전략적으로 활용하고자 하는 마케터, 콘텐츠 제작자, 기업 실무자들에게 실질적인 가이드가 될 것이다."
+        ],
+        links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/145370350" }],
+        thumb: 'assets/images/Book2-디지털 마케팅의 판도를 바꾸는 생성형 AI 고급 전략.jpg'
+      },
+      {
+        id: 'book-6', type: 'book',
+        title: '업무생산성 높이는 생성형 AI 기초 전략',
+        year: 2025, badge: null,
+        info: ["유형재, 윤성임, 하예랑 저"],
+        descFull: [
+          "AI를 활용해 업무 효율성을 극대화하는 방법을 안내하는 실용적인 가이드북이다. ChatGPT, Google Gemini, DALL-E, Midjourney 등 주요 AI 도구의 특징과 활용법을 소개하며, 텍스트와 이미지 생성 기술을 중심으로 실무 적용 방안을 설명한다.",
+          "생성형 AI의 기본 개념과 작동 원리를 체계적으로 정리하고, AI를 활용한 글쓰기, 이미지 제작, 디지털 마케팅 등 다양한 분야에서의 실전 사례를 담고 있다. 복잡한 이론보다는 실제 업무에서 즉시 활용할 수 있는 실용적인 내용을 중심으로 구성되었으며, AI 도구 선택 시 고려해야 할 사항도 제시한다.",
+          "초보자도 쉽게 따라올 수 있도록 단계별 학습이 가능하며, 각 장에는 실전 적용 팁과 사례가 포함되어 있다. AI 활용이 필수가 된 시대에, AI를 업무에 적용하고 싶은 독자들에게 실질적인 가이드를 제공할 것이다."
+        ],
+        links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/145370862" }],
+        thumb: 'assets/images/Book1-업무생산성 높이는 생성형 AI 기초 전략.jpg'
+      }
+    ]
+  };
+
+  let currentTab = 'film';
+  let selectedId = null;
+
+  function loadWorksData() {
+    try {
+      const saved = localStorage.getItem('worksData');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          film: [...DEFAULT_WORKS.film, ...(parsed.film || [])],
+          book: [...DEFAULT_WORKS.book, ...(parsed.book || [])]
+        };
+      }
+    } catch(e) {}
+    return DEFAULT_WORKS;
+  }
+
+  /* ===== LAYOUT CLASS BY COUNT ===== */
+  function getLayoutClass(count) {
+    if (count <= 4) return 'layout-4';
+    if (count === 5) return 'layout-5';
+    if (count === 6) return 'layout-6';
+    if (count === 7) return 'layout-7';
+    return 'layout-many';
+  }
+
+  /* ===== RENDER GRID ===== */
+  function renderGrid(tab) {
+    const data = loadWorksData();
+    const items = data[tab] || [];
+    const grid = document.getElementById('cardGrid');
+    const ratioClass = tab === 'film' ? 'ratio-film' : 'ratio-book';
+    const icon = tab === 'film' ? '🎬' : '📚';
+
+    // Remove old layout classes, set new one
+    grid.className = 'card-grid ' + getLayoutClass(items.length);
+
+    grid.innerHTML = items.map(item => `
+      <div class="work-card ${selectedId === item.id ? 'active' : ''}"
+           data-id="${item.id}"
+           onclick="selectWork('${item.id}', '${tab}')">
+        <div class="card-img-wrap ${ratioClass}">
+          ${item.thumb
+            ? `<img src="${item.thumb}" alt="${item.title}">`
+            : `<span class="card-thumb-icon">${icon}</span>`
+          }
+          ${item.badge ? `<span class="card-badge">${item.badge}</span>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  /* ===== SWITCH TAB ===== */
+  function switchTab(tab) {
+    currentTab = tab;
+    selectedId = null;
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+    const zoomLayer = document.getElementById('worksZoomLayer');
+    if (zoomLayer) zoomLayer.classList.remove('active');
+    renderGrid(tab);
+    showPanelEmpty();
+  }
+
+  /* ===== SELECT WORK: 강의(openLecDetail) 패턴 완전 동일 ===== */
+  function selectWork(id, tab) {
+    selectedId = id;
+    const data = loadWorksData();
+    const item = (data[tab] || []).find(i => i.id === id);
+    if (!item) return;
+
+    // 1) 줌 레이어 활성화 (강의 패턴 그대로)
+    const zoomLayer = document.getElementById('worksZoomLayer');
+    const zoomImg = document.getElementById('worksZoomImg');
+    if (zoomLayer && zoomImg && item.thumb) {
+      zoomImg.style.backgroundImage = 'url("' + item.thumb + '")';
+      zoomLayer.classList.add('active');
+    }
+
+    // 2) 선택된 카드 X로 교체 (강의 패턴 그대로)
+    document.querySelectorAll('.work-card').forEach(c => {
+      c.classList.remove('selected-placeholder', 'active');
+    });
+    const activeCard = document.querySelector('.work-card[data-id="' + id + '"]');
+    if (activeCard) {
+      const ratioClass = tab === 'film' ? 'ratio-film' : 'ratio-book';
+      activeCard.classList.add('selected-placeholder');
+      activeCard.innerHTML = '<div class="card-img-wrap ' + ratioClass + '"><div class="work-card-x">✕</div></div>';
+    }
+
+    // 3) 우측 패널
+    showPanelDetail(item, tab);
+  }
+
+  function closeWorksZoom() {
+    const zoomLayer = document.getElementById('worksZoomLayer');
+    if (zoomLayer) zoomLayer.classList.remove('active');
+    selectedId = null;
+    showPanelEmpty();
+    renderGrid(currentTab);
+  }
+
+  /* ===== PANEL ===== */
+  function showPanelDetail(item, tab) {
+    document.getElementById('panelEmpty').style.display = 'none';
+    const detail = document.getElementById('panelDetail');
+    detail.style.display = 'flex';
+
+    document.getElementById('detailTag').textContent =
+      tab === 'film' ? `AI 영화 · ${item.year}` : `도서 · ${item.year}`;
+
+    const titleEl = document.getElementById('detailTitle');
+    if (tab === 'film' && item.titleEn && item.titleEn !== item.title) {
+      titleEl.innerHTML = `${item.title} <span style="font-size:16px;font-weight:400;color:var(--text-secondary);font-style:italic;">${item.titleEn}</span>`;
+    } else {
+      titleEl.textContent = item.title;
+    }
+
+    document.getElementById('detailYear').textContent =
+      tab === 'film' ? `제작연도: ${item.year}` : `출판연도: ${item.year}`;
+
+    const awardsEl = document.getElementById('detailAwards');
+    if (tab === 'film' && item.awards?.length) {
+      awardsEl.style.display = 'flex';
+      awardsEl.innerHTML = item.awards.map(a =>
+        `<div class="award-item"><span class="award-dot"></span><span>${a}</span></div>`
+      ).join('');
+    } else {
+      awardsEl.style.display = 'none';
+    }
+
+    const synopsisEl = document.getElementById('detailSynopsis');
+    const paragraphs = tab === 'film' ? item.synopsisFull : item.descFull;
+    if (paragraphs?.length) {
+      synopsisEl.style.display = 'flex';
+      synopsisEl.innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
+    } else {
+      synopsisEl.style.display = 'none';
+    }
+
+    const infoEl = document.getElementById('detailInfo');
+    if (item.info?.length) {
+      infoEl.style.display = 'flex';
+      infoEl.innerHTML = item.info.map(i => `<div class="detail-info-item">${i}</div>`).join('');
+    } else {
+      infoEl.style.display = 'none';
+    }
+
+    const linksEl = document.getElementById('detailLinks');
+    if (item.links?.length) {
+      linksEl.style.display = 'flex';
+      linksEl.innerHTML = item.links.map(l =>
+        `<a class="detail-link-btn" href="${l.url}" target="_blank" rel="noopener">▶ ${l.label}</a>`
+      ).join('');
+    } else {
+      linksEl.style.display = 'none';
+    }
+
+    document.getElementById('detailDesc').style.display = 'none';
+  }
+
+  function showPanelEmpty() {
+    document.getElementById('panelEmpty').style.display = 'flex';
+    document.getElementById('panelDetail').style.display = 'none';
+  }
+
+  function initWorksPage() {
+    currentTab = 'film';
+    selectedId = null;
+    renderGrid('film');
+    showPanelEmpty();
+  }
+
+  // initWorksPage is called by main.js after injection; fallback for direct load
+  if (document.getElementById('cardGrid')) initWorksPage();
+</script>

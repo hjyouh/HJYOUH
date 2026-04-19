@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 패널 | 유형재 강사</title>
+  <link rel="stylesheet" href="../assets/css/fonts.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --bg2: #141414;
+      --bg3: #1a1a1a;
+      --border: rgba(255,255,255,0.08);
+      --text: #ffffff;
+      --sub: #a0a0a0;
+      --gold: #c9a96e;
+      --gold2: rgba(201,169,110,0.15);
+      --red: #e05c5c;
+      --red2: rgba(224,92,92,0.12);
+      --green: #5ce07a;
+      --green2: rgba(92,224,122,0.12);
+      --side-w: 220px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', 'SUITE', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    .admin-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 54px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+    }
+
+    .admin-logo {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.5px;
+    }
+
+    .admin-logo span { color: var(--sub); font-weight: 400; margin-left: 6px; font-size: 12px; }
+
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .header-preview-btn {
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--sub);
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .header-preview-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── LAYOUT ── */
+    .admin-body {
+      display: flex;
+      padding-top: 54px;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: fixed;
+      top: 54px; left: 0; bottom: 0;
+      width: var(--side-w);
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 16px 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-section-label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 12px 20px 6px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      cursor: pointer;
+      border-radius: 0;
+      transition: background 0.15s;
+      color: var(--sub);
+      font-size: 13px;
+      border-left: 3px solid transparent;
+      user-select: none;
+    }
+
+    .sidebar-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+    .sidebar-item.active { background: var(--gold2); color: var(--gold); border-left-color: var(--gold); }
+    .sidebar-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      line-height: 1.6;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .admin-main {
+      margin-left: var(--side-w);
+      flex: 1;
+      padding: 32px 36px;
+      max-width: 900px;
+    }
+
+    .section-panel { display: none; }
+    .section-panel.active { display: block; }
+
+    /* ── SECTION HEADER ── */
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .panel-title {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .panel-subtitle { font-size: 13px; color: var(--sub); margin-top: 4px; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── FORM ── */
+    .form-row { margin-bottom: 14px; }
+    .form-row label { display: block; font-size: 12px; color: var(--sub); margin-bottom: 6px; }
+    .form-row input, .form-row textarea, .form-row select {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
+      border-color: rgba(201,169,110,0.5);
+    }
+    .form-row textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+    .form-row select { cursor: pointer; }
+    .form-row select option { background: var(--bg3); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #0d0d0d;
+    }
+    .btn-gold:hover { background: #d4b57e; }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--sub);
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    .btn-danger {
+      background: var(--red2);
+      border: 1px solid rgba(224,92,92,0.3);
+      color: var(--red);
+    }
+    .btn-danger:hover { background: rgba(224,92,92,0.2); }
+
+    .btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 6px; }
+
+    /* ── LIST ── */
+    .item-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      transition: border-color 0.2s;
+    }
+    .item-row:hover { border-color: rgba(255,255,255,0.15); }
+
+    .item-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+    .item-emoji { font-size: 22px; flex-shrink: 0; }
+    .item-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: var(--bg3);
+      flex-shrink: 0;
+    }
+    .item-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-meta { font-size: 11px; color: var(--sub); margin-top: 2px; }
+    .item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    /* ── BADGE ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .badge-gold { background: var(--gold2); color: var(--gold); border: 1px solid rgba(201,169,110,0.3); }
+    .badge-dim { background: rgba(255,255,255,0.06); color: var(--sub); }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bg3);
+      border: 1px solid var(--green);
+      color: var(--green);
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 13px;
+      z-index: 999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.error { border-color: var(--red); color: var(--red); }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      display: none;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .modal-title { font-size: 18px; font-weight: 600; }
+    .modal-close-btn {
+      background: none; border: none; color: var(--sub);
+      font-size: 20px; cursor: pointer; line-height: 1; padding: 4px;
+    }
+    .modal-close-btn:hover { color: var(--text); }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── CURRICULUM TABLE ── */
+    .cur-rows { display: flex; flex-direction: column; gap: 8px; }
+    .cur-row { display: grid; grid-template-columns: 70px 1fr 2fr 32px; gap: 8px; align-items: center; }
+    .cur-row input { font-size: 12px; padding: 7px 10px; }
+    .cur-del-btn {
+      background: none; border: none; color: rgba(224,92,92,0.6);
+      cursor: pointer; font-size: 16px; line-height: 1; padding: 4px;
+      transition: color 0.2s;
+    }
+    .cur-del-btn:hover { color: var(--red); }
+    .add-cur-btn {
+      background: rgba(255,255,255,0.04);
+      border: 1px dashed rgba(255,255,255,0.15);
+      border-radius: 8px;
+      color: var(--sub);
+      font-size: 12px;
+      padding: 8px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 8px;
+      transition: all 0.2s;
+    }
+    .add-cur-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--sub);
+      font-size: 13px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="admin-header">
+  <div class="admin-logo">
+    유형재 <span>관리자 패널</span>
+  </div>
+  <div class="header-right">
+    <a href="../index.html" target="_blank" class="header-preview-btn">홈페이지 보기 →</a>
+  </div>
+</header>
+
+<!-- BODY -->
+<div class="admin-body">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section-label">콘텐츠 관리</div>
+    <div class="sidebar-item active" data-section="lectures" onclick="switchSection('lectures')">
+      <span class="icon">🎓</span> 강의 관리
+    </div>
+    <div class="sidebar-item" data-section="works" onclick="switchSection('works')">
+      <span class="icon">🎬</span> 작품 관리
+    </div>
+    <div class="sidebar-section-label">홈페이지 설정</div>
+    <div class="sidebar-item" data-section="home" onclick="switchSection('home')">
+      <span class="icon">🏠</span> 홈 메시지
+    </div>
+    <div class="sidebar-item" data-section="settings" onclick="switchSection('settings')">
+      <span class="icon">⚙️</span> 연락처 설정
+    </div>
+    <div class="sidebar-footer">
+      데이터는 브라우저 localStorage에 저장됩니다
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <!-- ===== LECTURES ===== -->
+    <div class="section-panel active" id="panel-lectures">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">강의 관리</div>
+          <div class="panel-subtitle">강의 프로그램을 추가·수정·삭제합니다</div>
+        </div>
+        <button class="btn btn-gold" onclick="openLecModal()">+ 강의 추가</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 강의 목록</div>
+        <div class="item-list" id="lecList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚠️ 데이터 초기화</div>
+        <p style="font-size:12px;color:var(--sub);margin-bottom:14px;">기본 강의 데이터로 초기화합니다. 변경 사항이 모두 사라집니다.</p>
+        <button class="btn btn-danger btn-sm" onclick="resetLectures()">강의 초기화</button>
+      </div>
+    </div>
+
+    <!-- ===== WORKS ===== -->
+    <div class="section-panel" id="panel-works">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">작품 관리</div>
+          <div class="panel-subtitle">AI 영화·도서 작품을 추가·수정·삭제합니다</div>
+        </div>
+        <button class="btn btn-gold" onclick="openWorkModal()">+ 작품 추가</button>
+      </div>
+
+      <!-- Tabs -->
+      <div style="display:flex;gap:8px;margin-bottom:20px;">
+        <button class="btn btn-gold btn-sm" id="worksTabFilm" onclick="switchWorksTab('film')">🎬 AI 영화</button>
+        <button class="btn btn-outline btn-sm" id="worksTabBook" onclick="switchWorksTab('book')">📚 도서</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title" id="worksListTitle">🎬 AI 영화 목록</div>
+        <div class="item-list" id="worksList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚠️ 데이터 초기화</div>
+        <p style="font-size:12px;color:var(--sub);margin-bottom:14px;">기본 작품 데이터로 초기화합니다. 추가한 작품이 모두 삭제됩니다.</p>
+        <button class="btn btn-danger btn-sm" onclick="resetWorks()">작품 초기화</button>
+      </div>
+    </div>
+
+    <!-- ===== HOME ===== -->
+    <div class="section-panel" id="panel-home">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">홈 메시지</div>
+          <div class="panel-subtitle">홈 화면 좌하단 메시지 박스 내용을 수정합니다</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">💬 메시지 박스</div>
+        <div class="form-row">
+          <label>메시지 내용 (줄바꿈 가능)</label>
+          <textarea id="homeMsg" rows="3" placeholder="AI를 활용해 더 나은 미래를 만드는&#10;생성형 AI 강사 유형재입니다"></textarea>
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>별점 텍스트</label>
+            <input id="homeStars" type="text" placeholder="★★★★★">
+          </div>
+          <div class="form-row">
+            <label>평점 / 수강생 수</label>
+            <input id="homeRating" type="text" placeholder="4.9 (200+ 수강생)">
+          </div>
+        </div>
+        <button class="btn btn-gold" onclick="saveHomeConfig()">저장</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ℹ️ 적용 방법</div>
+        <p style="font-size:12px;color:var(--sub);line-height:1.8;">
+          저장 후 홈페이지를 새로고침하면 변경 사항이 반영됩니다.<br>
+          슬라이드 이미지는 <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;">assets/images/</code> 폴더에 파일을 직접 교체해 주세요.
+        </p>
+      </div>
+    </div>
+
+    <!-- ===== SETTINGS ===== -->
+    <div class="section-panel" id="panel-settings">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">연락처 설정</div>
+          <div class="panel-subtitle">전화번호, 이메일, 웹사이트, SNS 링크를 관리합니다</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📞 연락처 정보</div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>전화번호</label>
+            <input id="setPhone" type="tel" placeholder="010-0000-0000">
+          </div>
+          <div class="form-row">
+            <label>이메일</label>
+            <input id="setEmail" type="email" placeholder="example@naver.com">
+          </div>
+          <div class="form-row">
+            <label>회사명</label>
+            <input id="setCompany" type="text" placeholder="(주)포인트넥스트">
+          </div>
+          <div class="form-row">
+            <label>주소</label>
+            <input id="setAddress" type="text" placeholder="서울 서초구...">
+          </div>
+        </div>
+        <div class="form-row">
+          <label>웹사이트 URL</label>
+          <input id="setWebsite" type="url" placeholder="https://aitalker.co.kr/hjyouh/">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔗 SNS 링크</div>
+        <div class="form-row">
+          <label>유튜브 채널 URL</label>
+          <input id="setSnsYt1" type="url" placeholder="https://www.youtube.com/@hjyouh">
+        </div>
+        <div class="form-row">
+          <label>음악 채널 URL</label>
+          <input id="setSnsYt2" type="url" placeholder="https://www.youtube.com/@Korisian">
+        </div>
+        <div class="form-row">
+          <label>인스타그램 URL</label>
+          <input id="setSnsIg" type="url" placeholder="https://www.instagram.com/hjyouhinsta/">
+        </div>
+        <button class="btn btn-gold" onclick="saveSettings()" style="margin-top:4px;">저장</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ===== LECTURE MODAL ===== -->
+<div class="modal-overlay" id="lecModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="lecModalTitle">강의 추가</div>
+      <button class="modal-close-btn" onclick="closeLecModal()">✕</button>
+    </div>
+
+    <input type="hidden" id="lecEditIndex" value="">
+
+    <div class="form-grid">
+      <div class="form-row">
+        <label>이모지</label>
+        <input id="lecEmoji" type="text" placeholder="🤖" maxlength="4">
+      </div>
+      <div class="form-row">
+        <label>카테고리</label>
+        <input id="lecCategory" type="text" placeholder="생성형 AI 기초">
+      </div>
+    </div>
+    <div class="form-row">
+      <label>강의명 *</label>
+      <input id="lecTitle" type="text" placeholder="지금 당장 써먹는 AI 활용법">
+    </div>
+    <div class="form-row">
+      <label>부제목</label>
+      <input id="lecSubtitle" type="text" placeholder="생성형 AI 첫걸음">
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>소요 시간</label>
+        <input id="lecDuration" type="text" placeholder="3시간~">
+      </div>
+      <div class="form-row">
+        <label>강의 형태</label>
+        <input id="lecFormat" type="text" placeholder="현장 / 온라인">
+      </div>
+    </div>
+    <div class="form-row">
+      <label>강의 배경 색상 (CSS gradient)</label>
+      <input id="lecGradient" type="text" placeholder="linear-gradient(160deg, #0d1828 0%, #1a3055 100%)">
+    </div>
+    <div class="form-row">
+      <label>강의 소개</label>
+      <textarea id="lecIntro" rows="4" placeholder="강의에 대한 소개를 입력하세요..."></textarea>
+    </div>
+    <div class="form-row">
+      <label>준비물</label>
+      <input id="lecSupplies" type="text" placeholder="개인 노트북, Gmail 계정">
+    </div>
+
+    <div class="form-row">
+      <label>커리큘럼</label>
+      <div id="curRows" class="cur-rows"></div>
+      <button type="button" class="add-cur-btn" onclick="addCurRow()">+ 커리큘럼 항목 추가</button>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeLecModal()">취소</button>
+      <button class="btn btn-gold" onclick="saveLecture()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== WORK MODAL ===== -->
+<div class="modal-overlay" id="workModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="workModalTitle">작품 추가</div>
+      <button class="modal-close-btn" onclick="closeWorkModal()">✕</button>
+    </div>
+
+    <input type="hidden" id="workEditId" value="">
+    <input type="hidden" id="workEditType" value="film">
+
+    <div class="form-grid">
+      <div class="form-row">
+        <label>유형</label>
+        <select id="workType" onchange="toggleWorkFields()">
+          <option value="film">🎬 AI 영화</option>
+          <option value="book">📚 도서</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>제작/출판 연도</label>
+        <input id="workYear" type="number" placeholder="2025" min="2000" max="2050">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>제목 *</label>
+      <input id="workTitle" type="text" placeholder="작품명">
+    </div>
+
+    <div id="filmFields">
+      <div class="form-row">
+        <label>영문 제목</label>
+        <input id="workTitleEn" type="text" placeholder="English Title">
+      </div>
+      <div class="form-row">
+        <label>수상/선정 배지 (예: 🏆 금상)</label>
+        <input id="workBadge" type="text" placeholder="🏆 금상">
+      </div>
+      <div class="form-row">
+        <label>수상 경력 (줄 단위로 입력)</label>
+        <textarea id="workAwards" rows="3" placeholder="2025 서울 국제 AI 영화제 금상&#10;Hollywood AI Short Film Awards Quarter-Finalist"></textarea>
+      </div>
+      <div class="form-row">
+        <label>시놉시스 (단락 단위, 빈 줄로 구분)</label>
+        <textarea id="workSynopsis" rows="5" placeholder="첫 번째 단락...&#10;&#10;두 번째 단락..."></textarea>
+      </div>
+      <div class="form-row">
+        <label>작품 정보 (줄 단위, 예: 러닝타임: 5분)</label>
+        <textarea id="workInfo" rows="3" placeholder="주요 인물 : ...&#10;배경 : ...&#10;러닝타임 : ..."></textarea>
+      </div>
+    </div>
+
+    <div id="bookFields" style="display:none;">
+      <div class="form-row">
+        <label>저자</label>
+        <input id="workAuthor" type="text" placeholder="유형재 저">
+      </div>
+      <div class="form-row">
+        <label>책 소개 (단락 단위, 빈 줄로 구분)</label>
+        <textarea id="workDesc" rows="5" placeholder="첫 번째 단락...&#10;&#10;두 번째 단락..."></textarea>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>링크 (형식: 라벨|URL, 줄 단위)</label>
+      <textarea id="workLinks" rows="2" placeholder="영화 보러가기|https://youtu.be/...&#10;M/V 보러가기|https://youtu.be/..."></textarea>
+    </div>
+
+    <div class="form-row">
+      <label>썸네일 이미지 경로 (assets/images/ 기준)</label>
+      <input id="workThumb" type="text" placeholder="../assets/images/poster.png">
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeWorkModal()">취소</button>
+      <button class="btn btn-gold" onclick="saveWork()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== DATA =====
+
+const DEFAULT_LECTURES = [
+  { emoji:'🤖', category:'생성형 AI 기초', title:'지금 당장 써먹는 AI 활용법', subtitle:'생성형 AI 첫걸음', duration:'3시간~', format:'현장 / 온라인', gradient:'linear-gradient(160deg, #0d1828 0%, #1a3055 100%)', intro:'ChatGPT, Gemini, Claude 등 주요 생성형 AI 도구를 처음 접하는 분들을 위한 실전 입문 강의입니다.', curriculum:[{time:'30분',title:'생성형 AI 이해',desc:'ChatGPT·Gemini·Claude 비교와 선택법'},{time:'30분',title:'첫 프롬프트 작성',desc:'좋은 질문이 좋은 답을 만든다'},{time:'30분',title:'텍스트 업무 활용',desc:'보고서·이메일·기획서 자동 생성'},{time:'30분',title:'이미지 생성 체험',desc:'Canva AI·ImageFX로 시각 자료 만들기'},{time:'30분',title:'문서 요약·번역',desc:'긴 문서를 30초 만에 핵심 정리'},{time:'30분',title:'AI 루틴 만들기',desc:'일상·업무에 AI 습관 정착시키기'}], supplies:'개인 노트북, Gmail 계정 / 비번' },
+  { emoji:'🎬', category:'AI 영화 제작', title:'AI 영화 제작 입문', subtitle:'아이디어 하나로 단편영화 완성하기', duration:'6시간~', format:'현장', gradient:'linear-gradient(160deg, #1a0d1a 0%, #3a1a3a 100%)', intro:'생성형 AI 도구만으로 나만의 단편영화를 만드는 실전 워크숍입니다.', curriculum:[{time:'1시간',title:'AI 영화 개요',desc:'AI 영화 제작 흐름 이해'},{time:'1시간',title:'시나리오 작성',desc:'ChatGPT로 이야기 만들기'},{time:'2시간',title:'이미지 생성',desc:'Midjourney·ImageFX 활용'},{time:'2시간',title:'영상 편집',desc:'CapCut으로 영화 완성'}], supplies:'개인 노트북, Midjourney 계정' },
+  { emoji:'📱', category:'AI 마케팅', title:'AI 마케팅 실전', subtitle:'SNS·광고를 AI로 10배 빠르게', duration:'3시간~', format:'현장 / 온라인', gradient:'linear-gradient(160deg, #1a1a0d 0%, #2d2d14 100%)', intro:'AI 도구를 활용해 마케팅 콘텐츠를 10배 빠르게 제작하는 실무 강의입니다.', curriculum:[{time:'30분',title:'AI 마케팅 개요',desc:'최신 트렌드 파악'},{time:'1시간',title:'텍스트 콘텐츠',desc:'ChatGPT로 카피라이팅'},{time:'1시간',title:'비주얼 콘텐츠',desc:'이미지·영상 자동 생성'},{time:'30분',title:'실전 적용',desc:'나만의 마케팅 루틴'}], supplies:'개인 노트북' },
+  { emoji:'⚡', category:'AI 업무 혁신', title:'업무 생산성 10배 UP!', subtitle:'AI로 일잘러가 되는 법', duration:'3시간~', format:'현장 / 온라인', gradient:'linear-gradient(160deg, #1a1200 0%, #3d2d00 100%)', intro:'반복 업무를 AI로 자동화하고 업무 생산성을 10배 높이는 실용 강의입니다.', curriculum:[{time:'30분',title:'업무 자동화 이해',desc:'어떤 일을 자동화할 수 있나'},{time:'1시간',title:'문서 작업 자동화',desc:'보고서·제안서 AI 작성'},{time:'1시간',title:'데이터 분석',desc:'엑셀·스프레드시트 AI 활용'},{time:'30분',title:'나만의 AI 워크플로우',desc:'지속 가능한 루틴 설계'}], supplies:'개인 노트북, Google 계정' },
+  { emoji:'💬', category:'프롬프트 엔지니어링', title:'AI와 소통하는 법', subtitle:'프롬프트 엔지니어링 입문', duration:'3시간~', format:'현장 / 온라인', gradient:'linear-gradient(160deg, #0a1a1a 0%, #0d3333 100%)', intro:'AI와 효과적으로 소통하는 프롬프트 설계 기법을 배웁니다.', curriculum:[{time:'30분',title:'프롬프트 기초',desc:'좋은 프롬프트의 조건'},{time:'1시간',title:'POM CEO 프레임워크',desc:'체계적인 프롬프트 설계법'},{time:'1시간',title:'실전 프롬프트',desc:'업무별 최적 프롬프트'},{time:'30분',title:'응용 및 심화',desc:'나만의 프롬프트 라이브러리'}], supplies:'개인 노트북' },
+  { emoji:'📊', category:'AI 데이터 분석', title:'AI 활용 데이터 분석', subtitle:'비전공자도 데이터 분석 전문가', duration:'3시간~', format:'현장 / 온라인', gradient:'linear-gradient(160deg, #0d1a0d 0%, #1a3320 100%)', intro:'AI 도구로 복잡한 데이터를 쉽게 분석하고 인사이트를 도출하는 강의입니다.', curriculum:[{time:'30분',title:'데이터 분석 개요',desc:'AI 분석 도구 소개'},{time:'1시간',title:'ChatGPT 데이터 분석',desc:'자연어로 데이터 분석'},{time:'1시간',title:'시각화',desc:'차트·그래프 자동 생성'},{time:'30분',title:'인사이트 도출',desc:'분석 결과 보고서 작성'}], supplies:'개인 노트북, Google 계정' }
+];
+
+const DEFAULT_WORKS = {
+  film: [
+    { id:'film-1', type:'film', title:"누구의 속삭임", titleEn:"Who's whisper", year:2025, badge:'🏆 금상', awards:['2025 서울 국제 AI 영화제 금상','Hollywood AI Short Film Awards 2026 Quarter-Finalist','AI Film Awards Cannes 2026 Official Selection'], synopsisFull:["서울 홍대 지하 녹음실, 새벽 2시. 보이스 디자이너 '하린'은 홀로 마이크 앞에 앉아 AI 음성 모델을 위한 목소리를 녹음한다."], info:["주요 인물 : 하린 · AI 음성 모델","배경 : 서울 홍대 지하 녹음실","러닝타임 : 5분 30초 · 단편"], links:[{label:"영화 보러가기",url:"https://youtu.be/YozYFTxYcuI"}], thumb:"../assets/images/who's Poster.png" },
+    { id:'film-2', type:'film', title:'Digital Ego', titleEn:'Digital Ego', year:2025, badge:'🌍 다수 수상', awards:['AI Film Awards Venice 2025 — Film Finalist','대한민국 AI 영화제 우수상 (2025)'], synopsisFull:["가까운 미래, 서울. 평범한 직장인 지영은 스마트 거울 'AI Mirror'와 함께 일상을 시작한다."], info:["주요 인물 : 지영 · AI Mirror","러닝타임 : 10분 · 단편"], links:[{label:"영화 보러가기",url:"https://youtu.be/1SeL-MjQePs"},{label:"M/V 보러가기",url:"https://youtu.be/PnfMoHAuDDk"}], thumb:'../assets/images/Digital Ego poster.png' },
+    { id:'film-3', type:'film', title:'추억의 잔광(殘光)', titleEn:'Luminous Memory', year:2026, badge:'🎭 Cannes', awards:['AI Film Awards Cannes 2026 Official Selection'], synopsisFull:["낡고 버려진 것들에 깃든 영혼과 시간에 대한 이야기입니다."], links:[{label:"영화 보러가기",url:"https://youtu.be/0OQGGyzxMk4"}], thumb:'../assets/images/추억의 잔광(殘光)-포스터.png' },
+    { id:'film-4', type:'film', title:'「情 (Jeong)」', titleEn:'The Love That Lingers', year:2026, badge:'🎭 Cannes 2026', awards:['AI Film Awards Cannes 2026 Official Selection'], synopsisFull:["겨울이 깊어가는 시골 마을, 오래된 한옥에 홀로 남은 어머니는 오늘도 누군가 올 것처럼 아궁이에 불을 지피고 밥을 짓는다."], links:[{label:"영화 보러가기",url:"https://youtu.be/NZGuxgiC2HM"}], thumb:'../assets/images/Jeong Poster.png' }
+  ],
+  book: [
+    { id:'book-1', type:'book', title:'AI 영화 만들기 - 완성 이미지를 영화로', year:2026, badge:null, info:["유형재 저"], descFull:["캐릭터 일관성 유지 기법부터 Veo, Hailuo, Kling을 활용한 영상 생성까지."], links:[{label:"책 구매하기",url:"https://www.yes24.com/product/goods/177864126"}], thumb:'../assets/images/Book5-AI 영화 만들기 - 완성 이미지를 영화로.jpg' },
+    { id:'book-2', type:'book', title:'AI 영화 만들기 - 시작 이야기를 이미지로', year:2026, badge:null, info:["유형재 저"], descFull:["AI 영화제 금상 수상 감독의 실전 노하우를 담은 AI 영화 제작 입문서."], links:[{label:"책 구매하기",url:"https://www.yes24.com/product/goods/177864121"}], thumb:'../assets/images/Book5-AI 영화 만들기 - 시작 이야기를 이미지로.jpg' },
+    { id:'book-3', type:'book', title:'정체된 나의 삶 속에서, AI와 춤추다', year:2025, badge:null, info:["유형재, 김영배, 이성경 저"], descFull:["IT 업계에서 화려한 경력을 쌓았지만 정체기를 맞은 한 중년 남성의 진솔한 여정."], links:[{label:"책 구매하기",url:"https://www.yes24.com/product/goods/148570574"}], thumb:'../assets/images/book4-정체된 나의 삶 속에서, AI와 춤추다.jpg' },
+    { id:'book-4', type:'book', title:'AI와 소통하는 법 - 프롬프트 엔지니어링 기초편', year:2025, badge:null, info:["유형재, 윤성임, 하예랑 공저"], descFull:["프롬프트 엔지니어링의 기초부터 고급 전략까지."], links:[{label:"책 구매하기",url:"https://www.yes24.com/product/goods/145368866"}], thumb:'../assets/images/book3 AI와 소통하는 법- 프롬프트 엔지니어링 기초편.jpg' },
+    { id:'book-5', type:'book', title:'디지털 마케팅의 판도를 바꾸는 생성형 AI 고급 전략', year:2025, badge:null, info:["유형재, 윤성임, 하예랑 공저"], descFull:["생성형 AI를 활용해 디지털 마케팅 효율성을 극대화하는 방법."], links:[{label:"책 구매하기",url:"https://www.yes24.com/product/goods/145370350"}], thumb:'../assets/images/Book2-디지털 마케팅의 판도를 바꾸는 생성형 AI 고급 전략.jpg' },
+    { id:'book-6', type:'book', title:'업무생산성 높이는 생성형 AI 기초 전략', year:2025, badge:null, info:["유형재, 윤성임, 하예랑 저"], descFull:["AI를 활용해 업무 효율성을 극대화하는 방법을 안내하는 실용 가이드."], links:[{label:"책 구매하기",url:"https://www.yes24.com/product/goods/145370862"}], thumb:'../assets/images/Book1-업무생산성 높이는 생성형 AI 기초 전략.jpg' }
+  ]
+};
+
+const DEFAULT_SETTINGS = {
+  phone: '010-3558-6960',
+  email: 'hjyouh@naver.com',
+  company: '(주)포인트넥스트 대표이사',
+  address: '서울 서초구 강남대로 53길 8, 8-25호',
+  website: 'https://aitalker.co.kr/hjyouh/',
+  snsYt1: 'https://www.youtube.com/@hjyouh',
+  snsYt2: 'https://www.youtube.com/@Korisian',
+  snsIg: 'https://www.instagram.com/hjyouhinsta/'
+};
+
+const DEFAULT_HOME = {
+  message: 'AI를 활용해 더 나은 미래를 만드는\n생성형 AI 강사 유형재입니다',
+  stars: '★★★★★',
+  rating: '4.9 (200+ 수강생)'
+};
+
+// ===== STORAGE =====
+
+function loadData(key, def) {
+  try { const s = localStorage.getItem(key); if (s) return JSON.parse(s); } catch(e) {}
+  return typeof def === 'object' ? JSON.parse(JSON.stringify(def)) : def;
+}
+
+function saveData(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); return true; }
+  catch(e) { return false; }
+}
+
+// ===== TOAST =====
+
+function toast(msg, isErr) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast' + (isErr ? ' error' : '') + ' show';
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ===== NAVIGATION =====
+
+function switchSection(name) {
+  document.querySelectorAll('.sidebar-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.section === name);
+  });
+  document.querySelectorAll('.section-panel').forEach(el => {
+    el.classList.toggle('active', el.id === 'panel-' + name);
+  });
+  if (name === 'lectures') renderLecList();
+  if (name === 'works') renderWorksList();
+  if (name === 'home') loadHomeForm();
+  if (name === 'settings') loadSettingsForm();
+}
+
+// ===== LECTURES =====
+
+let lectures = loadData('lecturesData', DEFAULT_LECTURES);
+
+function renderLecList() {
+  const el = document.getElementById('lecList');
+  if (!lectures.length) { el.innerHTML = '<div class="empty-state">강의가 없습니다. 추가해주세요.</div>'; return; }
+  el.innerHTML = lectures.map((lec, i) => `
+    <div class="item-row">
+      <div class="item-info">
+        <span class="item-emoji">${lec.emoji || '📋'}</span>
+        <div style="min-width:0">
+          <div class="item-name">${lec.title}</div>
+          <div class="item-meta"><span class="badge badge-dim">${lec.category || ''}</span> · ${lec.duration || ''} · ${lec.format || ''}</div>
+        </div>
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-outline btn-sm" onclick="openLecModal(${i})">수정</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteLecture(${i})">삭제</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openLecModal(idx) {
+  const modal = document.getElementById('lecModal');
+  const editIdx = document.getElementById('lecEditIndex');
+
+  if (idx === undefined) {
+    document.getElementById('lecModalTitle').textContent = '강의 추가';
+    editIdx.value = '';
+    clearLecForm();
+  } else {
+    document.getElementById('lecModalTitle').textContent = '강의 수정';
+    editIdx.value = idx;
+    fillLecForm(lectures[idx]);
+  }
+  buildCurRows(idx !== undefined ? lectures[idx].curriculum : []);
+  modal.classList.add('open');
+}
+
+function closeLecModal() {
+  document.getElementById('lecModal').classList.remove('open');
+}
+
+function clearLecForm() {
+  ['lecEmoji','lecCategory','lecTitle','lecSubtitle','lecDuration','lecFormat','lecGradient','lecIntro','lecSupplies']
+    .forEach(id => { document.getElementById(id).value = ''; });
+}
+
+function fillLecForm(lec) {
+  document.getElementById('lecEmoji').value = lec.emoji || '';
+  document.getElementById('lecCategory').value = lec.category || '';
+  document.getElementById('lecTitle').value = lec.title || '';
+  document.getElementById('lecSubtitle').value = lec.subtitle || '';
+  document.getElementById('lecDuration').value = lec.duration || '';
+  document.getElementById('lecFormat').value = lec.format || '';
+  document.getElementById('lecGradient').value = lec.gradient || '';
+  document.getElementById('lecIntro').value = lec.intro || '';
+  document.getElementById('lecSupplies').value = lec.supplies || '';
+}
+
+function buildCurRows(curriculum) {
+  const container = document.getElementById('curRows');
+  container.innerHTML = '';
+  (curriculum || []).forEach(c => addCurRow(c));
+}
+
+function addCurRow(data) {
+  const row = document.createElement('div');
+  row.className = 'cur-row';
+  row.innerHTML = `
+    <input type="text" placeholder="시간" value="${data ? escHtml(data.time) : ''}" class="cur-time-input">
+    <input type="text" placeholder="제목" value="${data ? escHtml(data.title) : ''}" class="cur-title-input">
+    <input type="text" placeholder="내용" value="${data ? escHtml(data.desc) : ''}" class="cur-desc-input">
+    <button type="button" class="cur-del-btn" onclick="this.closest('.cur-row').remove()">✕</button>
+  `;
+  document.getElementById('curRows').appendChild(row);
+}
+
+function saveLecture() {
+  const title = document.getElementById('lecTitle').value.trim();
+  if (!title) { toast('강의명을 입력해주세요', true); return; }
+
+  const curRows = document.querySelectorAll('#curRows .cur-row');
+  const curriculum = [...curRows].map(r => ({
+    time: r.querySelector('.cur-time-input').value.trim(),
+    title: r.querySelector('.cur-title-input').value.trim(),
+    desc: r.querySelector('.cur-desc-input').value.trim()
+  })).filter(c => c.title);
+
+  const lec = {
+    emoji: document.getElementById('lecEmoji').value || '📋',
+    category: document.getElementById('lecCategory').value.trim(),
+    title,
+    subtitle: document.getElementById('lecSubtitle').value.trim(),
+    duration: document.getElementById('lecDuration').value.trim() || '3시간~',
+    format: document.getElementById('lecFormat').value.trim() || '현장 / 온라인',
+    gradient: document.getElementById('lecGradient').value.trim() || 'linear-gradient(160deg, #1a1a1a 0%, #2d2d2d 100%)',
+    intro: document.getElementById('lecIntro').value.trim(),
+    supplies: document.getElementById('lecSupplies').value.trim(),
+    curriculum
+  };
+
+  const idx = document.getElementById('lecEditIndex').value;
+  if (idx !== '') {
+    lectures[parseInt(idx)] = lec;
+  } else {
+    lectures.push(lec);
+  }
+
+  saveData('lecturesData', lectures);
+  closeLecModal();
+  renderLecList();
+  toast('강의가 저장되었습니다');
+}
+
+function deleteLecture(i) {
+  if (!confirm(`"${lectures[i].title}" 강의를 삭제하시겠습니까?`)) return;
+  lectures.splice(i, 1);
+  saveData('lecturesData', lectures);
+  renderLecList();
+  toast('강의가 삭제되었습니다');
+}
+
+function resetLectures() {
+  if (!confirm('기본 강의 데이터로 초기화하시겠습니까?')) return;
+  lectures = JSON.parse(JSON.stringify(DEFAULT_LECTURES));
+  localStorage.removeItem('lecturesData');
+  renderLecList();
+  toast('초기화되었습니다');
+}
+
+// ===== WORKS =====
+
+let worksData = loadData('worksData', DEFAULT_WORKS);
+let currentWorksTab = 'film';
+
+function switchWorksTab(tab) {
+  currentWorksTab = tab;
+  document.getElementById('worksTabFilm').className = 'btn btn-sm ' + (tab === 'film' ? 'btn-gold' : 'btn-outline');
+  document.getElementById('worksTabBook').className = 'btn btn-sm ' + (tab === 'book' ? 'btn-gold' : 'btn-outline');
+  document.getElementById('worksListTitle').textContent = tab === 'film' ? '🎬 AI 영화 목록' : '📚 도서 목록';
+  renderWorksList();
+}
+
+function renderWorksList() {
+  const el = document.getElementById('worksList');
+  const items = (worksData[currentWorksTab] || []);
+  if (!items.length) { el.innerHTML = '<div class="empty-state">작품이 없습니다. 추가해주세요.</div>'; return; }
+  el.innerHTML = items.map(item => `
+    <div class="item-row">
+      <div class="item-info">
+        ${item.thumb ? `<img class="item-thumb" src="${item.thumb}" onerror="this.style.display='none'">` : `<span class="item-emoji">${currentWorksTab === 'film' ? '🎬' : '📚'}</span>`}
+        <div style="min-width:0">
+          <div class="item-name">${item.title}</div>
+          <div class="item-meta">${item.year || ''} ${item.badge ? `· <span class="badge badge-gold">${item.badge}</span>` : ''}</div>
+        </div>
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-outline btn-sm" onclick="openWorkModal('${item.id}')">수정</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteWork('${item.id}')">삭제</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openWorkModal(id) {
+  const modal = document.getElementById('workModal');
+  document.getElementById('workEditId').value = id || '';
+  document.getElementById('workEditType').value = currentWorksTab;
+
+  if (id) {
+    const items = worksData[currentWorksTab] || [];
+    const item = items.find(i => i.id === id);
+    document.getElementById('workModalTitle').textContent = '작품 수정';
+    if (item) fillWorkForm(item);
+  } else {
+    document.getElementById('workModalTitle').textContent = '작품 추가';
+    clearWorkForm();
+    document.getElementById('workType').value = currentWorksTab;
+    toggleWorkFields();
+  }
+  modal.classList.add('open');
+}
+
+function closeWorkModal() {
+  document.getElementById('workModal').classList.remove('open');
+}
+
+function clearWorkForm() {
+  ['workTitle','workTitleEn','workBadge','workAwards','workSynopsis','workInfo','workAuthor','workDesc','workLinks','workThumb']
+    .forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('workYear').value = new Date().getFullYear();
+}
+
+function fillWorkForm(item) {
+  document.getElementById('workType').value = item.type || 'film';
+  document.getElementById('workTitle').value = item.title || '';
+  document.getElementById('workYear').value = item.year || '';
+  document.getElementById('workTitleEn').value = item.titleEn || '';
+  document.getElementById('workBadge').value = item.badge || '';
+  document.getElementById('workAwards').value = (item.awards || []).join('\n');
+  document.getElementById('workSynopsis').value = (item.synopsisFull || item.descFull || []).join('\n\n');
+  document.getElementById('workInfo').value = (item.info || []).join('\n');
+  document.getElementById('workAuthor').value = (item.info || [])[0] || '';
+  document.getElementById('workDesc').value = (item.descFull || []).join('\n\n');
+  document.getElementById('workLinks').value = (item.links || []).map(l => l.label + '|' + l.url).join('\n');
+  document.getElementById('workThumb').value = item.thumb || '';
+  toggleWorkFields();
+}
+
+function toggleWorkFields() {
+  const type = document.getElementById('workType').value;
+  document.getElementById('filmFields').style.display = type === 'film' ? 'block' : 'none';
+  document.getElementById('bookFields').style.display = type === 'book' ? 'block' : 'none';
+}
+
+function saveWork() {
+  const title = document.getElementById('workTitle').value.trim();
+  if (!title) { toast('제목을 입력해주세요', true); return; }
+
+  const type = document.getElementById('workType').value;
+  const year = parseInt(document.getElementById('workYear').value) || new Date().getFullYear();
+
+  const linksRaw = document.getElementById('workLinks').value.trim();
+  const links = linksRaw ? linksRaw.split('\n').map(l => {
+    const [label, ...rest] = l.split('|');
+    return { label: label.trim(), url: rest.join('|').trim() };
+  }).filter(l => l.url) : [];
+
+  const editId = document.getElementById('workEditId').value;
+  const id = editId || (type + '-' + Date.now());
+
+  let item = { id, type, title, year, thumb: document.getElementById('workThumb').value.trim() || null };
+
+  if (type === 'film') {
+    item.titleEn = document.getElementById('workTitleEn').value.trim();
+    item.badge = document.getElementById('workBadge').value.trim() || null;
+    item.awards = document.getElementById('workAwards').value.trim().split('\n').map(s=>s.trim()).filter(Boolean);
+    item.synopsisFull = document.getElementById('workSynopsis').value.trim().split(/\n\n+/).map(s=>s.trim()).filter(Boolean);
+    item.info = document.getElementById('workInfo').value.trim().split('\n').map(s=>s.trim()).filter(Boolean);
+  } else {
+    item.info = [document.getElementById('workAuthor').value.trim()].filter(Boolean);
+    item.descFull = document.getElementById('workDesc').value.trim().split(/\n\n+/).map(s=>s.trim()).filter(Boolean);
+  }
+  item.links = links;
+
+  if (!worksData[type]) worksData[type] = [];
+  if (editId) {
+    const idx = worksData[type].findIndex(i => i.id === editId);
+    if (idx > -1) worksData[type][idx] = item; else worksData[type].push(item);
+  } else {
+    worksData[type].push(item);
+  }
+
+  saveData('worksData', worksData);
+  closeWorkModal();
+  if (currentWorksTab !== type) switchWorksTab(type); else renderWorksList();
+  toast('작품이 저장되었습니다');
+}
+
+function deleteWork(id) {
+  const items = worksData[currentWorksTab] || [];
+  const item = items.find(i => i.id === id);
+  if (!confirm(`"${item?.title}" 작품을 삭제하시겠습니까?`)) return;
+  worksData[currentWorksTab] = items.filter(i => i.id !== id);
+  saveData('worksData', worksData);
+  renderWorksList();
+  toast('작품이 삭제되었습니다');
+}
+
+function resetWorks() {
+  if (!confirm('기본 작품 데이터로 초기화하시겠습니까?')) return;
+  worksData = JSON.parse(JSON.stringify(DEFAULT_WORKS));
+  localStorage.removeItem('worksData');
+  renderWorksList();
+  toast('초기화되었습니다');
+}
+
+// ===== HOME =====
+
+function loadHomeForm() {
+  const cfg = loadData('homeConfig', DEFAULT_HOME);
+  document.getElementById('homeMsg').value = cfg.message || DEFAULT_HOME.message;
+  document.getElementById('homeStars').value = cfg.stars || DEFAULT_HOME.stars;
+  document.getElementById('homeRating').value = cfg.rating || DEFAULT_HOME.rating;
+}
+
+function saveHomeConfig() {
+  const cfg = {
+    message: document.getElementById('homeMsg').value,
+    stars: document.getElementById('homeStars').value,
+    rating: document.getElementById('homeRating').value
+  };
+  if (saveData('homeConfig', cfg)) toast('홈 메시지가 저장되었습니다');
+  else toast('저장 실패', true);
+}
+
+// ===== SETTINGS =====
+
+function loadSettingsForm() {
+  const s = loadData('siteSettings', DEFAULT_SETTINGS);
+  document.getElementById('setPhone').value = s.phone || '';
+  document.getElementById('setEmail').value = s.email || '';
+  document.getElementById('setCompany').value = s.company || '';
+  document.getElementById('setAddress').value = s.address || '';
+  document.getElementById('setWebsite').value = s.website || '';
+  document.getElementById('setSnsYt1').value = s.snsYt1 || '';
+  document.getElementById('setSnsYt2').value = s.snsYt2 || '';
+  document.getElementById('setSnsIg').value = s.snsIg || '';
+}
+
+function saveSettings() {
+  const s = {
+    phone: document.getElementById('setPhone').value.trim(),
+    email: document.getElementById('setEmail').value.trim(),
+    company: document.getElementById('setCompany').value.trim(),
+    address: document.getElementById('setAddress').value.trim(),
+    website: document.getElementById('setWebsite').value.trim(),
+    snsYt1: document.getElementById('setSnsYt1').value.trim(),
+    snsYt2: document.getElementById('setSnsYt2').value.trim(),
+    snsIg: document.getElementById('setSnsIg').value.trim()
+  };
+  if (saveData('siteSettings', s)) toast('설정이 저장되었습니다');
+  else toast('저장 실패', true);
+}
+
+// ===== UTILS =====
+
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ===== INIT =====
+renderLecList();
+</script>
+</body>
+</html>

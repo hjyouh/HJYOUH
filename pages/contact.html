@@ -1,0 +1,343 @@
+<section class="con-section">
+
+  <!-- Left: Background Image -->
+  <div class="con-main">
+    <div class="con-bg-img"></div>
+    <div class="con-bg-overlay"></div>
+
+    <div class="message-box con-msg">
+      <div class="message-box-text">
+        강의 문의 및<br>
+        <strong>협업 제안 환영합니다</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Info Panel -->
+  <div class="con-panel">
+
+    <!-- Content -->
+    <div class="con-panel-content">
+      <div class="con-header">
+        <h1>Contact</h1>
+        <p>강의 문의 및 협업 제안</p>
+      </div>
+
+      <div class="con-divider"></div>
+
+      <ul class="con-info-list">
+        <li>
+          <span class="con-icon">📞</span>
+          <div class="con-body">
+            <span class="con-label">전화</span>
+            <a href="tel:01035586960" class="con-value">010-3558-6960</a>
+          </div>
+        </li>
+        <li>
+          <span class="con-icon">✉️</span>
+          <div class="con-body">
+            <span class="con-label">이메일</span>
+            <a href="mailto:hjyouh@naver.com" class="con-value">hjyouh@naver.com</a>
+          </div>
+        </li>
+        <li>
+          <span class="con-icon">🏢</span>
+          <div class="con-body">
+            <span class="con-label">회사</span>
+            <span class="con-value">(주)포인트넥스트 대표이사</span>
+          </div>
+        </li>
+        <li>
+          <span class="con-icon">📍</span>
+          <div class="con-body">
+            <span class="con-label">주소</span>
+            <span class="con-value">서울 서초구 강남대로 53길 8, 8-25호</span>
+          </div>
+        </li>
+        <li>
+          <span class="con-icon">🌐</span>
+          <div class="con-body">
+            <span class="con-label">웹사이트</span>
+            <a href="https://aitalker.co.kr/hjyouh/" target="_blank" class="con-value">aitalker.co.kr/hjyouh</a>
+          </div>
+        </li>
+      </ul>
+
+      <div class="con-reply-notice">
+        <span>⏱</span>
+        <span>24시간 이내에 답변 드리겠습니다</span>
+      </div>
+    </div>
+
+    <!-- Fixed Footer (같은 위치, 강의 페이지와 동일) -->
+    <div class="con-panel-footer">
+      <div class="con-footer-left">
+        <div class="con-footer-row">
+          <a href="tel:01035586960" class="con-footer-item">📞 010-3558-6960</a>
+          <span class="con-footer-sep">·</span>
+          <a href="mailto:hjyouh@naver.com" class="con-footer-item">✉️ hjyouh@naver.com</a>
+        </div>
+        <div class="con-footer-row">
+          <a href="https://aitalker.co.kr/hjyouh/" target="_blank" class="con-footer-item">🌐 aitalker.co.kr/hjyouh</a>
+        </div>
+      </div>
+      <a href="mailto:hjyouh@naver.com" class="con-footer-btn">강의 문의 →</a>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  /* ===== SECTION ===== */
+  .con-section {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    overflow: hidden;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+  }
+
+  /* ===== LEFT MAIN ===== */
+  .con-main {
+    flex: 1 1 0;
+    min-width: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .con-bg-img {
+    position: absolute;
+    inset: 0;
+    background-image: url('assets/images/main2.png');
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.6s ease;
+  }
+
+  .con-main:hover .con-bg-img {
+    transform: scale(1.04);
+  }
+
+  .con-bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .con-msg {
+    position: absolute;
+    bottom: 28px;
+    left: 28px;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 16px 20px;
+    z-index: 20;
+  }
+
+  .con-msg .message-box-text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #fff;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+  }
+
+  /* ===== RIGHT PANEL ===== */
+  .con-panel {
+    width: var(--panel-width);
+    flex-shrink: 0;
+    height: 100%;
+    background: var(--bg-primary);
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ===== PANEL CONTENT ===== */
+  .con-panel-content {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 40px 28px 24px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== HEADER ===== */
+  .con-header {
+    margin-bottom: 28px;
+  }
+
+  .con-header h1 {
+    font-size: clamp(32px, 4vw, 44px);
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    font-style: italic;
+    margin: 0 0 8px;
+    color: var(--text-primary);
+  }
+
+  .con-header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+  }
+
+  /* ===== DIVIDER ===== */
+  .con-divider {
+    width: 36px;
+    height: 2px;
+    background: var(--accent-gold);
+    margin-bottom: 28px;
+  }
+
+  /* ===== INFO LIST ===== */
+  .con-info-list {
+    list-style: none;
+    margin: 0 0 24px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .con-info-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .con-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .con-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .con-label {
+    font-size: 10px;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    color: var(--text-secondary);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  .con-value {
+    font-size: 14px;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  a.con-value {
+    color: var(--accent-gold);
+  }
+
+  a.con-value:hover {
+    text-decoration: underline;
+  }
+
+  /* ===== REPLY NOTICE ===== */
+  .con-reply-notice {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: rgba(201, 169, 110, 0.08);
+    border: 1px solid rgba(201, 169, 110, 0.25);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    color: var(--accent-gold);
+    font-weight: 500;
+  }
+
+  /* ===== PANEL FOOTER (강의 페이지와 동일 구조) ===== */
+  .con-panel-footer {
+    flex-shrink: 0;
+    padding: 12px 24px 14px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: var(--bg-primary);
+  }
+
+  .con-footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .con-footer-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .con-footer-sep {
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 11px;
+  }
+
+  .con-footer-item {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+  }
+
+  .con-footer-item:hover {
+    color: var(--accent-gold);
+  }
+
+  .con-footer-btn {
+    flex-shrink: 0;
+    background: var(--accent-gold);
+    border: none;
+    border-radius: 8px;
+    color: #0d0d0d;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    padding: 9px 18px;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+
+  .con-footer-btn:hover {
+    background: #d4b87a;
+    transform: translateY(-1px);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 767px) {
+    .con-section { flex-direction: column; }
+    .con-main { flex: 1 1 0; }
+    .con-panel { width: 100%; flex: 0 0 auto; height: auto; }
+    .con-msg { display: none; }
+  }
+</style>
+
+<script>
+  function initContactPage() {
+    console.log('Contact page loaded');
+  }
+  initContactPage();
+</script>

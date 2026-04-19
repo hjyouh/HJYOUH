@@ -1,0 +1,71 @@
+.tab-card-wrap {
+  position: relative;
+  width: 100%;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.tab-card-wrap svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.tab-card-title { font-size: 14px; }
+
+/* 스크롤바 숨김 */
+* { scrollbar-width: none; }
+*::-webkit-scrollbar { width: 0px; }
+
+body.is-scrolling::-webkit-scrollbar {
+  width: 3px;
+}
+body.is-scrolling::-webkit-scrollbar-track {
+  background: transparent;
+}
+body.is-scrolling::-webkit-scrollbar-thumb {
+  background: #555555;
+  border-radius: 999px;
+}
+
+/* footer */
+.mobile-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #111111;
+  padding: 8px 16px;
+  z-index: 999;
+}
+.mobile-footer::before {
+  content: '';
+  display: block;
+  height: 1px;
+  background: #3a3a3a;
+  margin: 0 40px 8px;
+}
+.mobile-footer .footer-row1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 4px;
+}
+.mobile-footer a {
+  color: #cccccc;
+  text-decoration: none;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.mobile-footer .footer-row2 {
+  text-align: center;
+}
+.mobile-footer .footer-row2 a {
+  color: #cccccc;
+  font-size: 12px;
+  font-family: 'Poppins', 'SUITE', sans-serif;
+  justify-content: center;
+}

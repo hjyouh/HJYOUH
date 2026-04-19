@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:gusto-template.framer.website)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(pkill -f \"http.server\")",
+      "Bash(taskkill /F /IM python.exe)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(python -m http.server 8000)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/index.html)",
+      "Bash(python3 -c ' *)",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\hjyou\\\\.claude\\\\projects\\\\H---------vibe-coding-homepage\\\\28f2bd14-3351-49f8-b459-54dc92fc3c67.jsonl' | Select-Object -Last 100\")",
+      "Bash(sed -i \"s/'Poppins', 'SUITE', 'Noto Sans KR', sans-serif/'Poppins', 'SUITE', sans-serif/g\" pages/home.html pages/about.html pages/lectures.html pages/works.html pages/contact.html)",
+      "Bash(sed -i \"s/'SUITE', 'Noto Sans KR', sans-serif/'Poppins', 'SUITE', sans-serif/g\" pages/lectures.html pages/works.html pages/contact.html)",
+      "Bash(sed -i \"s/'Noto Sans KR', 'Inter', sans-serif/'Poppins', 'SUITE', sans-serif/g\" admin/index.html)",
+      "Bash(sed -i \"s/font-family: 'Noto Sans KR', sans-serif;/font-family: 'Poppins', 'SUITE', sans-serif;/g\" assets/css/tab-card.css)",
+      "Bash(sed -i \"s/font-family=\\\\\"'Noto Sans KR', sans-serif\\\\\"/font-family=\\\\\"'Poppins', 'SUITE', sans-serif\\\\\"/g\" assets/tab-card.html)"
+    ]
+  }
+}

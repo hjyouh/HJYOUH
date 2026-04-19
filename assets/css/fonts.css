@@ -1,0 +1,36 @@
+/* ===== SUITE (Local) ===== */
+@font-face {
+  font-family: 'SUITE';
+  src: url('../fonts/SUITE-Light.ttf') format('truetype');
+  font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'SUITE';
+  src: url('../fonts/SUITE-Regular.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'SUITE';
+  src: url('../fonts/SUITE-Medium.ttf') format('truetype');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'SUITE';
+  src: url('../fonts/SUITE-SemiBold.ttf') format('truetype');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'SUITE';
+  src: url('../fonts/SUITE-Bold.ttf') format('truetype');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'SUITE';
+  src: url('../fonts/SUITE-ExtraBold.ttf') format('truetype');
+  font-weight: 800; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'SUITE';
+  src: url('../fonts/SUITE-Heavy.ttf') format('truetype');
+  font-weight: 900; font-style: normal; font-display: swap;
+}

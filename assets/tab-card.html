@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab Card Component</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px;
+      background: #303030;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .tab-card-wrap {
+      position: relative;
+      width: 540px;
+      height: 360px;
+    }
+
+    .tab-card-wrap svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tab-card-wrap">
+    <svg width="540" height="360" viewBox="0 0 540 360" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- 클립 경로: 이미지가 카드 모양 안에만 보이도록 -->
+        <clipPath id="cardClip">
+          <path d="
+            M 20 340
+            Q 20 355 35 355
+            L 505 355
+            Q 520 355 520 340
+            L 520 30
+            Q 520 15 505 15
+            L 150 15
+            Q 135 15 128 28
+            Q 122 42 107 42
+            L 42 42
+            Q 20 42 20 62
+            L 20 340
+          "/>
+        </clipPath>
+      </defs>
+
+      <!-- 바깥 배경: 쥐색 #303030 -->
+      <rect width="540" height="360" fill="#303030"/>
+
+      <!-- 카드 안 이미지 (clip-path로 모양에 맞게 잘림) -->
+      <image
+        href="YOUR_IMAGE_URL_HERE"
+        x="0" y="0"
+        width="540" height="360"
+        clip-path="url(#cardClip)"
+        preserveAspectRatio="xMidYMid slice"
+      />
+
+      <!-- 카드 테두리 라인 -->
+      <path d="
+        M 20 340
+        Q 20 355 35 355
+        L 505 355
+        Q 520 355 520 340
+        L 520 30
+        Q 520 15 505 15
+        L 150 15
+        Q 135 15 128 28
+        Q 122 42 107 42
+        L 42 42
+        Q 20 42 20 62
+        L 20 340
+      "
+      fill="none"
+      stroke="#111111"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+      />
+
+      <!-- 제목 텍스트 (탭 영역) -->
+      <text
+        x="50" y="34"
+        font-size="13"
+        fill="#ffffff"
+        font-family="'Poppins', 'SUITE', sans-serif"
+        font-weight="500"
+      >제목</text>
+
+    </svg>
+  </div>
+
+</body>
+</html>

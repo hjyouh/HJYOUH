@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="유형재 강사의 생성형 AI 포트폴리오 홈페이지">
+  <meta name="keywords" content="AI, 생성형AI, 강사, 포트폴리오, 교육">
+  <meta name="author" content="유형재">
+  <meta property="og:title" content="유형재 강사 | 생성형 AI Creator">
+  <meta property="og:description" content="생성형 AI를 활용해 더 나은 미래를 만드는 강사">
+  <meta property="og:image" content="assets/images/og-image.jpg">
+  <meta property="og:url" content="https://hjyouh.vercel.app">
+  <meta name="theme-color" content="#0d0d0d">
+
+  <title>유형재 강사 | 생성형 AI Creator 포트폴리오</title>
+
+  <!-- Fonts: Poppins (Google CDN) + SUITE (local) — loaded via style.css -->
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css?v=18">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Poppins, sans-serif' fill='%23c9a96e'>유</text></svg>">
+
+  <!-- No-JS Fallback -->
+  <noscript>
+    <style>
+      .hamburger, nav.mobile-nav { display: none !important; }
+      nav.desktop-nav { display: flex !important; }
+    </style>
+  </noscript>
+</head>
+<body>
+  <!-- Main App Container -->
+  <div id="app">
+    <!-- Logo: always fixed to #app top-left, independent of header layout -->
+    <div class="logo">
+      <img src="assets/images/aimt-logo-white.png" alt="AIMT Logo" class="logo-img">
+    </div>
+
+    <!-- Header Navigation -->
+    <header>
+      <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
+        <a href="#" data-page="home">Home</a>
+        <a href="#" data-page="about">강사</a>
+        <a href="#" data-page="lectures">강의</a>
+        <a href="#" data-page="works">작업들</a>
+        <a href="#" data-page="contact">Contact</a>
+        <a href="#" class="admin-nav-link" title="모바일 미리보기" onclick="openMobilePreview(event)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        </a>
+      </nav>
+
+      <!-- Hamburger Menu (Mobile) -->
+      <button class="hamburger" aria-label="메뉴 토글">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <!-- Mobile Navigation -->
+      <nav class="mobile-nav">
+        <a href="#" data-page="home">Home</a>
+        <a href="#" data-page="about">강사</a>
+        <a href="#" data-page="lectures">강의</a>
+        <a href="#" data-page="works">작업들</a>
+        <a href="#" data-page="contact">Contact</a>
+      </nav>
+    </header>
+
+    <!-- Header Background Layer -->
+    <div class="header-background-layer"></div>
+
+    <!-- Page Container (Dynamic Content) -->
+    <main id="page-container" class="page-wrapper">
+      <!-- Pages loaded here via JavaScript -->
+      <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #a0a0a0;">
+        <p>로딩 중...</p>
+      </div>
+    </main>
+
+    <!-- Mobile Preview Modal -->
+    <div id="mobilePreviewOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;backdrop-filter:blur(6px);align-items:center;justify-content:center;" onclick="closeMobilePreview(event)">
+      <div style="position:relative;width:375px;background:#1a1a1a;border-radius:48px;padding:16px;box-shadow:0 0 0 10px #111,0 30px 80px rgba(0,0,0,0.8);border:1px solid #333;">
+        <!-- 노치 -->
+        <div style="width:120px;height:28px;background:#111;border-radius:0 0 18px 18px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#222;"></div>
+          <div style="width:48px;height:6px;border-radius:3px;background:#222;"></div>
+        </div>
+        <!-- iframe -->
+        <iframe src="mobile-page.html" style="width:100%;height:720px;border:none;border-radius:32px;display:block;" id="mobilePreviewFrame"></iframe>
+        <!-- 홈버튼 바 -->
+        <div style="width:100px;height:4px;background:#333;border-radius:2px;margin:12px auto 0;"></div>
+      </div>
+    </div>
+
+    <!-- Modal Popup -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <button class="modal-close" aria-label="모달 닫기">&times;</button>
+        <!-- Content inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Main JavaScript -->
+  <script src="js/main.js?v=2"></script>
+  <script>
+    function openMobilePreview(e) {
+      e.preventDefault();
+      document.getElementById('mobilePreviewOverlay').style.display = 'flex';
+    }
+    function closeMobilePreview(e) {
+      if (!e || e.target === document.getElementById('mobilePreviewOverlay')) {
+        document.getElementById('mobilePreviewOverlay').style.display = 'none';
+      }
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') document.getElementById('mobilePreviewOverlay').style.display = 'none';
+    });
+  </script>
+
+  <!-- Google Analytics (optional) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+  <!-- EmailJS SDK (optional - for contact form) -->
+  <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/index.min.js"></script> -->
+
+  <!-- Scroll to top button (optional enhancement) -->
+  <script>
+    // Add scroll-to-top button dynamically if needed
+    window.addEventListener('scroll', function() {
+      const scrollButton = document.getElementById('scroll-to-top');
+      if (scrollButton) {
+        scrollButton.style.display = window.scrollY > 300 ? 'flex' : 'none';
+      }
+    });
+  </script>
+</body>
+</html>
