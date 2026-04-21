@@ -45,8 +45,8 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 15px;
+      font-weight: 700;
       color: #fff;
     }
     .hamburger {
@@ -114,7 +114,7 @@
     }
 
     .section-label {
-      font-size: 12px;
+      font-size: 14px;
       color: #aaa;
       letter-spacing: 1.2px;
       text-transform: uppercase;
@@ -124,18 +124,20 @@
     /* ===== SNS ===== */
     .sns-row {
       display: flex;
-      gap: 16px;
+      gap: 0;
       align-items: center;
       flex-wrap: nowrap;
+      justify-content: space-between;
     }
     .sns-link {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       color: #999;
       text-decoration: none;
       font-size: 12px;
       transition: color 0.2s;
+      white-space: nowrap;
     }
     .sns-link:hover { color: #c9a96e; }
     .sns-link svg {
@@ -147,7 +149,7 @@
 
     /* ===== BIO ===== */
     .bio-name {
-      font-size: 14px;
+      font-size: 18px;
       font-weight: 700;
       color: #fff;
       margin-bottom: 3px;
@@ -159,7 +161,7 @@
       line-height: 1.5;
     }
     .bio-quote {
-      font-size: 13px;
+      font-size: 14px;
       color: #ccc;
       line-height: 1.5;
       border-left: 2px solid #c9a96e;
@@ -198,7 +200,7 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      font-size: 12px;
+      font-size: 14px;
       color: #ccc;
       padding: 3px 0;
       border-bottom: 1px solid #1e1e1e;
@@ -215,13 +217,13 @@
       color: #ccc;
       border-bottom: none;
       padding: 3px 0;
-      font-size: 12px;
+      font-size: 14px;
     }
     .info-list--plain li::before {
       content: "•";
       color: #c9a96e;
       margin-right: 8px;
-      font-size: 12px;
+      font-size: 14px;
       flex-shrink: 0;
     }
 
@@ -234,7 +236,7 @@
     }
     .award-item:last-child { border-bottom: none; }
     .award-text {
-      font-size: 12px;
+      font-size: 14px;
       color: #ccc;
       line-height: 1.4;
     }
@@ -311,8 +313,8 @@
           <text x="28" y="228" font-size="14" fill="#c9a96e"
             font-family="'Poppins', 'SUITE', sans-serif" font-weight="500">생성형 AI 강사</text>
         </g>
-        <text x="47" y="21" font-size="13" fill="#c9a96e"
-          font-family="'Poppins', 'SUITE', sans-serif" font-weight="500"
+        <text x="47" y="22" font-size="14" fill="#c9a96e"
+          font-family="'Poppins', 'SUITE', sans-serif" font-weight="700"
           text-anchor="middle">AI 전문 강사</text>
       </svg>
     </div>
@@ -398,12 +400,12 @@
     <div class="section-card">
       <p class="section-label">🏆 수상 경력</p>
 
-      <div class="award-item"><span class="award-text">서울 국제 AI 영화제 금상 (2025)</span></div>
-      <div class="award-item"><span class="award-text">Hollywood AI Short Film Quarter-Finalist (2026)</span></div>
-      <div class="award-item"><span class="award-text">AI Film Awards Cannes 2026 선정</span></div>
-      <div class="award-item"><span class="award-text">AI Film Awards Las Vegas 2026 선정</span></div>
-      <div class="award-item"><span class="award-text">대한민국 AI 영화제 우수상 (2025)</span></div>
-      <div class="award-item"><span class="award-text">Best of Best Mentor Award (2024)</span></div>
+      <div class="award-item"><span class="award-text">서울 국제 AI 영화제 금상 ('25)</span></div>
+      <div class="award-item"><span class="award-text">Hollywood AI Short Film Quarter-Finalist ('26)</span></div>
+      <div class="award-item"><span class="award-text">AI Film Awards Cannes '26 선정</span></div>
+      <div class="award-item"><span class="award-text">AI Film Awards Las Vegas '26 선정</span></div>
+      <div class="award-item"><span class="award-text">대한민국 AI 영화제 우수상 ('25)</span></div>
+      <div class="award-item"><span class="award-text">Best of Best Mentor Award ('24)</span></div>
     </div>
 
   </div>
