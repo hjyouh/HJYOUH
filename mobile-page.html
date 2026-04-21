@@ -14,7 +14,7 @@
       background: #000000;
       font-family: 'Poppins', 'SUITE', sans-serif;
       overflow-y: scroll;
-      padding-bottom: 80px;
+      padding-bottom: 110px;
     }
     .header {
       display: flex;
@@ -78,12 +78,11 @@
     }
 
     .card-container {
-      padding: 0 12px;
+      padding: 0 4px;
       margin-top: 5px;
     }
     .tab-card-wrap {
       overflow: hidden;
-      max-height: calc((100vh - 149px) / 3);
     }
   </style>
 </head>
@@ -113,31 +112,31 @@
 
     <!-- 카드1: aimt 슬라이드 -->
     <div class="tab-card-wrap">
-      <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <clipPath id="cardClip1">
-            <path d="M 14 226 Q 14 238 26 238 L 334 238 Q 346 238 346 226
+            <path d="M 14 306 Q 14 318 26 318 L 334 318 Q 346 318 346 306
               L 346 20 Q 346 10 334 10 L 100 10 Q 88 10 84 19
               Q 80 28 68 28 L 26 28 Q 14 28 14 40 Z"/>
           </clipPath>
         </defs>
-        <rect width="360" height="240" fill="#000000"/>
+        <rect width="360" height="320" fill="#000000"/>
         <!-- 외부 clip g (고정) / 내부 slideTrack (이동) -->
         <g clip-path="url(#cardClip1)">
           <g id="slideTrack">
-            <image href="assets/images/main1.png"  x="0"    y="0" width="360" height="240" preserveAspectRatio="xMidYMid slice"/>
-            <image href="assets/images/main5.png"  x="360"  y="0" width="360" height="240" preserveAspectRatio="xMidYMid slice"/>
-            <image href="assets/images/main4.png"  x="720"  y="0" width="360" height="240" preserveAspectRatio="xMidYMid slice"/>
-            <image href="assets/images/main3.png"  x="1080" y="0" width="360" height="240" preserveAspectRatio="xMidYMid slice"/>
+            <image href="assets/images/main1.png"  x="0"    y="0" width="360" height="320" preserveAspectRatio="xMidYMid slice"/>
+            <image href="assets/images/main5.png"  x="360"  y="0" width="360" height="320" preserveAspectRatio="xMidYMid slice"/>
+            <image href="assets/images/main4.png"  x="720"  y="0" width="360" height="320" preserveAspectRatio="xMidYMid slice"/>
+            <image href="assets/images/main3.png"  x="1080" y="0" width="360" height="320" preserveAspectRatio="xMidYMid slice"/>
           </g>
         </g>
-        <text x="46" y="20" font-size="15" fill="#ffffff" font-family="'Poppins', 'SUITE', sans-serif" text-anchor="middle">aimt</text>
-        <text x="20"  y="128" font-size="26" fill="rgba(255,255,255,0.8)" onclick="prevSlide()" style="cursor:pointer">‹</text>
-        <text x="328" y="128" font-size="26" fill="rgba(255,255,255,0.8)" onclick="nextSlide()" style="cursor:pointer">›</text>
-        <circle id="dot0" cx="154" cy="232" r="3" fill="#ffffff"/>
-        <circle id="dot1" cx="166" cy="232" r="3" fill="#555"/>
-        <circle id="dot2" cx="178" cy="232" r="3" fill="#555"/>
-        <circle id="dot3" cx="190" cy="232" r="3" fill="#555"/>
+        <text x="46" y="20" font-size="17" fill="#ffffff" font-family="'Poppins', 'SUITE', sans-serif" text-anchor="middle">aimt</text>
+        <text x="20"  y="168" font-size="26" fill="rgba(255,255,255,0.8)" onclick="prevSlide()" style="cursor:pointer">‹</text>
+        <text x="328" y="168" font-size="26" fill="rgba(255,255,255,0.8)" onclick="nextSlide()" style="cursor:pointer">›</text>
+        <circle id="dot0" cx="154" cy="312" r="3" fill="#ffffff"/>
+        <circle id="dot1" cx="166" cy="312" r="3" fill="#555"/>
+        <circle id="dot2" cx="178" cy="312" r="3" fill="#555"/>
+        <circle id="dot3" cx="190" cy="312" r="3" fill="#555"/>
       </svg>
     </div>
 
@@ -157,7 +156,7 @@
             x="0" y="0" width="360" height="240"
             clip-path="url(#cardClip2)"
             preserveAspectRatio="xMidYMid slice"/>
-          <text x="46" y="20" font-size="15" fill="#ffffff" font-family="'Poppins', 'SUITE', sans-serif" font-weight="500" text-anchor="middle">강사</text>
+          <text x="46" y="20" font-size="17" fill="#ffffff" font-family="'Poppins', 'SUITE', sans-serif" font-weight="500" text-anchor="middle">강사</text>
           <!-- 우측 중앙 이동 화살표 -->
           <circle cx="318" cy="120" r="18" fill="rgba(0,0,0,0.45)"/>
           <text x="318" y="127" font-size="36" fill="#ffffff" font-family="sans-serif" text-anchor="middle" dominant-baseline="auto">›</text>
@@ -181,7 +180,7 @@
             x="0" y="0" width="360" height="240"
             clip-path="url(#cardClip3)"
             preserveAspectRatio="xMidYMid slice"/>
-          <text x="46" y="20" font-size="15" fill="#ffffff" font-family="'Poppins', 'SUITE', sans-serif" font-weight="500" text-anchor="middle">강의</text>
+          <text x="46" y="20" font-size="17" fill="#ffffff" font-family="'Poppins', 'SUITE', sans-serif" font-weight="500" text-anchor="middle">강의</text>
           <circle cx="318" cy="120" r="18" fill="rgba(0,0,0,0.45)"/>
           <text x="318" y="127" font-size="36" fill="#ffffff" font-family="sans-serif" text-anchor="middle" dominant-baseline="auto">›</text>
         </svg>
@@ -204,7 +203,7 @@
             x="0" y="0" width="360" height="240"
             clip-path="url(#cardClip4)"
             preserveAspectRatio="xMidYMid slice"/>
-          <text x="46" y="20" font-size="15" fill="#ffffff" font-family="'Poppins', 'SUITE', sans-serif" font-weight="500" text-anchor="middle">작업들</text>
+          <text x="46" y="20" font-size="17" fill="#ffffff" font-family="'Poppins', 'SUITE', sans-serif" font-weight="500" text-anchor="middle">작업들</text>
           <circle cx="318" cy="120" r="18" fill="rgba(0,0,0,0.45)"/>
           <text x="318" y="127" font-size="36" fill="#ffffff" font-family="sans-serif" text-anchor="middle" dominant-baseline="auto">›</text>
         </svg>
