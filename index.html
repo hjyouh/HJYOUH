@@ -20,7 +20,7 @@
       var isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
         || (navigator.maxTouchPoints > 1 && window.innerWidth <= 768);
       if (isMobile) {
-        window.location.replace('mobile-page.html');
+        window.location.replace('pages/mobile/mobile-page.html');
       }
     })();
   </script>
@@ -100,7 +100,7 @@
           <div style="width:48px;height:6px;border-radius:3px;background:#222;"></div>
         </div>
         <!-- iframe -->
-        <iframe src="mobile-page.html" style="width:100%;height:720px;border:none;border-radius:32px;display:block;" id="mobilePreviewFrame"></iframe>
+        <iframe src="pages/mobile/mobile-page.html" style="width:100%;height:720px;border:none;border-radius:32px;display:block;" id="mobilePreviewFrame"></iframe>
         <!-- 홈버튼 바 -->
         <div style="width:100px;height:4px;background:#333;border-radius:2px;margin:12px auto 0;"></div>
       </div>

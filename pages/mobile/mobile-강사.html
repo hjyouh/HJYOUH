@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>강사 소개 - 유형재</title>
+  <link rel="stylesheet" href="../../assets/css/tab-card.css?v=2">
+  <link rel="stylesheet" href="../../assets/css/fonts.css?v=2">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #000;
+      font-family: 'SUITE', 'Poppins', sans-serif;
+      color: #fff;
+      overflow-y: scroll;
+      padding-bottom: 110px;
+      max-width: 430px;
+      margin: 0 auto;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 20px;
+      background: #000;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #3a3a3a;
+    }
+    .header-back {
+      font-size: 22px;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      background: none;
+      border: none;
+      line-height: 1;
+      padding: 4px 0;
+    }
+    .header-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .hamburger {
+      font-size: 18px;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* ===== DRAWER ===== */
+    .drawer {
+      position: fixed;
+      top: 0; right: 0;
+      width: 120px;
+      height: 100%;
+      background: rgba(10,10,10,0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 999;
+      padding: 56px 20px;
+      box-sizing: border-box;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer a {
+      display: block;
+      color: #ccc;
+      text-decoration: none;
+      font-size: 14px;
+      margin-bottom: 18px;
+      font-family: 'Poppins', 'SUITE', sans-serif;
+    }
+    .drawer-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      font-size: 16px;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* ===== CARD CONTAINER (hero) ===== */
+    .card-container {
+      padding: 0 12px;
+      margin-top: 5px;
+    }
+    .tab-card-wrap {
+      overflow: hidden;
+      max-height: calc((100vh - 149px) / 3);
+    }
+
+    /* ===== CONTENT ===== */
+    .content-wrap {
+      padding: 0 12px;
+    }
+
+    .section-card {
+      background: #111;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 5px;
+    }
+
+    .section-label {
+      font-size: 14px;
+      color: #aaa;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    /* ===== SNS ===== */
+    .sns-row {
+      display: flex;
+      gap: 0;
+      align-items: center;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+    }
+    .sns-link {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #999;
+      text-decoration: none;
+      font-size: 12px;
+      transition: color 0.2s;
+      white-space: nowrap;
+    }
+    .sns-link:hover { color: #c9a96e; }
+    .sns-link svg {
+      width: 18px;
+      height: 18px;
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+
+    /* ===== BIO ===== */
+    .bio-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 3px;
+    }
+    .bio-role {
+      font-size: 12px;
+      color: #c9a96e;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .bio-quote {
+      font-size: 14px;
+      color: #ccc;
+      line-height: 1.5;
+      border-left: 2px solid #c9a96e;
+      padding-left: 12px;
+      font-weight: 300;
+    }
+
+    /* ===== STATS ===== */
+    .stats-row {
+      display: flex;
+      justify-content: space-around;
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .stat-number {
+      font-size: 20px;
+      font-weight: 700;
+      color: #c9a96e;
+      line-height: 1;
+    }
+    .stat-label-sm {
+      font-size: 11px;
+      color: #ccc;
+      white-space: nowrap;
+    }
+
+    /* ===== LIST ===== */
+    .info-list {
+      list-style: none;
+    }
+    .info-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 14px;
+      color: #ccc;
+      padding: 3px 0;
+      border-bottom: 1px solid #1e1e1e;
+    }
+    .info-list li:last-child { border-bottom: none; }
+    .info-year {
+      font-size: 11px;
+      color: #666;
+      white-space: nowrap;
+      margin-left: 8px;
+    }
+    .info-list--plain li {
+      justify-content: flex-start;
+      color: #ccc;
+      border-bottom: none;
+      padding: 3px 0;
+      font-size: 14px;
+    }
+    .info-list--plain li::before {
+      content: "•";
+      color: #c9a96e;
+      margin-right: 8px;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    /* ===== AWARDS ===== */
+    .award-item {
+      display: flex;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid #1e1e1e;
+    }
+    .award-item:last-child { border-bottom: none; }
+    .award-text {
+      font-size: 14px;
+      color: #ccc;
+      line-height: 1.4;
+    }
+    .badge {
+      flex-shrink: 0;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+    .badge-gold {
+      background: rgba(201,169,110,0.18);
+      color: #c9a96e;
+      border: 1px solid rgba(201,169,110,0.4);
+    }
+    .badge-official {
+      background: rgba(255,255,255,0.07);
+      color: #bbb;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+    .badge-award {
+      background: rgba(255,170,50,0.12);
+      color: #f0a040;
+      border: 1px solid rgba(255,170,50,0.25);
+    }
+    .badge-mentor {
+      background: rgba(100,170,255,0.1);
+      color: #80b8ff;
+      border: 1px solid rgba(100,170,255,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 헤더 -->
+  <div class="header">
+    <button class="header-back" onclick="history.back()"><img src="../../assets/images/Back-white.png" style="height:18px;vertical-align:middle;opacity:0.7;"></button>
+    <span class="header-title">강사</span>
+    <button class="hamburger" onclick="openDrawer()">☰</button>
+  </div>
+
+  <!-- 드로어 -->
+  <div class="drawer" id="drawer">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <a href="mobile-page.html">Home</a>
+    <a href="mobile-강사.html">강사</a>
+    <a href="mobile-강의.html">강의</a>
+    <a href="mobile-작업들.html">작업들</a>
+    <a href="mobile-문의.html">문의</a>
+  </div>
+
+  <!-- 히어로 카드 -->
+  <div class="card-container">
+    <div class="tab-card-wrap">
+      <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="heroClip">
+            <path d="M 14 226 Q 14 238 26 238 L 334 238 Q 346 238 346 226
+              L 346 20 Q 346 10 334 10 L 112 10 Q 100 10 96 19
+              Q 92 28 80 28 L 26 28 Q 14 28 14 40 Z"/>
+          </clipPath>
+          <linearGradient id="bottomFade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#000" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="0.72"/>
+          </linearGradient>
+        </defs>
+        <rect width="360" height="240" fill="#000"/>
+        <g clip-path="url(#heroClip)">
+          <image href="../../assets/images/instructor1.png"
+            x="0" y="0" width="360" height="240"
+            preserveAspectRatio="xMidYMid slice"/>
+          <rect x="0" y="155" width="360" height="85" fill="url(#bottomFade)"/>
+          <text x="28" y="228" font-size="14" fill="#c9a96e"
+            font-family="'SUITE', 'Poppins', sans-serif" font-weight="500">생성형 AI 강사</text>
+        </g>
+        <text x="47" y="22" font-size="15" fill="#c9a96e"
+          font-family="'SUITE', 'Poppins', sans-serif" font-weight="700"
+          text-anchor="middle">AI 전문 강사</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 콘텐츠 -->
+  <div class="content-wrap">
+
+    <!-- SNS -->
+    <div class="section-card">
+      <div class="sns-row">
+        <a href="https://www.youtube.com/@hjyouh" target="_blank" class="sns-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          Youtube 채널
+        </a>
+        <a href="https://www.youtube.com/@Korisian" target="_blank" class="sns-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          음악채널
+        </a>
+        <a href="https://www.instagram.com/hjyouhinsta/" target="_blank" class="sns-link">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+          Instagram
+        </a>
+      </div>
+    </div>
+
+    <!-- 강사 소개 -->
+    <div class="section-card">
+      <p class="section-label">강사 소개</p>
+      <p class="bio-name">유형재</p>
+      <p class="bio-role">(주)포인트넥스트 대표<br>디지털융합교육원 지도교수</p>
+      <p class="bio-quote">프랑스 IBM 기술이사부터 생성형 AI 강사, AI 영화감독까지,
+        30년 IT 현장 경험과 국제 AI 영화제 수상 경력을 바탕으로
+        누구나 쉽게 AI를 활용할 수 있도록 돕는 실무 중심 전문 강사입니다.</p>
+    </div>
+
+    <!-- 통계 -->
+    <div class="section-card">
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-number">30+</span>
+          <span class="stat-label-sm">IT 경력</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">17</span>
+          <span class="stat-label-sm">저서</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">700+</span>
+          <span class="stat-label-sm">수강생</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">130+</span>
+          <span class="stat-label-sm">강의 횟수</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 주요 경력 -->
+    <div class="section-card">
+      <p class="section-label">주요 경력</p>
+      <ul class="info-list">
+        <li><span>(주)포인트넥스트 대표이사</span><span class="info-year">2007~</span></li>
+        <li><span>디지털융합교육원 지도교수</span><span class="info-year">2024~</span></li>
+        <li><span>AI리터러시강사 협회 이사</span><span class="info-year">2025~</span></li>
+        <li><span>프랑스 IBM 본사 기술이사</span><span class="info-year">1998–2002</span></li>
+        <li><span>한국 IBM Brand Manager</span><span class="info-year">1990–2005</span></li>
+      </ul>
+    </div>
+
+    <!-- 자격증 & 저서 -->
+    <div class="section-card">
+      <p class="section-label">자격증 & 저서</p>
+      <ul class="info-list info-list--plain">
+        <li>Google Gemini 공인 교육자</li>
+        <li>생성형 AI 강사 자격 1급</li>
+        <li>프롬프트 엔지니어링 1급</li>
+        <li>저서 17권 출간</li>
+      </ul>
+    </div>
+
+    <!-- 수상 경력 -->
+    <div class="section-card">
+      <p class="section-label">🏆 수상 경력</p>
+
+      <div class="award-item"><span class="award-text">서울 국제 AI 영화제 금상 ('25)</span></div>
+      <div class="award-item"><span class="award-text">Hollywood AI Short Film Quarter-Finalist ('26)</span></div>
+      <div class="award-item"><span class="award-text">AI Film Awards Cannes '26 선정</span></div>
+      <div class="award-item"><span class="award-text">AI Film Awards Las Vegas '26 선정</span></div>
+      <div class="award-item"><span class="award-text">대한민국 AI 영화제 우수상 ('25)</span></div>
+      <div class="award-item"><span class="award-text">Best of Best Mentor Award ('24)</span></div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="mobile-footer">
+    <div class="footer-row1">
+      <a href="tel:010-3558-6960">📞 010-3558-6960</a>
+      <a href="mailto:hjyouh@naver.com">✉️ hjyouh@naver.com</a>
+    </div>
+    <div class="footer-row2">
+      <a href="https://aitalker.co.kr/hjyouh" target="_blank">
+        🌐 aitalker.co.kr/hjyouh
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    function openDrawer() { document.getElementById('drawer').classList.add('open'); }
+    function closeDrawer() { document.getElementById('drawer').classList.remove('open'); }
+  </script>
+
+</body>
+</html>
+

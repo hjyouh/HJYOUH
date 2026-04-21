@@ -14,7 +14,9 @@
       "Bash(sed -i \"s/'SUITE', 'Noto Sans KR', sans-serif/'Poppins', 'SUITE', sans-serif/g\" pages/lectures.html pages/works.html pages/contact.html)",
       "Bash(sed -i \"s/'Noto Sans KR', 'Inter', sans-serif/'Poppins', 'SUITE', sans-serif/g\" admin/index.html)",
       "Bash(sed -i \"s/font-family: 'Noto Sans KR', sans-serif;/font-family: 'Poppins', 'SUITE', sans-serif;/g\" assets/css/tab-card.css)",
-      "Bash(sed -i \"s/font-family=\\\\\"'Noto Sans KR', sans-serif\\\\\"/font-family=\\\\\"'Poppins', 'SUITE', sans-serif\\\\\"/g\" assets/tab-card.html)"
+      "Bash(sed -i \"s/font-family=\\\\\"'Noto Sans KR', sans-serif\\\\\"/font-family=\\\\\"'Poppins', 'SUITE', sans-serif\\\\\"/g\" assets/tab-card.html)",
+      "Bash(ls vercel.json)",
+      "Bash(cat .gitignore)"
     ]
   }
 }

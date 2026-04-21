@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>강의 - aimt</title>
+  <link rel="stylesheet" href="../../assets/css/tab-card.css">
+  <link rel="stylesheet" href="../../assets/css/fonts.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #000;
+      font-family: 'SUITE', 'Poppins', sans-serif;
+      color: #fff;
+      overflow-y: scroll;
+      padding-bottom: 110px;
+      max-width: 430px;
+      margin: 0 auto;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 20px;
+      background: #000;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #3a3a3a;
+    }
+    .header-back {
+      font-size: 22px;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      background: none;
+      border: none;
+      line-height: 1;
+      padding: 4px 0;
+    }
+    .header-back-label {
+      font-size: 15px;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: 'SUITE', 'Poppins', sans-serif;
+      white-space: nowrap;
+      padding: 4px 0;
+    }
+    .header-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .hamburger {
+      font-size: 18px;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* ===== DRAWER ===== */
+    .drawer {
+      position: fixed;
+      top: 0; right: 0;
+      width: 120px;
+      height: 100%;
+      background: rgba(10,10,10,0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 999;
+      padding: 56px 20px;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer a {
+      display: block;
+      color: #ccc;
+      text-decoration: none;
+      font-size: 14px;
+      margin-bottom: 6px;
+      font-family: 'Poppins', 'SUITE', sans-serif;
+    }
+    .drawer-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      font-size: 16px;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* ===== CARD CONTAINER (목록 뷰) ===== */
+    .card-container {
+      padding: 0 1px;
+      margin-top: 5px;
+    }
+
+    /* ===== TAB-CARD-WRAP override ===== */
+    .tab-card-wrap {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+    .tab-card-wrap svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ===== LECTURE CARD HTML OVERLAY ===== */
+    .lec-card-ov {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    /* SVG 자체는 클릭 투과 → HTML overlay 텍스트 devtools 접근 가능 */
+    .tab-card-wrap svg { pointer-events: none; }
+
+    /* 카테고리: 카드 테두리에서 15px, 상단 13px, 금색 + 배경 */
+    .lec-ov-cat {
+      position: absolute;
+      top: 13px;
+      left: 30px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #e8c47a;
+      background: rgba(0,0,0,0.45);
+      padding: 1px 7px;
+      border-radius: 4px;
+      text-shadow: none;
+      z-index: 2;
+      pointer-events: auto;
+    }
+    /* 더보기: 우측 탭 노치 안, 상단 */
+    .lec-ov-more {
+      position: absolute;
+      top: 6px;
+      right: 22px;
+      font-size: 13px;
+      color: #999;
+      font-weight: 400;
+      pointer-events: auto;
+      z-index: 2;
+    }
+    /* 그라데이션: 하단 끝까지 */
+    .lec-ov-gradient {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 50%;
+      background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.82) 100%);
+    }
+    /* 제목: 좌측 26px, 시간 위 바로 */
+    .lec-ov-title-inner {
+      position: absolute;
+      bottom: 30px;
+      left: 26px;
+      right: 26px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin: 0;
+      line-height: 1.3;
+      text-shadow: 0 1px 5px rgba(0,0,0,0.95);
+      z-index: 2;
+      pointer-events: auto;
+    }
+    /* 시간: 좌측 26px, 하단 15px */
+    .lec-ov-dur {
+      position: absolute;
+      bottom: 15px;
+      left: 26px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+      z-index: 2;
+      pointer-events: auto;
+    }
+
+    /* ===== 상단 고정 슬로건 ===== */
+    .lec-msg-box {
+      position: sticky;
+      top: 35px;
+      z-index: 90;
+      background: #000;
+      padding: 7px 0;
+      text-align: center;
+    }
+    .lec-msg-box p {
+      font-size: 15px;
+      color: #fff;
+      margin: 0;
+    }
+    .lec-msg-box strong { color: #c9a96e; }
+
+    /* ===== DETAIL VIEW ===== */
+    #view-detail { display: none; }
+
+    .detail-hero-wrap {
+      padding: 5px 1px 0;
+    }
+    .detail-hero-card {
+      position: relative;
+      overflow: hidden;
+    }
+    .detail-hero-card svg { width: 100%; height: auto; display: block; }
+    .detail-hero-badge {
+      position: absolute;
+      top: 5px; left: 7px;
+      background: #c9a96e;
+      color: #000;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* ===== CONTENT (상세 뷰) ===== */
+    .content-wrap { padding: 0 12px; }
+    .section-card {
+      background: #111;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 8px;
+    }
+    .section-label {
+      font-size: 14px;
+      color: #aaa;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .detail-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 5px;
+      line-height: 1.4;
+    }
+    .detail-subtitle {
+      font-size: 13px;
+      color: #c9a96e;
+      margin: 0 0 10px;
+    }
+    .detail-intro {
+      font-size: 13px;
+      color: #ccc;
+      line-height: 1.75;
+      margin: 0 0 12px;
+    }
+    .detail-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+    .meta-sep { color: rgba(255,255,255,0.25); }
+
+    /* curriculum */
+    .cur-list { list-style: none; }
+    .cur-item {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #1e1e1e;
+      align-items: flex-start;
+    }
+    .cur-item:last-child { border-bottom: none; }
+    .cur-num {
+      font-size: 10px;
+      font-weight: 700;
+      color: #c9a96e;
+      background: rgba(201,169,110,0.1);
+      border-radius: 4px;
+      padding: 2px 5px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .cur-body { flex: 1; min-width: 0; }
+    .cur-title {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+    .cur-desc {
+      display: block;
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.5;
+    }
+    .supplies-text {
+      font-size: 13px;
+      color: #ccc;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+
+<!-- =========================================
+     SCREEN 1: 강의 목록
+     ========================================= -->
+<div id="view-list">
+
+  <div class="header">
+    <button class="header-back" onclick="location.href='mobile-page.html'"><img src="../../assets/images/Back-white.png" style="height:18px;vertical-align:middle;opacity:0.7;"></button>
+    <span class="header-title">강의</span>
+    <button class="hamburger" onclick="openDrawer('drawer1')">☰</button>
+  </div>
+
+  <div class="drawer" id="drawer1">
+    <button class="drawer-close" onclick="closeDrawer('drawer1')">✕</button>
+    <a href="mobile-page.html">Home</a>
+    <a href="mobile-강사.html">강사</a>
+    <a href="mobile-강의.html">강의</a>
+    <a href="#" onclick="return false;" style="opacity:.4">작업들</a>
+    <a href="#" onclick="return false;" style="opacity:.4">문의</a>
+  </div>
+
+  <!-- 상단 고정 슬로건 -->
+  <div class="lec-msg-box" id="lec-msg-box">
+    <p>실무 중심의 <strong>생성형 AI 강의</strong></p>
+  </div>
+
+  <div class="card-container">
+
+    <!-- 카드 1: 생성형 AI 기초 -->
+    <div class="tab-card-wrap" onclick="showDetail(0)">
+      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="lc1">
+            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
+          </clipPath>
+        </defs>
+        <rect width="360" height="220" fill="#111" clip-path="url(#lc1)"/>
+        <image href="../../assets/images/main2.png"
+          x="0" y="0" width="360" height="220"
+          clip-path="url(#lc1)" preserveAspectRatio="xMidYMid slice"/>
+        <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
+        <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+          L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+          Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"
+          fill="none" stroke="rgba(150,150,150,0.7)" stroke-width="1"/>
+      </svg>
+      <div class="lec-card-ov">
+        <span class="lec-ov-cat">생성형 AI</span>
+        <span class="lec-ov-more">더보기</span>
+        <div class="lec-ov-gradient"></div>
+        <p class="lec-ov-title-inner">지금 당장 써먹는 AI 활용법</p>
+        <span class="lec-ov-dur">⏱ 3시간~</span>
+      </div>
+    </div>
+
+    <!-- 카드 2: AI 영화 제작 -->
+    <div class="tab-card-wrap" onclick="showDetail(1)">
+      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="lc2">
+            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
+          </clipPath>
+        </defs>
+        <rect width="360" height="220" fill="#111" clip-path="url(#lc2)"/>
+        <image href="../../assets/images/main5.png"
+          x="0" y="0" width="360" height="220"
+          clip-path="url(#lc2)" preserveAspectRatio="xMidYMid slice"/>
+        <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
+        <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+          L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+          Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"
+          fill="none" stroke="rgba(150,150,150,0.7)" stroke-width="1"/>
+      </svg>
+      <div class="lec-card-ov">
+        <span class="lec-ov-cat">AI 영화</span>
+        <span class="lec-ov-more">더보기</span>
+        <div class="lec-ov-gradient"></div>
+        <p class="lec-ov-title-inner">AI 영화 제작 입문</p>
+        <span class="lec-ov-dur">⏱ 6시간~</span>
+      </div>
+    </div>
+
+    <!-- 카드 3: AI 마케팅 -->
+    <div class="tab-card-wrap" onclick="showDetail(2)">
+      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="lc3">
+            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
+          </clipPath>
+        </defs>
+        <rect width="360" height="220" fill="#111" clip-path="url(#lc3)"/>
+        <image href="../../assets/images/main4.png"
+          x="0" y="0" width="360" height="220"
+          clip-path="url(#lc3)" preserveAspectRatio="xMidYMid slice"/>
+        <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
+        <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+          L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+          Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"
+          fill="none" stroke="rgba(150,150,150,0.7)" stroke-width="1"/>
+      </svg>
+      <div class="lec-card-ov">
+        <span class="lec-ov-cat">AI 마케팅</span>
+        <span class="lec-ov-more">더보기</span>
+        <div class="lec-ov-gradient"></div>
+        <p class="lec-ov-title-inner">AI 마케팅 실전</p>
+        <span class="lec-ov-dur">⏱ 3시간~</span>
+      </div>
+    </div>
+
+    <!-- 카드 4: AI 업무 혁신 -->
+    <div class="tab-card-wrap" onclick="showDetail(3)">
+      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="lc4">
+            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
+          </clipPath>
+        </defs>
+        <rect width="360" height="220" fill="#111" clip-path="url(#lc4)"/>
+        <image href="../../assets/images/lecture1.png"
+          x="0" y="0" width="360" height="220"
+          clip-path="url(#lc4)" preserveAspectRatio="xMidYMid slice"/>
+        <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
+        <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+          L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+          Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"
+          fill="none" stroke="rgba(150,150,150,0.7)" stroke-width="1"/>
+      </svg>
+      <div class="lec-card-ov">
+        <span class="lec-ov-cat">AI 업무</span>
+        <span class="lec-ov-more">더보기</span>
+        <div class="lec-ov-gradient"></div>
+        <p class="lec-ov-title-inner">실무 중심의 생성형 AI 강의</p>
+        <span class="lec-ov-dur">⏱ 3시간~</span>
+      </div>
+    </div>
+
+    <!-- 카드 5: 프롬프트 엔지니어링 -->
+    <div class="tab-card-wrap" onclick="showDetail(4)">
+      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="lc5">
+            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
+          </clipPath>
+        </defs>
+        <rect width="360" height="220" fill="#111" clip-path="url(#lc5)"/>
+        <image href="../../assets/images/main3.png"
+          x="0" y="0" width="360" height="220"
+          clip-path="url(#lc5)" preserveAspectRatio="xMidYMid slice"/>
+        <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
+        <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+          L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+          Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"
+          fill="none" stroke="rgba(150,150,150,0.7)" stroke-width="1"/>
+      </svg>
+      <div class="lec-card-ov">
+        <span class="lec-ov-cat">프롬프트</span>
+        <span class="lec-ov-more">더보기</span>
+        <div class="lec-ov-gradient"></div>
+        <p class="lec-ov-title-inner">프롬프트 엔지니어링 실전</p>
+        <span class="lec-ov-dur">⏱ 3시간~</span>
+      </div>
+    </div>
+
+    <!-- 카드 6: AI 데이터 분석 -->
+    <div class="tab-card-wrap" onclick="showDetail(5)">
+      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="lc6">
+            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
+          </clipPath>
+        </defs>
+        <rect width="360" height="220" fill="#111" clip-path="url(#lc6)"/>
+        <image href="../../assets/images/Lecture2.png"
+          x="0" y="0" width="360" height="220"
+          clip-path="url(#lc6)" preserveAspectRatio="xMidYMid slice"/>
+        <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
+        <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+          L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+          Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"
+          fill="none" stroke="rgba(150,150,150,0.7)" stroke-width="1"/>
+      </svg>
+      <div class="lec-card-ov">
+        <span class="lec-ov-cat">데이터</span>
+        <span class="lec-ov-more">더보기</span>
+        <div class="lec-ov-gradient"></div>
+        <p class="lec-ov-title-inner">AI 데이터 분석 입문</p>
+        <span class="lec-ov-dur">⏱ 3시간~</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /card-container -->
+
+  <!-- Footer -->
+  <footer class="mobile-footer">
+    <div class="footer-row1">
+      <a href="tel:010-3558-6960">📞 010-3558-6960</a>
+      <a href="mailto:hjyouh@naver.com">✉️ hjyouh@naver.com</a>
+    </div>
+    <div class="footer-row2">
+      <a href="https://aitalker.co.kr/hjyouh" target="_blank">🌐 aitalker.co.kr/hjyouh</a>
+    </div>
+  </footer>
+
+</div><!-- /view-list -->
+
+
+<!-- =========================================
+     SCREEN 2: 강의 상세
+     ========================================= -->
+<div id="view-detail">
+
+  <div class="header" id="detail-header">
+    <button class="header-back-label" onclick="showList()"><img src="../../assets/images/Back-white.png" style="height:18px;vertical-align:middle;opacity:0.7;"></button>
+    <span class="header-title" id="detail-header-title"></span>
+    <button class="hamburger" onclick="openDrawer('drawer2')">☰</button>
+  </div>
+
+  <div class="drawer" id="drawer2">
+    <button class="drawer-close" onclick="closeDrawer('drawer2')">✕</button>
+    <a href="mobile-page.html">Home</a>
+    <a href="mobile-강사.html">강사</a>
+    <a href="mobile-강의.html">강의</a>
+    <a href="#" onclick="return false;" style="opacity:.4">작업들</a>
+    <a href="#" onclick="return false;" style="opacity:.4">문의</a>
+  </div>
+
+  <!-- 히어로 SVG 카드 (비대칭) -->
+  <div class="detail-hero-wrap">
+    <div class="detail-hero-card">
+      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="detailHeroClip">
+            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
+          </clipPath>
+        </defs>
+        <rect width="360" height="220" fill="#111" clip-path="url(#detailHeroClip)"/>
+        <image id="detail-hero-img"
+          x="0" y="0" width="360" height="220"
+          clip-path="url(#detailHeroClip)"
+          preserveAspectRatio="xMidYMid slice"
+          href=""/>
+        <!-- 하단 그라데이션 -->
+        <defs>
+          <linearGradient id="heroGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="50%" stop-color="#000" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="0.6"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="360" height="220"
+          fill="url(#heroGrad)" clip-path="url(#detailHeroClip)"/>
+      </svg>
+      <span class="detail-hero-badge" id="detail-cat-badge"></span>
+    </div>
+  </div>
+
+  <!-- 강의 정보 카드 -->
+  <div class="content-wrap">
+
+    <div class="section-card">
+      <p class="detail-title" id="detail-title"></p>
+      <p class="detail-subtitle" id="detail-subtitle"></p>
+      <p class="detail-intro" id="detail-intro"></p>
+      <div class="detail-meta">
+        <span id="detail-dur"></span>
+        <span class="meta-sep">·</span>
+        <span id="detail-format"></span>
+      </div>
+    </div>
+
+    <!-- 커리큘럼 -->
+    <div class="section-card">
+      <p class="section-label">커리큘럼</p>
+      <ul class="cur-list" id="detail-cur"></ul>
+    </div>
+
+    <!-- 준비물 -->
+    <div class="section-card">
+      <p class="section-label">준비물</p>
+      <p class="supplies-text" id="detail-supplies"></p>
+    </div>
+
+  </div><!-- /content-wrap -->
+
+  <!-- Footer -->
+  <footer class="mobile-footer">
+    <div class="footer-row1">
+      <a href="tel:010-3558-6960">📞 010-3558-6960</a>
+      <a href="mailto:hjyouh@naver.com">✉️ hjyouh@naver.com</a>
+    </div>
+    <div class="footer-row2">
+      <a href="https://aitalker.co.kr/hjyouh" target="_blank">🌐 aitalker.co.kr/hjyouh</a>
+    </div>
+  </footer>
+
+</div><!-- /view-detail -->
+
+
+<script>
+  /* ===== 강의 데이터 ===== */
+  const LECTURES = [
+    {
+      category: '생성형 AI 기초',
+      title: '지금 당장 써먹는 AI 활용법',
+      subtitle: '생성형 AI 첫걸음',
+      duration: '3시간~',
+      format: '현장 / 온라인',
+      image: 'assets/images/main2.png',
+      intro: 'ChatGPT, Gemini, Claude 등 주요 생성형 AI 도구를 처음 접하는 분들을 위한 실전 입문 강의입니다. 복잡한 이론 없이, 오늘 당장 업무와 일상에서 바로 쓸 수 있는 AI 활용법을 배웁니다. 텍스트 생성부터 이미지 제작, 문서 요약까지 AI의 핵심 기능을 체험하고, 나만의 활용 루틴을 만들어갑니다.',
+      curriculum: [
+        { title: '생성형 AI 이해', desc: 'ChatGPT·Gemini·Claude 비교와 선택법' },
+        { title: '첫 프롬프트 작성', desc: '좋은 질문이 좋은 답을 만든다' },
+        { title: '텍스트 업무 활용', desc: '보고서·이메일·기획서 자동 생성' },
+        { title: '이미지 생성 체험', desc: 'Canva AI·ImageFX로 시각 자료 만들기' },
+        { title: '문서 요약·번역', desc: '긴 문서를 30초 만에 핵심 정리' },
+        { title: 'AI 루틴 만들기', desc: '일상·업무에 AI 습관 정착시키기' }
+      ],
+      supplies: '개인 노트북, Gmail 계정 / 비번'
+    },
+    {
+      category: 'AI 영화 제작',
+      title: 'AI 영화 제작 입문',
+      subtitle: '아이디어 하나로 단편영화 완성하기',
+      duration: '6시간~',
+      format: '현장 / 온라인',
+      image: 'assets/images/main5.png',
+      intro: '카메라도, 배우도, 제작비도 없이 AI 도구만으로 단편영화를 완성하는 실전 강의입니다. 국제 AI 영화제 금상 수상 감독의 노하우로, 아이디어 발굴부터 시나리오·이미지·영상·음악·편집까지 전 과정을 직접 만들어봅니다.',
+      curriculum: [
+        { title: 'AI 영화 제작 개요', desc: '워크플로우와 필수 도구 소개' },
+        { title: '시나리오 & 스토리보드', desc: 'ChatGPT로 이야기 구조 만들기' },
+        { title: 'AI 이미지 생성', desc: 'Midjourney·FLUX로 장면 구현' },
+        { title: 'AI 영상 생성', desc: 'Kling·Hailuo로 이미지를 영상으로' },
+        { title: 'AI 음성 & 음악', desc: 'ElevenLabs·Suno AI 활용법' },
+        { title: '영상 편집 완성', desc: 'CapCut으로 최종 영화 편집' },
+        { title: '영화제 출품 가이드', desc: 'FilmFreeway 실전 등록법' }
+      ],
+      supplies: '개인 노트북, Gmail 계정 / 비번'
+    },
+    {
+      category: 'AI 마케팅',
+      title: 'AI 마케팅 실전',
+      subtitle: '소상공인을 위한 SNS 콘텐츠 자동화',
+      duration: '3시간~',
+      format: '현장 / 온라인',
+      image: 'assets/images/main4.png',
+      intro: '직원 없이 혼자 운영하는 소상공인·1인 브랜드를 위한 AI 마케팅 강의입니다. SNS 게시물 작성, 홍보 이미지 제작, 광고 카피 생성까지 AI로 반자동화하는 실전 방법을 배웁니다.',
+      curriculum: [
+        { title: 'AI 마케팅 이해', desc: '소상공인에게 꼭 필요한 AI 도구 3가지' },
+        { title: 'SNS 카피 생성', desc: '인스타그램·블로그 포스팅 자동 작성' },
+        { title: 'AI 이미지 제작', desc: 'Canva AI로 홍보물·썸네일 빠르게 제작' },
+        { title: '광고 카피 전략', desc: '클릭률 높이는 프롬프트 공식' },
+        { title: '콘텐츠 캘린더', desc: '한 달치 SNS 계획을 30분에 완성' },
+        { title: '실전 워크숍', desc: '내 가게·브랜드 콘텐츠 직접 제작' }
+      ],
+      supplies: '개인 노트북, Gmail 계정 / 비번'
+    },
+    {
+      category: 'AI 업무 혁신',
+      title: '실무 중심의 생성형 AI 강의',
+      subtitle: '직무별 AI 프롬프트 실전 활용법',
+      duration: '3시간~',
+      format: '현장 / 온라인',
+      image: 'assets/images/lecture1.png',
+      intro: '기획자·마케터·교육담당자·HR 등 직무별로 가장 많이 쓰는 업무 유형에 맞춘 AI 프롬프트 실전 강의입니다. 직무별 맞춤 프롬프트 템플릿과 실습으로, 반복 업무 시간을 획기적으로 줄이는 방법을 배웁니다.',
+      curriculum: [
+        { title: '프롬프트 원리', desc: 'AI가 잘 이해하는 질문의 구조' },
+        { title: '기획·보고서 업무', desc: '기획서·회의록·요약 보고서 자동화' },
+        { title: '마케팅·콘텐츠', desc: '카피·제안서·홍보물 프롬프트' },
+        { title: '교육·HR 업무', desc: '강의안·평가문항·채용공고 생성' },
+        { title: '이메일·커뮤니케이션', desc: '상황별 이메일·메시지 자동 작성' },
+        { title: '나만의 프롬프트 북', desc: '직무별 템플릿 정리 & 실전 적용' }
+      ],
+      supplies: '개인 노트북, Gmail 계정 / 비번'
+    },
+    {
+      category: '프롬프트 엔지니어링',
+      title: '프롬프트 엔지니어링 실전',
+      subtitle: '프롬프트 엔지니어링 기초 & 심화',
+      duration: '3시간~',
+      format: '현장 / 온라인',
+      image: 'assets/images/main3.png',
+      intro: '단순한 AI 사용법을 넘어, AI와 제대로 소통하는 방법을 배우는 강의입니다. POMCEO 프레임워크(Persona, Objective, Mission, Context, Example, Output)를 중심으로 체계적인 프롬프트 설계 방법을 실습합니다.',
+      curriculum: [
+        { title: '프롬프트 엔지니어링 개요', desc: 'AI 시대의 핵심 역량' },
+        { title: 'POMCEO 프레임워크', desc: '체계적 프롬프트 설계 방법론' },
+        { title: '역할 부여 & 페르소나', desc: 'AI에게 전문가 역할 시키기' },
+        { title: 'Context & 예시 활용', desc: '맥락과 예시로 정확도 높이기' },
+        { title: '출력 형식 제어', desc: '표·리스트·보고서 포맷 지정하기' },
+        { title: '심화 실습', desc: '복잡한 업무 자동화 프롬프트 작성' }
+      ],
+      supplies: '개인 노트북, Gmail 계정 / 비번'
+    },
+    {
+      category: 'AI 데이터 분석',
+      title: 'AI 데이터 분석 입문',
+      subtitle: '비전공자도 가능한 업무 자동화',
+      duration: '3시간~',
+      format: '현장 / 온라인',
+      image: 'assets/images/Lecture2.png',
+      intro: '코딩 지식 없이 AI를 활용해 데이터를 분석하고 업무를 자동화하는 실전 강의입니다. ChatGPT와 Google Sheets AI 기능을 활용하여 매출 분석, 고객 분류, 자동 보고서 생성까지 비전공자도 쉽게 따라할 수 있습니다.',
+      curriculum: [
+        { title: 'AI 데이터 분석 개요', desc: '비전공자를 위한 데이터 분석 개념' },
+        { title: 'ChatGPT로 데이터 해석', desc: '엑셀·CSV 파일을 AI로 분석하기' },
+        { title: 'Google Sheets AI', desc: '수식 자동 생성 & 데이터 정리' },
+        { title: '시각화 차트 생성', desc: 'AI로 인사이트 차트 자동 생성' },
+        { title: '자동화 보고서', desc: '반복 데이터 보고서 AI 자동화' },
+        { title: '실전 워크숍', desc: '내 업무 데이터 직접 분석해보기' }
+      ],
+      supplies: '개인 노트북, Gmail 계정 / 비번'
+    }
+  ];
+
+  /* ===== 화면 전환 ===== */
+  function showDetail(idx) {
+    const lec = LECTURES[idx];
+    if (!lec) return;
+
+    // 헤더
+    document.getElementById('detail-header-title').textContent = lec.title;
+
+    // 히어로 이미지
+    document.getElementById('detail-hero-img').setAttribute('href', lec.image);
+
+    // 카테고리 뱃지
+    document.getElementById('detail-cat-badge').textContent = lec.category;
+
+    // 강의 정보
+    document.getElementById('detail-title').textContent = lec.title;
+    document.getElementById('detail-subtitle').textContent = lec.subtitle;
+    document.getElementById('detail-intro').textContent = lec.intro;
+    document.getElementById('detail-dur').textContent = '⏱ ' + lec.duration;
+    document.getElementById('detail-format').textContent = lec.format;
+
+    // 커리큘럼
+    document.getElementById('detail-cur').innerHTML = lec.curriculum
+      .map((c, i) => `
+        <li class="cur-item">
+          <span class="cur-num">${String(i + 1).padStart(2, '0')}</span>
+          <span class="cur-body">
+            <span class="cur-title">${c.title}</span>
+            <span class="cur-desc">${c.desc}</span>
+          </span>
+        </li>
+      `).join('');
+
+    // 준비물
+    document.getElementById('detail-supplies').textContent = '💻 ' + lec.supplies;
+
+    // 화면 전환
+    document.getElementById('view-list').style.display = 'none';
+    document.getElementById('lec-msg-box').style.display = 'none';
+    document.getElementById('view-detail').style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+
+  function showList() {
+    document.getElementById('view-detail').style.display = 'none';
+    document.getElementById('view-list').style.display = 'block';
+    document.getElementById('lec-msg-box').style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+
+  /* ===== 드로어 ===== */
+  function openDrawer(id) {
+    document.getElementById(id).classList.add('open');
+  }
+  function closeDrawer(id) {
+    document.getElementById(id).classList.remove('open');
+  }
+
+  /* ===== 스크롤바 ===== */
+  let scrollTimer;
+  document.addEventListener('scroll', function () {
+    document.body.classList.add('is-scrolling');
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(function () {
+      document.body.classList.remove('is-scrolling');
+    }, 800);
+  });
+</script>
+
+</body>
+</html>
+
