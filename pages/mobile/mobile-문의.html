@@ -106,35 +106,27 @@
     .msg-box-title {
       font-size: 16px;
       font-weight: 700;
-      color: #fff;
+      color: #c9a96e;
       margin-bottom: 8px;
+      text-align: center;
     }
     .msg-box-sub {
-      font-size: 13px;
+      font-size: 14px;
       color: #a0a0a0;
       line-height: 1.65;
+      text-align: center;
     }
 
     /* ===== FORM ===== */
     .form-group {
-      margin-bottom: 14px;
-    }
-    .form-label {
-      font-size: 12px;
-      color: #a0a0a0;
-      margin-bottom: 6px;
-      display: block;
-    }
-    .form-label .req {
-      color: #c9a96e;
-      margin-left: 2px;
+      margin-bottom: 10px;
     }
     .form-input {
       width: 100%;
       background: #1a1a1a;
       border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      padding: 12px 16px;
+      border-radius: 50px;
+      padding: 10px 20px;
       color: #fff;
       font-size: 14px;
       font-family: 'Noto Sans KR', sans-serif;
@@ -146,11 +138,13 @@
       border-color: rgba(201,169,110,0.5);
     }
     .form-input::placeholder {
-      color: rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.3);
     }
     textarea.form-input {
-      height: 150px;
+      height: 140px;
       resize: none;
+      border-radius: 20px;
+      padding: 12px 20px;
     }
 
     .submit-btn {
@@ -158,13 +152,13 @@
       background: #c9a96e;
       color: #000;
       border: none;
-      border-radius: 8px;
-      padding: 16px;
+      border-radius: 50px;
+      padding: 12px 16px;
       font-size: 15px;
       font-weight: 700;
       font-family: 'Noto Sans KR', sans-serif;
       cursor: pointer;
-      margin-top: 8px;
+      margin-top: 4px;
       transition: background 0.2s;
     }
     .submit-btn:active { background: #b8935c; }
@@ -269,20 +263,16 @@
     <!-- 입력 폼 -->
     <form id="contactForm" onsubmit="return false;">
       <div class="form-group">
-        <label class="form-label">이름<span class="req">*</span></label>
-        <input class="form-input" type="text" id="inp-name" placeholder="이름을 입력하세요">
+        <input class="form-input" type="text" id="inp-name" placeholder="이름 *">
       </div>
       <div class="form-group">
-        <label class="form-label">이메일<span class="req">*</span></label>
-        <input class="form-input" type="email" id="inp-email" placeholder="이메일을 입력하세요">
+        <input class="form-input" type="email" id="inp-email" placeholder="이메일 *">
       </div>
       <div class="form-group">
-        <label class="form-label">연락처<span class="req">*</span></label>
-        <input class="form-input" type="tel" id="inp-phone" placeholder="연락처를 입력하세요">
+        <input class="form-input" type="tel" id="inp-phone" placeholder="연락처 *">
       </div>
       <div class="form-group">
-        <label class="form-label">문의내용<span class="req">*</span></label>
-        <textarea class="form-input" id="inp-message" placeholder="문의 내용을 입력하세요"></textarea>
+        <textarea class="form-input" id="inp-message" placeholder="문의 내용 *"></textarea>
       </div>
       <button class="submit-btn" type="button" onclick="openPopup()">문의 발송</button>
     </form>
