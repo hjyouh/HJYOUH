@@ -301,22 +301,25 @@ nav.mobile-nav a {
 }
 
 .message-box-text {
-  font-size: 16px;
+  font-size: 20px;
   line-height: 1.6;
   margin-bottom: var(--spacing-md);
   color: var(--text-primary);
+  text-align: center;
 }
 
 .message-box-sub {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.6;
   color: rgba(255,255,255,0.65);
   margin-top: 6px;
+  text-align: center;
 }
 
 .message-box-rating {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--spacing-sm);
   font-size: 14px;
   color: var(--text-secondary);
@@ -652,7 +655,7 @@ footer {
   }
 
   .message-box-text {
-    font-size: 14px;
+    font-size: 18px;
   }
 }
 
@@ -729,7 +732,7 @@ footer {
   }
 
   .message-box-text {
-    font-size: 13px;
+    font-size: 16px;
   }
 
   .container {

@@ -94,11 +94,23 @@
       border: none;
     }
 
+    /* ===== STICKY TOP AREA (메시지 + 탭) ===== */
+    .sticky-top-area {
+      position: sticky;
+      top: 42px;
+      z-index: 90;
+      background: #000;
+    }
+    .sticky-msg {
+      text-align: center;
+      padding: 10px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
     /* ===== CATEGORY TABS ===== */
     .tab-bar {
-      position: sticky;
-      top: 37px;
-      z-index: 90;
       background: #000;
       display: flex;
       padding: 6px 16px 8px;
@@ -352,14 +364,14 @@
     <a href="#" onclick="return false;" style="opacity:.4">문의</a>
   </div>
 
-  <!-- 상단 메시지 -->
-  <div style="text-align:center;padding:10px 16px;font-size:15px;font-weight:700;color:#fff;background:#000;">AI 영화, 세계를 만나다</div>
-
-  <!-- 카테고리 탭 -->
-  <div class="tab-bar">
-    <div class="tab-segmented">
-      <button class="tab-btn active-film" id="tab-film" onclick="switchTab('film')">AI영화</button>
-      <button class="tab-btn" id="tab-book" onclick="switchTab('book')">도서</button>
+  <!-- 상단 고정 영역: 메시지 + 탭 -->
+  <div class="sticky-top-area">
+    <div class="sticky-msg">AI 영화, 세계를 만나다</div>
+    <div class="tab-bar">
+      <div class="tab-segmented">
+        <button class="tab-btn active-film" id="tab-film" onclick="switchTab('film')">AI영화</button>
+        <button class="tab-btn" id="tab-book" onclick="switchTab('book')">도서</button>
+      </div>
     </div>
   </div>
 
