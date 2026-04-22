@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>문의 - aimt</title>
+  <link rel="stylesheet" href="../../assets/css/tab-card.css">
+  <link rel="stylesheet" href="../../assets/css/fonts.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #000;
+      font-family: 'Noto Sans KR', 'SUITE', 'Poppins', sans-serif;
+      color: #fff;
+      overflow-y: scroll;
+      padding-bottom: 110px;
+      max-width: 430px;
+      margin: 0 auto;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 20px;
+      background: #000;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #3a3a3a;
+    }
+    .header-back {
+      cursor: pointer;
+      background: none;
+      border: none;
+      line-height: 1;
+      padding: 4px 0;
+    }
+    .header-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .hamburger {
+      font-size: 18px;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* ===== DRAWER ===== */
+    .drawer {
+      position: fixed;
+      top: 0; right: 0;
+      width: 160px;
+      height: 100%;
+      background: rgba(10,10,10,0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 999;
+      padding: 56px 20px;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer a {
+      display: block;
+      color: #ccc;
+      text-decoration: none;
+      font-size: 20px;
+      margin-bottom: 18px;
+      font-family: 'Poppins', 'Noto Sans KR', sans-serif;
+    }
+    .drawer-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      font-size: 16px;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* ===== CONTENT ===== */
+    .content {
+      padding: 16px;
+    }
+
+    /* ===== MESSAGE BOX ===== */
+    .msg-box {
+      background: #111;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .msg-box-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .msg-box-sub {
+      font-size: 13px;
+      color: #a0a0a0;
+      line-height: 1.65;
+    }
+
+    /* ===== FORM ===== */
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-label {
+      font-size: 12px;
+      color: #a0a0a0;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .form-label .req {
+      color: #c9a96e;
+      margin-left: 2px;
+    }
+    .form-input {
+      width: 100%;
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Noto Sans KR', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-input:focus {
+      border-color: rgba(201,169,110,0.5);
+    }
+    .form-input::placeholder {
+      color: rgba(255,255,255,0.25);
+    }
+    textarea.form-input {
+      height: 150px;
+      resize: none;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: #c9a96e;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .submit-btn:active { background: #b8935c; }
+
+    /* ===== CONFIRM POPUP ===== */
+    .popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .popup-overlay.visible { display: flex; }
+    .popup-box {
+      background: #1a1a1a;
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 360px;
+    }
+    .popup-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .popup-desc {
+      font-size: 13px;
+      color: #a0a0a0;
+      margin-bottom: 16px;
+      line-height: 1.55;
+    }
+    .popup-error {
+      font-size: 12px;
+      color: #e05555;
+      margin-top: 8px;
+      display: none;
+    }
+    .popup-btns {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .popup-btn-cancel {
+      flex: 1;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      color: #fff;
+      padding: 12px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .popup-btn-confirm {
+      flex: 2;
+      background: #c9a96e;
+      border: none;
+      border-radius: 8px;
+      color: #000;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <button class="header-back" onclick="location.href='mobile-page.html'">
+      <img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;">
+    </button>
+    <span class="header-title">문의</span>
+    <button class="hamburger" onclick="openDrawer()">☰</button>
+  </div>
+
+  <!-- DRAWER -->
+  <div class="drawer" id="drawer">
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    <a href="mobile-page.html">Home</a>
+    <a href="mobile-강사.html">강사</a>
+    <a href="mobile-강의.html">강의</a>
+    <a href="mobile-작업들.html">작업들</a>
+    <a href="mobile-문의.html" style="color:#c9a96e;">문의</a>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- 메시지 박스 -->
+    <div class="msg-box">
+      <div class="msg-box-title">함께 시작해요</div>
+      <div class="msg-box-sub">강의 문의, 업무 제안 모두 환영합니다.<br>24시간 이내에 답변 드리겠습니다.</div>
+    </div>
+
+    <!-- 입력 폼 -->
+    <form id="contactForm" onsubmit="return false;">
+      <div class="form-group">
+        <label class="form-label">이름<span class="req">*</span></label>
+        <input class="form-input" type="text" id="inp-name" placeholder="이름을 입력하세요">
+      </div>
+      <div class="form-group">
+        <label class="form-label">이메일<span class="req">*</span></label>
+        <input class="form-input" type="email" id="inp-email" placeholder="이메일을 입력하세요">
+      </div>
+      <div class="form-group">
+        <label class="form-label">연락처<span class="req">*</span></label>
+        <input class="form-input" type="tel" id="inp-phone" placeholder="연락처를 입력하세요">
+      </div>
+      <div class="form-group">
+        <label class="form-label">문의내용<span class="req">*</span></label>
+        <textarea class="form-input" id="inp-message" placeholder="문의 내용을 입력하세요"></textarea>
+      </div>
+      <button class="submit-btn" type="button" onclick="openPopup()">문의 발송</button>
+    </form>
+
+  </div>
+
+  <!-- 확인 팝업 -->
+  <div class="popup-overlay" id="confirmPopup">
+    <div class="popup-box">
+      <div class="popup-title">본인 확인</div>
+      <div class="popup-desc">스팸 방지를 위해 연락처를 한 번 더 입력해주세요</div>
+      <input class="form-input" type="tel" id="inp-phone-confirm" placeholder="연락처를 다시 입력하세요">
+      <div class="popup-error" id="phoneError">연락처가 일치하지 않습니다</div>
+      <div class="popup-btns">
+        <button class="popup-btn-cancel" onclick="closePopup()">취소</button>
+        <button class="popup-btn-confirm" onclick="submitForm()">확인 및 발송</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="mobile-footer">
+    <div class="footer-row1">
+      <a href="tel:010-3558-6960">📞 010-3558-6960</a>
+      <a href="mailto:hjyouh@naver.com">✉️ hjyouh@naver.com</a>
+    </div>
+    <div class="footer-row2">
+      <a href="https://aitalker.co.kr/hjyouh" target="_blank">🌐 aitalker.co.kr/hjyouh</a>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    // ===== EmailJS 초기화 =====
+    emailjs.init('YOUR_PUBLIC_KEY');
+
+    // ===== 드로어 =====
+    function openDrawer() { document.getElementById('drawer').classList.add('open'); }
+    function closeDrawer() { document.getElementById('drawer').classList.remove('open'); }
+
+    // ===== 팝업 =====
+    function openPopup() {
+      const name    = document.getElementById('inp-name').value.trim();
+      const email   = document.getElementById('inp-email').value.trim();
+      const phone   = document.getElementById('inp-phone').value.trim();
+      const message = document.getElementById('inp-message').value.trim();
+
+      if (!name || !email || !phone || !message) {
+        alert('모든 항목을 입력해주세요.');
+        return;
+      }
+      document.getElementById('inp-phone-confirm').value = '';
+      document.getElementById('phoneError').style.display = 'none';
+      document.getElementById('confirmPopup').classList.add('visible');
+    }
+
+    function closePopup() {
+      document.getElementById('confirmPopup').classList.remove('visible');
+    }
+
+    // 팝업 바깥 클릭 시 닫기
+    document.getElementById('confirmPopup').addEventListener('click', function(e) {
+      if (e.target === this) closePopup();
+    });
+
+    // ===== 발송 =====
+    function submitForm() {
+      const phone        = document.getElementById('inp-phone').value.trim();
+      const phoneConfirm = document.getElementById('inp-phone-confirm').value.trim();
+      const errorEl      = document.getElementById('phoneError');
+
+      if (phone !== phoneConfirm) {
+        errorEl.style.display = 'block';
+        return;
+      }
+      errorEl.style.display = 'none';
+
+      const params = {
+        from_name:  document.getElementById('inp-name').value.trim(),
+        from_email: document.getElementById('inp-email').value.trim(),
+        from_phone: phone,
+        message:    document.getElementById('inp-message').value.trim(),
+      };
+
+      emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', params)
+        .then(() => {
+          closePopup();
+          alert('문의가 접수되었습니다. 24시간 이내 답변 드리겠습니다.');
+          document.getElementById('contactForm').reset();
+        })
+        .catch(() => {
+          closePopup();
+          alert('발송에 실패했습니다. hjyouh@naver.com으로 직접 연락해주세요.');
+        });
+    }
+
+    // ===== 스크롤바 =====
+    let scrollTimer;
+    document.addEventListener('scroll', function() {
+      document.body.classList.add('is-scrolling');
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => document.body.classList.remove('is-scrolling'), 800);
+    });
+  </script>
+
+</body>
+</html>

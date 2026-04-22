@@ -20,54 +20,28 @@
     <!-- Content -->
     <div class="con-panel-content">
       <div class="con-header">
-        <h1>Contact</h1>
-        <p>강의 문의 및 협업 제안</p>
+        <h1>강의 문의</h1>
+        <p>강의 문의 및 업무 제안</p>
       </div>
 
       <div class="con-divider"></div>
 
-      <ul class="con-info-list">
-        <li>
-          <span class="con-icon">📞</span>
-          <div class="con-body">
-            <span class="con-label">전화</span>
-            <a href="tel:01035586960" class="con-value">010-3558-6960</a>
-          </div>
-        </li>
-        <li>
-          <span class="con-icon">✉️</span>
-          <div class="con-body">
-            <span class="con-label">이메일</span>
-            <a href="mailto:hjyouh@naver.com" class="con-value">hjyouh@naver.com</a>
-          </div>
-        </li>
-        <li>
-          <span class="con-icon">🏢</span>
-          <div class="con-body">
-            <span class="con-label">회사</span>
-            <span class="con-value">(주)포인트넥스트 대표이사</span>
-          </div>
-        </li>
-        <li>
-          <span class="con-icon">📍</span>
-          <div class="con-body">
-            <span class="con-label">주소</span>
-            <span class="con-value">서울 서초구 강남대로 53길 8, 8-25호</span>
-          </div>
-        </li>
-        <li>
-          <span class="con-icon">🌐</span>
-          <div class="con-body">
-            <span class="con-label">웹사이트</span>
-            <a href="https://aitalker.co.kr/hjyouh/" target="_blank" class="con-value">aitalker.co.kr/hjyouh</a>
-          </div>
-        </li>
-      </ul>
-
-      <div class="con-reply-notice">
-        <span>⏱</span>
-        <span>24시간 이내에 답변 드리겠습니다</span>
-      </div>
+      <!-- 입력 폼 -->
+      <form id="conForm" onsubmit="return false;" class="con-form">
+        <div class="con-form-group">
+          <input class="con-input" type="text" id="con-name" placeholder="이름 *">
+        </div>
+        <div class="con-form-group">
+          <input class="con-input" type="email" id="con-email" placeholder="이메일 *">
+        </div>
+        <div class="con-form-group">
+          <input class="con-input" type="tel" id="con-phone" placeholder="연락처 *">
+        </div>
+        <div class="con-form-group">
+          <textarea class="con-input con-textarea" id="con-message" placeholder="문의 내용 *"></textarea>
+        </div>
+        <button class="con-submit-btn" type="button" onclick="openConPopup()">문의 발송</button>
+      </form>
     </div>
 
     <!-- Fixed Footer (같은 위치, 강의 페이지와 동일) -->
@@ -327,6 +301,121 @@
     transform: translateY(-1px);
   }
 
+  /* ===== FORM ===== */
+  .con-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1 1 0;
+  }
+  .con-form-group { width: 100%; }
+  .con-input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #fff;
+    font-size: 14px;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+  }
+  .con-input:focus { border-color: rgba(201,169,110,0.5); }
+  .con-input::placeholder { color: rgba(255,255,255,0.3); }
+  textarea.con-textarea {
+    height: 120px;
+    resize: none;
+  }
+  .con-submit-btn {
+    width: 100%;
+    background: #c9a96e;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .con-submit-btn:hover { background: #d4b87a; }
+
+  /* ===== POPUP ===== */
+  .con-popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 9000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .con-popup-overlay.visible { display: flex; }
+  .con-popup-box {
+    background: #1a1a1a;
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 380px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .con-popup-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+  }
+  .con-popup-desc {
+    font-size: 13px;
+    color: #a0a0a0;
+    margin-bottom: 14px;
+    line-height: 1.55;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+  }
+  .con-popup-error {
+    font-size: 12px;
+    color: #e05555;
+    margin-top: 8px;
+    display: none;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+  }
+  .con-popup-btns {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .con-popup-cancel {
+    flex: 1;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    color: #fff;
+    padding: 12px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+  }
+  .con-popup-confirm {
+    flex: 2;
+    background: #c9a96e;
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+  }
+
   /* ===== RESPONSIVE ===== */
   @media (max-width: 767px) {
     .con-section { flex-direction: column; }
@@ -336,9 +425,73 @@
   }
 </style>
 
+<!-- 확인 팝업 -->
+<div class="con-popup-overlay" id="conConfirmPopup">
+  <div class="con-popup-box">
+    <div class="con-popup-title">본인 확인</div>
+    <div class="con-popup-desc">스팸 방지를 위해 연락처를 한 번 더 입력해주세요</div>
+    <input class="con-input" type="tel" id="con-phone-confirm" placeholder="연락처를 다시 입력하세요">
+    <div class="con-popup-error" id="conPhoneError">연락처가 일치하지 않습니다</div>
+    <div class="con-popup-btns">
+      <button class="con-popup-cancel" onclick="closeConPopup()">취소</button>
+      <button class="con-popup-confirm" onclick="submitConForm()">확인 및 발송</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>
-  function initContactPage() {
-    console.log('Contact page loaded');
-  }
-  initContactPage();
+  (function() {
+    emailjs.init('YOUR_PUBLIC_KEY');
+
+    window.openConPopup = function() {
+      const name    = document.getElementById('con-name').value.trim();
+      const email   = document.getElementById('con-email').value.trim();
+      const phone   = document.getElementById('con-phone').value.trim();
+      const message = document.getElementById('con-message').value.trim();
+      if (!name || !email || !phone || !message) {
+        alert('모든 항목을 입력해주세요.');
+        return;
+      }
+      document.getElementById('con-phone-confirm').value = '';
+      document.getElementById('conPhoneError').style.display = 'none';
+      document.getElementById('conConfirmPopup').classList.add('visible');
+    };
+
+    window.closeConPopup = function() {
+      document.getElementById('conConfirmPopup').classList.remove('visible');
+    };
+
+    document.getElementById('conConfirmPopup').addEventListener('click', function(e) {
+      if (e.target === this) closeConPopup();
+    });
+
+    window.submitConForm = function() {
+      const phone        = document.getElementById('con-phone').value.trim();
+      const phoneConfirm = document.getElementById('con-phone-confirm').value.trim();
+      const errorEl      = document.getElementById('conPhoneError');
+
+      if (phone !== phoneConfirm) {
+        errorEl.style.display = 'block';
+        return;
+      }
+      errorEl.style.display = 'none';
+
+      emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
+        from_name:  document.getElementById('con-name').value.trim(),
+        from_email: document.getElementById('con-email').value.trim(),
+        from_phone: phone,
+        message:    document.getElementById('con-message').value.trim(),
+      })
+      .then(() => {
+        closeConPopup();
+        alert('문의가 접수되었습니다. 24시간 이내 답변 드리겠습니다.');
+        document.getElementById('conForm').reset();
+      })
+      .catch(() => {
+        closeConPopup();
+        alert('발송에 실패했습니다. hjyouh@naver.com으로 직접 연락해주세요.');
+      });
+    };
+  })();
 </script>
