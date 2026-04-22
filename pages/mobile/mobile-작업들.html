@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>작업들 - aimt</title>
+  <link rel="stylesheet" href="../../assets/css/tab-card.css">
+  <link rel="stylesheet" href="../../assets/css/fonts.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #000;
+      font-family: 'Noto Sans KR', 'SUITE', 'Poppins', sans-serif;
+      color: #fff;
+      overflow-y: scroll;
+      padding-bottom: 110px;
+      max-width: 430px;
+      margin: 0 auto;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 20px;
+      background: #000;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #3a3a3a;
+    }
+    .header-back {
+      font-size: 22px;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      background: none;
+      border: none;
+      line-height: 1;
+      padding: 4px 0;
+    }
+    .header-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .hamburger {
+      font-size: 18px;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* ===== DRAWER ===== */
+    .drawer {
+      position: fixed;
+      top: 0; right: 0;
+      width: 120px;
+      height: 100%;
+      background: rgba(10,10,10,0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 999;
+      padding: 56px 20px;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer a {
+      display: block;
+      color: #ccc;
+      text-decoration: none;
+      font-size: 14px;
+      margin-bottom: 6px;
+      font-family: 'Poppins', 'Noto Sans KR', sans-serif;
+    }
+    .drawer-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      font-size: 16px;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* ===== CATEGORY TABS ===== */
+    .tab-bar {
+      position: sticky;
+      top: 37px;
+      z-index: 90;
+      background: #000;
+      display: flex;
+      gap: 8px;
+      padding: 8px 16px;
+      border-bottom: 1px solid #222;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 7px 0;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Noto Sans KR', sans-serif;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active-film {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+    }
+    .tab-btn.active-book {
+      background: #c9a96e;
+      color: #000;
+      border-color: #c9a96e;
+    }
+
+    /* ===== CARD LIST ===== */
+    .card-list {
+      padding: 0 12px;
+      margin-top: 8px;
+    }
+
+    /* ===== FILM CARD ===== */
+    .work-card-wrap {
+      position: relative;
+      margin-bottom: 16px;
+      cursor: pointer;
+    }
+    .work-card-wrap svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .work-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #fff;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      pointer-events: none;
+    }
+    .work-detail-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 16px;
+      background: #c9a96e;
+      color: #000;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+    }
+    .work-card-info { margin-bottom: 8px; }
+    .work-title {
+      font-size: 14px;
+      color: #fff;
+      font-weight: 700;
+      margin: 6px 0 2px;
+    }
+    .work-subtitle {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin: 0;
+    }
+
+    /* ===== BOOK GRID ===== */
+    .book-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 0 12px;
+      margin-top: 8px;
+    }
+    .book-card {
+      background: #111;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .book-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 10px;
+    }
+
+    /* ===== POSTER OVERLAY ===== */
+    #poster-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    #poster-overlay.visible {
+      display: flex;
+    }
+    #poster-overlay img {
+      max-width: 90%;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    /* ===== DETAIL VIEW ===== */
+    #view-detail { display: none; }
+
+    .content-wrap { padding: 0 16px; }
+
+    .section-card {
+      background: #111;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 8px;
+    }
+    .detail-meta-line {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    .detail-film-title {
+      font-size: 18px;
+      font-weight: 700;
+      font-style: italic;
+      color: #fff;
+      margin: 0 0 4px;
+      line-height: 1.3;
+    }
+    .detail-film-subtitle {
+      font-size: 13px;
+      color: #c9a96e;
+      margin: 0 0 14px;
+    }
+    .awards-list {
+      list-style: none;
+      margin-bottom: 14px;
+    }
+    .awards-list li {
+      font-size: 13px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .detail-intro {
+      font-size: 13px;
+      color: #aaa;
+      line-height: 1.75;
+      margin-bottom: 16px;
+    }
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .link-btn {
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 13px;
+      color: #fff;
+      background: transparent;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      text-decoration: none;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+<!-- =============================================
+     POSTER OVERLAY
+     ============================================= -->
+<div id="poster-overlay" onclick="closePoster()">
+  <img id="poster-img" src="" alt="포스터">
+</div>
+
+
+<!-- =============================================
+     SCREEN 1: 작품 목록
+     ============================================= -->
+<div id="view-list">
+
+  <div class="header">
+    <button class="header-back" onclick="location.href='mobile-page.html'">
+      <img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;">
+    </button>
+    <span class="header-title">작업들</span>
+    <button class="hamburger" onclick="openDrawer('drawer1')">☰</button>
+  </div>
+
+  <div class="drawer" id="drawer1">
+    <button class="drawer-close" onclick="closeDrawer('drawer1')">✕</button>
+    <a href="mobile-page.html">Home</a>
+    <a href="mobile-강사.html">강사</a>
+    <a href="mobile-강의.html">강의</a>
+    <a href="mobile-작업들.html" style="color:#c9a96e;">작업들</a>
+    <a href="#" onclick="return false;" style="opacity:.4">문의</a>
+  </div>
+
+  <!-- 카테고리 탭 -->
+  <div class="tab-bar">
+    <button class="tab-btn active-film" id="tab-film" onclick="switchTab('film')">AI영화</button>
+    <button class="tab-btn" id="tab-book" onclick="switchTab('book')">도서</button>
+  </div>
+
+  <!-- AI영화 섹션 -->
+  <div id="section-film" class="card-list"></div>
+
+  <!-- 도서 섹션 -->
+  <div id="section-book" class="book-grid" style="display:none;"></div>
+
+  <!-- Footer -->
+  <footer class="mobile-footer">
+    <div class="footer-row1">
+      <a href="tel:010-3558-6960">📞 010-3558-6960</a>
+      <a href="mailto:hjyouh@naver.com">✉️ hjyouh@naver.com</a>
+    </div>
+    <div class="footer-row2">
+      <a href="https://aitalker.co.kr/hjyouh" target="_blank">🌐 aitalker.co.kr/hjyouh</a>
+    </div>
+  </footer>
+
+</div><!-- /view-list -->
+
+
+<!-- =============================================
+     SCREEN 2: 작품 상세
+     ============================================= -->
+<div id="view-detail">
+
+  <div class="header">
+    <button class="header-back" onclick="showList()">
+      <img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;">
+    </button>
+    <span class="header-title" id="detail-header-title"></span>
+    <button class="hamburger" onclick="openDrawer('drawer2')">☰</button>
+  </div>
+
+  <div class="drawer" id="drawer2">
+    <button class="drawer-close" onclick="closeDrawer('drawer2')">✕</button>
+    <a href="mobile-page.html">Home</a>
+    <a href="mobile-강사.html">강사</a>
+    <a href="mobile-강의.html">강의</a>
+    <a href="mobile-작업들.html" style="color:#c9a96e;">작업들</a>
+    <a href="#" onclick="return false;" style="opacity:.4">문의</a>
+  </div>
+
+  <div class="content-wrap">
+    <div class="section-card" id="detail-body"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="mobile-footer">
+    <div class="footer-row1">
+      <a href="tel:010-3558-6960">📞 010-3558-6960</a>
+      <a href="mailto:hjyouh@naver.com">✉️ hjyouh@naver.com</a>
+    </div>
+    <div class="footer-row2">
+      <a href="https://aitalker.co.kr/hjyouh" target="_blank">🌐 aitalker.co.kr/hjyouh</a>
+    </div>
+  </footer>
+
+</div><!-- /view-detail -->
+
+
+<script>
+/* ===== 영화 데이터 ===== */
+const FILMS = [
+  {
+    id: 0,
+    title: "Who's Whisper",
+    titleKo: '누구의 속삭임',
+    year: 2025,
+    badge: '🏆 금상',
+    image: "../../assets/images/posters/who's Poster.png",
+    type: 'AI 영화',
+    awards: [
+      '서울 국제 AI 영화제 금상 (2025)',
+      '대한민국 AI 영화제 우수상 (2025)',
+      'Hollywood AI Short Film Quarter-Finalist (2026)'
+    ],
+    intro: 'AI가 만든 목소리, 진짜인지 가짜인지 구분할 수 없는 시대. AI 기자가 온라인 세상에서 벌어지는 충격적인 이야기를 취재하며 AI 음성 모델을 위한 한국스러를 녹음하는 한 소프트웨어 담당자를 만나게 된다. 그러면서 점점 그 이상한 방향으로 흘러간다. API 그러자 밝힌 것이 아니라, 콘텐 밝혀지지 않는 끝에 속삭임이 시작된다.',
+    links: [{ label: '영화 보러가기', url: 'https://youtu.be/example1' }]
+  },
+  {
+    id: 1,
+    title: 'Digital Ego',
+    titleKo: '',
+    year: 2024,
+    badge: '🏅 다수 수상',
+    image: '../../assets/images/posters/Digital Ego poster.png',
+    type: 'AI 영화',
+    awards: [
+      'AI Film Awards Las Vegas 2026 Official Selection',
+      '서울 국제 AI 영화제 입선 (2024)'
+    ],
+    intro: '디지털 자아와 현실 자아 사이에서 갈등하는 현대인의 이야기. AI가 생성한 이미지와 현실 경계가 무너지는 세계를 배경으로 정체성을 탐구한다.',
+    links: [{ label: '영화 보러가기', url: 'https://youtu.be/example2' }]
+  },
+  {
+    id: 2,
+    title: 'Luminous Memory',
+    titleKo: '추억의 잔광(殘光)',
+    year: 2026,
+    badge: '🎭 Cannes 2026',
+    image: '../../assets/images/posters/추억의 잔광(殘光)-포스터.png',
+    type: 'AI 영화',
+    awards: [
+      'AI Film Awards Cannes 2026 Official Selection'
+    ],
+    intro: '낡고 버려진 것들에 깃든 영혼과 시간에 대한 이야기입니다. 오래된 물건들이 간직한 기억과 감정을 AI의 시선으로 재조명하며, 잊혀진 것들의 목소리에 귀 기울입니다.',
+    links: [{ label: '영화 보러가기', url: 'https://youtu.be/0OQGGyzxMk4' }]
+  },
+  {
+    id: 3,
+    title: '情「Jeong」',
+    titleKo: 'The Love that Lingers',
+    year: 2026,
+    badge: '🎭 Cannes 2026',
+    image: '../../assets/images/posters/Jeong Poster.png',
+    type: 'AI 영화',
+    awards: [
+      'AI Film Awards Cannes 2026 Official Selection',
+      'AI Film Awards Las Vegas 2026 Official Selection'
+    ],
+    intro: '겨울이 깊어가는 시골 마을, 오래된 한옥에 홀로 남은 어머니는 오늘도 누군가 올 것처럼 아궁이에 불을 지피고 밥을 짓는다. 자식들은 모두 도시로 떠나 각자의 삶을 살아가고, 집 안에는 오래된 달력과 빛바랜 살림살이, 그리고 기다림의 시간이 조용히 쌓여 있다.',
+    links: [{ label: '영화 보러가기', url: 'https://youtu.be/NZGuxgiC2HM' }]
+  }
+];
+
+/* ===== 도서 데이터 ===== */
+const BOOKS = [
+  { image: '../../assets/images/books/Book6-AI 영화 만들기 - 완성 이미지를 영화로.png', url: 'https://www.yes24.com' },
+  { image: '../../assets/images/books/Book5-AI 영화 만들기 - 시작 이야기를 이미지로.png', url: 'https://www.yes24.com' },
+  { image: '../../assets/images/books/book4-정체된 나의 삶 속에서, AI와 춤추다.png', url: 'https://www.yes24.com' },
+  { image: '../../assets/images/books/book3 AI와 소통하는 법- 프롬프트 엔지니어링 기초편.png', url: 'https://www.yes24.com' },
+  { image: '../../assets/images/books/Book2-디지털 마케팅의 판도를 바꾸는 생성형 AI 고급 전략.png', url: 'https://www.yes24.com' },
+  { image: '../../assets/images/books/Book1-업무생산성 높이는 생성형 AI 기초 전략.png', url: 'https://www.yes24.com' }
+];
+
+/* ===== SVG3 카드 생성 ===== */
+function buildFilmCard(film) {
+  const clipId = 'film-clip-' + film.id;
+  const imgEsc = film.image.replace(/'/g, "\\'");
+  return `
+    <div class="work-card-wrap" onclick="openPoster('${imgEsc}')">
+      <svg viewBox="0 0 320 450" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="${clipId}">
+            <path d="M 14 436 Q 14 448 26 448 L 294 448 Q 306 448 306 436 L 306 40 Q 306 28 294 28 L 238 28 Q 226 28 222 19 Q 218 10 206 10 L 26 10 Q 14 10 14 22 Z"/>
+          </clipPath>
+        </defs>
+        <rect width="320" height="450" fill="#111" clip-path="url(#${clipId})"/>
+        <image href="${film.image}"
+          x="0" y="0" width="320" height="450"
+          clip-path="url(#${clipId})" preserveAspectRatio="xMidYMid slice"/>
+        <polygon points="206,10 306,10 306,28 238,28" fill="#000000"/>
+        <path d="M 14 436 Q 14 448 26 448 L 294 448 Q 306 448 306 436 L 306 40 Q 306 28 294 28 L 238 28 Q 226 28 222 19 Q 218 10 206 10 L 26 10 Q 14 10 14 22 Z"
+          fill="none" stroke="rgba(150,150,150,0.5)" stroke-width="1"/>
+      </svg>
+      <span class="work-badge">${film.badge}</span>
+      <button class="work-detail-btn" onclick="event.stopPropagation(); showDetail(${film.id})">내용보기</button>
+    </div>
+    <div class="work-card-info">
+      <p class="work-title">${film.title}</p>
+      ${film.titleKo ? `<p class="work-subtitle">${film.titleKo}</p>` : ''}
+    </div>
+  `;
+}
+
+/* ===== 도서 카드 생성 ===== */
+function buildBookCard(book) {
+  const urlEsc = book.url.replace(/'/g, "\\'");
+  const imgEsc = book.image.replace(/'/g, "\\'");
+  return `
+    <div class="book-card" onclick="window.open('${urlEsc}','_blank')">
+      <img src="${book.image}" alt="도서 표지" loading="lazy">
+    </div>
+  `;
+}
+
+/* ===== 렌더링 ===== */
+function renderFilms() {
+  const el = document.getElementById('section-film');
+  el.innerHTML = FILMS.map(buildFilmCard).join('');
+}
+
+function renderBooks() {
+  const el = document.getElementById('section-book');
+  el.innerHTML = BOOKS.map(buildBookCard).join('');
+}
+
+/* ===== 탭 전환 ===== */
+function switchTab(tab) {
+  const filmSection = document.getElementById('section-film');
+  const bookSection = document.getElementById('section-book');
+  const tabFilm = document.getElementById('tab-film');
+  const tabBook = document.getElementById('tab-book');
+
+  if (tab === 'film') {
+    filmSection.style.display = 'block';
+    bookSection.style.display = 'none';
+    tabFilm.className = 'tab-btn active-film';
+    tabBook.className = 'tab-btn';
+  } else {
+    filmSection.style.display = 'none';
+    bookSection.style.display = 'grid';
+    tabFilm.className = 'tab-btn';
+    tabBook.className = 'tab-btn active-book';
+  }
+}
+
+/* ===== 포스터 오버레이 ===== */
+function openPoster(imgSrc) {
+  const overlay = document.getElementById('poster-overlay');
+  const img = document.getElementById('poster-img');
+  img.src = imgSrc;
+  overlay.classList.add('visible');
+}
+
+function closePoster() {
+  const overlay = document.getElementById('poster-overlay');
+  overlay.classList.remove('visible');
+  document.getElementById('poster-img').src = '';
+}
+
+/* ===== 상세 화면 ===== */
+function showDetail(idx) {
+  const film = FILMS.find(f => f.id === idx);
+  if (!film) return;
+
+  document.getElementById('detail-header-title').textContent = film.title;
+
+  const awardsHtml = film.awards.map(a => `<li>🏆 ${a}</li>`).join('');
+  const linksHtml = film.links.map(l =>
+    `<a class="link-btn" href="${l.url}" target="_blank">${l.label}</a>`
+  ).join('');
+
+  document.getElementById('detail-body').innerHTML = `
+    <p class="detail-meta-line">${film.type} · ${film.year}</p>
+    <p class="detail-film-title">${film.title}</p>
+    ${film.titleKo ? `<p class="detail-film-subtitle">${film.titleKo}</p>` : '<div style="margin-bottom:14px;"></div>'}
+    <ul class="awards-list">${awardsHtml}</ul>
+    <p class="detail-intro">${film.intro}</p>
+    <div class="link-row">${linksHtml}</div>
+  `;
+
+  document.getElementById('view-list').style.display = 'none';
+  document.getElementById('view-detail').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function showList() {
+  document.getElementById('view-detail').style.display = 'none';
+  document.getElementById('view-list').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+/* ===== 드로어 ===== */
+function openDrawer(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeDrawer(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+/* ===== 스크롤바 ===== */
+let scrollTimer;
+document.addEventListener('scroll', function () {
+  document.body.classList.add('is-scrolling');
+  clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(function () {
+    document.body.classList.remove('is-scrolling');
+  }, 800);
+});
+
+/* ===== 초기 렌더링 ===== */
+renderFilms();
+renderBooks();
+</script>
+
+</body>
+</html>
