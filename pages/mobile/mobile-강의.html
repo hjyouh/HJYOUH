@@ -136,15 +136,19 @@
     /* 카테고리: 카드 테두리에서 15px, 상단 13px, 금색 + 배경 */
     .lec-ov-cat {
       position: absolute;
-      top: 13px;
-      left: 30px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #e8c47a;
-      background: rgba(0,0,0,0.45);
-      padding: 1px 7px;
-      border-radius: 4px;
-      text-shadow: none;
+      top: 16px;
+      left: 16px;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 12px;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
       z-index: 2;
       pointer-events: auto;
     }
@@ -169,10 +173,10 @@
     /* 제목: 좌측 26px, 시간 위 바로 */
     .lec-ov-title-inner {
       position: absolute;
-      bottom: 40px;
+      bottom: 28px;
       left: 26px;
       right: 26px;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 600;
       color: #fff;
       margin: 0;
@@ -184,7 +188,7 @@
     /* 시간: 좌측 26px, 하단 15px */
     .lec-ov-dur {
       position: absolute;
-      bottom: 15px;
+      bottom: 14px;
       left: 26px;
       font-size: 12px;
       color: rgba(255,255,255,0.65);
@@ -211,17 +215,8 @@
     /* ===== DETAIL VIEW ===== */
     #view-detail { display: none; }
 
-    .detail-hero-wrap {
-      padding: 5px 1px 0;
-    }
-    .detail-hero-card {
-      position: relative;
-      overflow: hidden;
-    }
-    .detail-hero-card svg { width: 100%; height: auto; display: block; }
-    .detail-hero-badge {
-      position: absolute;
-      top: 5px; left: 7px;
+    .detail-cat-badge {
+      display: inline-block;
       background: #c9a96e;
       color: #000;
       font-size: 11px;
@@ -229,6 +224,7 @@
       padding: 2px 9px;
       border-radius: 999px;
       white-space: nowrap;
+      margin-bottom: 8px;
     }
 
     /* ===== CONTENT (상세 뷰) ===== */
@@ -254,12 +250,12 @@
       line-height: 1.4;
     }
     .detail-subtitle {
-      font-size: 13px;
+      font-size: 14px;
       color: #c9a96e;
       margin: 0 0 10px;
     }
     .detail-intro {
-      font-size: 13px;
+      font-size: 14px;
       color: #ccc;
       line-height: 1.75;
       margin: 0 0 12px;
@@ -268,7 +264,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 12px;
+      font-size: 13px;
       color: rgba(255,255,255,0.75);
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.07);
@@ -300,19 +296,19 @@
     .cur-body { flex: 1; min-width: 0; }
     .cur-title {
       display: block;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
       color: #fff;
       margin-bottom: 2px;
     }
     .cur-desc {
       display: block;
-      font-size: 12px;
+      font-size: 13px;
       color: #aaa;
       line-height: 1.5;
     }
     .supplies-text {
-      font-size: 13px;
+      font-size: 14px;
       color: #ccc;
       line-height: 1.7;
     }
@@ -558,41 +554,11 @@
     <a href="#" onclick="return false;" style="opacity:.4">문의</a>
   </div>
 
-  <!-- 히어로 SVG 카드 (비대칭) -->
-  <div class="detail-hero-wrap">
-    <div class="detail-hero-card">
-      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <clipPath id="detailHeroClip">
-            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
-              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
-              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
-          </clipPath>
-        </defs>
-        <rect width="360" height="220" fill="#111" clip-path="url(#detailHeroClip)"/>
-        <image id="detail-hero-img"
-          x="0" y="0" width="360" height="220"
-          clip-path="url(#detailHeroClip)"
-          preserveAspectRatio="xMidYMid slice"
-          href=""/>
-        <!-- 하단 그라데이션 -->
-        <defs>
-          <linearGradient id="heroGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="50%" stop-color="#000" stop-opacity="0"/>
-            <stop offset="100%" stop-color="#000" stop-opacity="0.6"/>
-          </linearGradient>
-        </defs>
-        <rect x="0" y="0" width="360" height="220"
-          fill="url(#heroGrad)" clip-path="url(#detailHeroClip)"/>
-      </svg>
-      <span class="detail-hero-badge" id="detail-cat-badge"></span>
-    </div>
-  </div>
-
   <!-- 강의 정보 카드 -->
   <div class="content-wrap">
 
     <div class="section-card">
+      <span class="detail-cat-badge" id="detail-cat-badge"></span>
       <p class="detail-title" id="detail-title"></p>
       <p class="detail-subtitle" id="detail-subtitle"></p>
       <p class="detail-intro" id="detail-intro"></p>
@@ -752,9 +718,6 @@
 
     // 헤더
     document.getElementById('detail-header-title').textContent = lec.title;
-
-    // 히어로 이미지
-    document.getElementById('detail-hero-img').setAttribute('href', lec.image);
 
     // 카테고리 뱃지
     document.getElementById('detail-cat-badge').textContent = lec.category;

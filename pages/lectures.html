@@ -190,21 +190,20 @@
   /* Category badge */
   .lec-card-badge {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    background: var(--accent-gold);
-    color: #0d0d0d;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 4px 10px;
+    top: 16px;
+    left: 16px;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 12px;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-weight: 400;
+    letter-spacing: 0.02em;
     white-space: nowrap;
     z-index: 4;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Poppins', 'SUITE', sans-serif;
-    letter-spacing: 0.2px;
   }
 
   /* Bottom gradient overlay */
@@ -229,18 +228,18 @@
 
   .lec-card-name {
     display: block;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 700;
     color: #fff;
     line-height: 1.35;
-    margin-bottom: 3px;
+    margin-bottom: 0;
     text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     font-family: 'Poppins', 'SUITE', sans-serif;
   }
 
   .lec-card-dur {
     display: block;
-    font-size: 10px;
+    font-size: 12px;
     color: var(--accent-gold);
     font-weight: 600;
   }
@@ -588,7 +587,8 @@
 </style>
 
 <script>
-  const LECTURES_DATA = [
+(function() {
+  var LECTURES_DATA = [
     {
       emoji: '🤖',
       image: 'assets/images/main2.png',
@@ -706,7 +706,7 @@
     }
   ];
 
-  const DEFAULT_LECTURES = LECTURES_DATA.slice();
+  var DEFAULT_LECTURES = LECTURES_DATA.slice();
 
   function loadLecturesData() {
     try {
@@ -828,4 +828,5 @@
   if (document.getElementById('lecGrid')) {
     initLecturesPage();
   }
+})();
 </script>
