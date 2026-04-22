@@ -306,14 +306,16 @@ nav.mobile-nav a {
   margin-bottom: var(--spacing-md);
   color: var(--text-primary);
   text-align: center;
+  font-family: 'Poppins', 'SUITE', sans-serif;
 }
 
 .message-box-sub {
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.7;
   color: rgba(255,255,255,0.65);
   margin-top: 6px;
   text-align: center;
+  font-family: 'SUITE', 'Poppins', sans-serif;
 }
 
 .message-box-rating {

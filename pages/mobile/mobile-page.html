@@ -16,6 +16,21 @@
       overflow-y: scroll;
       padding-bottom: 110px;
     }
+    /* 헤더+메시지 묶음 sticky wrapper */
+    .sticky-top {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #000;
+    }
+    .sticky-top-msg {
+      text-align: center;
+      padding: 8px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      background: #000;
+    }
     .header {
       display: flex;
       justify-content: space-between;
@@ -23,9 +38,7 @@
       padding: 6px 20px;
       margin: 0;
       background: #000000;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      position: static;
       box-sizing: border-box;
       border-bottom: 1px solid #3a3a3a;
     }
@@ -88,17 +101,17 @@
 </head>
 <body>
 
-  <!-- 헤더 -->
-  <div class="header">
-    <img class="header-logo"
-         src="../../assets/images/aimt-logo-white.png"
-         alt="aimt"
-         style="height:22px; opacity:0.85;">
-    <button class="hamburger" onclick="openDrawer()">☰</button>
+  <!-- 헤더 + 메시지 sticky wrapper -->
+  <div class="sticky-top">
+    <div class="header">
+      <img class="header-logo"
+           src="../../assets/images/aimt-logo-white.png"
+           alt="aimt"
+           style="height:22px; opacity:0.85;">
+      <button class="hamburger" onclick="openDrawer()">☰</button>
+    </div>
+    <div class="sticky-top-msg">AI로 바꾸는 당신의 내일</div>
   </div>
-
-  <!-- 상단 메시지 -->
-  <div style="text-align:center;padding:10px 16px;font-size:15px;font-weight:700;color:#fff;background:#000;position:sticky;top:42px;z-index:90;">AI로 바꾸는 당신의 내일</div>
 
   <!-- 드로어 메뉴 -->
   <div class="drawer" id="drawer">

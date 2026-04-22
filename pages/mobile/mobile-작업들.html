@@ -103,7 +103,7 @@
     }
     .sticky-msg {
       text-align: center;
-      padding: 10px 16px;
+      padding: 8px 16px 4px;
       font-size: 15px;
       font-weight: 700;
       color: #fff;
@@ -113,7 +113,7 @@
     .tab-bar {
       background: #000;
       display: flex;
-      padding: 6px 16px 8px;
+      padding: 4px 16px 8px;
     }
     .tab-segmented {
       display: flex;
@@ -657,7 +657,6 @@ function buildBookCard(book) {
   return `
     <div class="book-card">
       <img src="${book.image}" alt="도서 표지" loading="lazy" onclick="openPoster('${imgEsc}')">
-      <span class="work-badge">${book.badge}</span>
       <button class="work-detail-btn" onclick="event.stopPropagation(); showBookDetail(${book.id})">내용보기</button>
     </div>
   `;
