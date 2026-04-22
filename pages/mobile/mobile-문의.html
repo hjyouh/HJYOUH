@@ -317,7 +317,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script>
     // ===== EmailJS 초기화 =====
-    emailjs.init('YOUR_PUBLIC_KEY');
+    emailjs.init('dY4Rp3auQyGaDLiNF');
 
     // ===== 드로어 =====
     function openDrawer() { document.getElementById('drawer').classList.add('open'); }
@@ -367,7 +367,7 @@
         message:    document.getElementById('inp-message').value.trim(),
       };
 
-      emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', params)
+      emailjs.send('service_5conamd', 'template_o93omhl', params)
         .then(() => {
           closePopup();
           alert('문의가 접수되었습니다. 24시간 이내 답변 드리겠습니다.');

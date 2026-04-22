@@ -442,7 +442,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>
   (function() {
-    emailjs.init('YOUR_PUBLIC_KEY');
+    emailjs.init('dY4Rp3auQyGaDLiNF');
 
     window.openConPopup = function() {
       const name    = document.getElementById('con-name').value.trim();
@@ -477,7 +477,7 @@
       }
       errorEl.style.display = 'none';
 
-      emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
+      emailjs.send('service_5conamd', 'template_o93omhl', {
         from_name:  document.getElementById('con-name').value.trim(),
         from_email: document.getElementById('con-email').value.trim(),
         from_phone: phone,
