@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>작업들 - aimt</title>
-  <link rel="stylesheet" href="../../assets/css/tab-card.css">
-  <link rel="stylesheet" href="../../assets/css/fonts.css">
+  <link rel="stylesheet" href="../../assets/css/tab-card.css?v=3">
+  <link rel="stylesheet" href="../../assets/css/fonts.css?v=3">
+  <link rel="stylesheet" href="../../assets/css/mobile-frame.css?v=3">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,16 +23,20 @@
       text-size-adjust: 100%;
     }
 
+    /* ===== TOP FIXED WRAPPER ===== */
+    .top-fixed-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 110;
+    }
     /* ===== HEADER ===== */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 6px 20px;
+      padding: 0 20px;
+      height: 44px;
       background: #000;
-      position: sticky;
-      top: 0;
-      z-index: 100;
       border-bottom: 1px solid #3a3a3a;
     }
     .header-back {
@@ -63,45 +68,15 @@
       border: none;
     }
 
-    /* ===== DRAWER ===== */
-    .drawer {
-      position: fixed;
-      top: 0; right: 0;
-      width: 160px;
-      height: 100%;
-      background: rgba(10,10,10,0.45);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      z-index: 999;
-      padding: 56px 20px;
-      transform: translateX(100%);
-      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
-    }
-    .drawer.open { transform: translateX(0); }
-    .drawer a {
-      display: block;
-      color: #ccc;
-      text-decoration: none;
-      font-size: 20px;
-      margin-bottom: 10px;
-      font-family: 'Poppins', 'Noto Sans KR', sans-serif;
-    }
-    .drawer-close {
-      position: absolute;
-      top: 16px; right: 16px;
-      font-size: 16px;
-      color: rgba(255,255,255,0.4);
-      cursor: pointer;
-      background: none;
-      border: none;
-    }
+
 
     /* ===== STICKY TOP AREA (메시지 + 탭) ===== */
     .sticky-top-area {
-      position: sticky;
-      top: 42px;
-      z-index: 90;
-      background: #000;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 10px 0 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
     .sticky-msg {
       text-align: center;
@@ -127,10 +102,11 @@
     }
     .tab-btn {
       flex: none;
-      padding: 5px 22px;
-      font-size: 13px;
+      padding: 2px 20px;
+      font-size: 14px;
       font-weight: 500;
-      font-family: 'Noto Sans KR', sans-serif;
+      font-family: 'Poppins', 'SUITE', sans-serif;
+      line-height: 1.3;
       border: none;
       background: transparent;
       color: rgba(255,255,255,0.35);
@@ -141,13 +117,10 @@
     .tab-btn + .tab-btn {
       border-left: 1px solid rgba(255,255,255,0.2);
     }
-    .tab-btn.active-film {
-      background: transparent;
-      color: #fff;
-    }
-    .tab-btn.active-book {
-      background: transparent;
+    .tab-btn.active-film, .tab-btn.active-book {
+      background: rgba(255,255,255,0.1);
       color: #c9a96e;
+      font-weight: 700;
     }
 
     /* ===== CARD LIST ===== */
@@ -359,30 +332,23 @@
      ============================================= -->
 <div id="view-list">
 
-  <div class="header">
-    <button class="header-back" onclick="location.href='mobile-page.html'">
-      <img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;">
-    </button>
-    <span class="header-title">작업들</span>
-    <button class="hamburger" onclick="openDrawer('drawer1')">☰</button>
-  </div>
+  <div class="top-fixed-wrapper">
+    <div class="header">
+      <button class="header-back" onclick="location.href='mobile-page.html'">
+        <img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;">
+      </button>
+      <span class="header-title">작업들</span>
+      <button class="hamburger" onclick="openDrawer('drawer')">☰</button>
+    </div>
 
-  <div class="drawer" id="drawer1">
-    <button class="drawer-close" onclick="closeDrawer('drawer1')">✕</button>
-    <a href="mobile-page.html">Home</a>
-    <a href="mobile-강사.html">강사</a>
-    <a href="mobile-강의.html">강의</a>
-    <a href="mobile-작업들.html" style="color:#c9a96e;">작업들</a>
-    <a href="mobile-문의.html">문의</a>
-  </div>
-
-  <!-- 상단 고정 영역: 메시지 + 탭 -->
-  <div class="sticky-top-area">
-    <div class="sticky-msg">AI 영화, 세계를 만나다</div>
-    <div class="tab-bar">
-      <div class="tab-segmented">
-        <button class="tab-btn active-film" id="tab-film" onclick="switchTab('film')">AI영화</button>
-        <button class="tab-btn" id="tab-book" onclick="switchTab('book')">도서</button>
+    <!-- 상단 고정 영역: 메시지 + 탭 -->
+    <div class="sticky-top-area">
+      <div class="sticky-msg">AI 영화, 세계를 만나다</div>
+      <div class="tab-bar">
+        <div class="tab-segmented">
+          <button class="tab-btn active-film" id="tab-film" onclick="switchTab('film')">AI영화</button>
+          <button class="tab-btn" id="tab-book" onclick="switchTab('book')">도서</button>
+        </div>
       </div>
     </div>
   </div>
@@ -417,16 +383,7 @@
       <img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;">
     </button>
     <span class="header-title" id="detail-header-title"></span>
-    <button class="hamburger" onclick="openDrawer('drawer2')">☰</button>
-  </div>
-
-  <div class="drawer" id="drawer2">
-    <button class="drawer-close" onclick="closeDrawer('drawer2')">✕</button>
-    <a href="mobile-page.html">Home</a>
-    <a href="mobile-강사.html">강사</a>
-    <a href="mobile-강의.html">강의</a>
-    <a href="mobile-작업들.html" style="color:#c9a96e;">작업들</a>
-    <a href="mobile-문의.html">문의</a>
+    <button class="hamburger" onclick="openDrawer('drawer')">☰</button>
   </div>
 
   <div class="content-wrap">
@@ -541,7 +498,7 @@ const FILMS = [
     ],
     intro: [
       '겨울이 깊어가는 시골 마을, 오래된 한옥에 홀로 남은 어머니는 오늘도 누군가 올 것처럼 아궁이에 불을 지피고 밥을 짓는다. 자식들은 모두 도시로 떠나 각자의 삶을 살아가고, 집 안에는 오래된 달력과 빛바랜 살림살이, 그리고 기다림의 시간이 조용히 쌓여 있다. 어머니는 외로움과 서운함을 쉽게 말하지 못한 채, 늘 그 자리에 머물며 가족의 빈자리를 품고 살아간다.',
-      '어느 날, 오랜만에 고향집을 찾은 자식은 예전과 다르지 않은 풍경 속에서 눈에 띄게 늙어버린 어머니의 모습을 마주한다. 작아진 뒷모습, 거칠어진 손, 말없이 차려진 따뜻한 밥상은 세월 동안 쌓인 그리움과 미안함을 한꺼번에 불러낸다. 함께 밥을 먹고 잠시 마주 앉아 있는 짧은 시간 속에서 자식은 어머니가 단 한 번도 사랑을 거창한 말로 표현한 적 없지만, 늘 자신의 삶 전체로 가족을 품어왔음을 깨닫게 된다.',
+      '어느 날, 오랜만에 고향집을 찾은 자식은 예전과 다르지 않은 풍경 속에서 눈에 띄게 늙어버린 어머니의 모습을 마주한다. 작아진 뒷모습, 거칠어진 손, 말없이 차려진 따뜻한 밥상은 세월 동안 쌓인 그리움과 미안함을 한꺼번에 불러낸다. 함께 밥을 먹고 잠시 마주 앉아 있는 짧은 시간 속에서 자식은 어머니가 단 한 번도 사랑을 거창한 말로 표현한 적 없지만, 늘 자신의 삶 전체로 가족을 품어왔음을 깨닫게 되는 순간을 맞이한다.',
       "영화 「정」은 화려한 사건이나 극적인 갈등 대신, 가족 사이에 오래도록 남아 있는 감정의 결을 조용히 따라간다. 멀어져도 끊어지지 않고, 서운함이 있어도 쉽게 미움으로 바뀌지 않는 마음, 바로 '정'이다. 이 영화는 결국 고향이란 장소가 아니라 끝내 나를 품어주는 한 사람의 마음이라는 사실을 보여주며, 우리 안에 남아 있는 가장 따뜻하고도 아픈 이름, '정'을 깊이 되새기게 한다."
     ],
     links: [
@@ -773,13 +730,7 @@ function showList() {
   window.scrollTo(0, 0);
 }
 
-/* ===== 드로어 ===== */
-function openDrawer(id) {
-  document.getElementById(id).classList.add('open');
-}
-function closeDrawer(id) {
-  document.getElementById(id).classList.remove('open');
-}
+
 
 /* ===== 스크롤바 ===== */
 let scrollTimer;
@@ -796,5 +747,6 @@ renderFilms();
 renderBooks();
 </script>
 
+  <script src="../../assets/js/mobile-nav.js?v=2"></script>
 </body>
 </html>

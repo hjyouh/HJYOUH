@@ -12,9 +12,71 @@
       <button class="lec-zoom-close" id="lecZoomClose" onclick="closeLecZoom()">✕</button>
     </div>
 
+    <!-- Tab Bar -->
+    <div class="lec-tabs">
+      <div class="tab-segmented">
+        <button class="tab-btn active" id="tab-material" onclick="switchLecTab('material')">강의안</button>
+        <button class="tab-btn" id="tab-list" onclick="switchLecTab('list')">강의</button>
+      </div>
+    </div>
+
     <!-- Cards area over the image -->
-    <div class="lec-cards-area">
+    <div class="lec-cards-area" id="lecMaterialArea">
       <div class="lec-grid" id="lecGrid"></div>
+    </div>
+
+    <!-- List area -->
+    <div class="lec-list-wrap" id="lecListArea">
+      <div class="history-list">
+        <div class="history-year-group">
+          <h3>2026</h3>
+          <ul>
+            <li>청주시 사회복지협의회</li>
+            <li>한국저작권 위원회</li>
+            <li>부경대학교 나노공학</li>
+          </ul>
+        </div>
+        <div class="history-year-group">
+          <h3>2025</h3>
+          <ul>
+            <li>보험설계사 (6주)</li>
+            <li>충청남도 소상공인 프랜차이즈 협회 (6주)</li>
+            <li>외국인 유학생(10주)</li>
+            <li>글공방 (8주)</li>
+            <li>맘카페</li>
+            <li>한국언론진흥재단</li>
+            <li>경북일보</li>
+            <li>한국건설생활환경시험연구원</li>
+            <li>개인 소그룹 (8주)</li>
+            <li>한진그룹</li>
+            <li>효성오앤비</li>
+            <li>인천소상공인협의회 (6주)</li>
+            <li>창원공업고등학교</li>
+            <li>안성평생학습원 (12회차)</li>
+            <li>강남 이젠학원</li>
+          </ul>
+        </div>
+        <div class="history-year-group">
+          <h3>2024</h3>
+          <ul>
+            <li>어린이집 교사 AI 연수 특강</li>
+            <li>맘카페</li>
+            <li>한국경제인협회(구 전경련)</li>
+            <li>성신여자대학교</li>
+            <li>경북일보 기자</li>
+            <li>파속채소연구소</li>
+            <li>인천소상공인 (5주)</li>
+            <li>부산여자대학교</li>
+            <li>경북일보 기자</li>
+            <li>제주여상 (2회차)</li>
+            <li>중구새로일자리센터 (10주)</li>
+            <li>인천 소상공인 (6주)</li>
+            <li>육군 전쟁사 집필 위원</li>
+            <li>전국 소상공인 연합회 간담회</li>
+            <li>성신여자대학교</li>
+          </ul>
+        </div>
+      </div>
     </div>
 
     <div class="message-box lec-msg">
@@ -89,6 +151,90 @@
     background: rgba(0, 0, 0, 0.55);
   }
 
+  /* ===== TABS ===== */
+  .lec-tabs {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: center;
+    padding: 56px 0 16px;
+    flex-shrink: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.85) 60%, transparent 100%);
+  }
+  .lec-tabs .tab-segmented {
+    display: flex;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .lec-tabs .tab-btn {
+    background: rgba(0,0,0,0.4);
+    border: none;
+    color: rgba(255,255,255,0.4);
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 4px 28px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .lec-tabs .tab-btn + .tab-btn { border-left: 1px solid rgba(255,255,255,0.2); }
+  .lec-tabs .tab-btn:hover { color: rgba(255,255,255,0.8); background: rgba(0,0,0,0.6); }
+  .lec-tabs .tab-btn.active { color: #c9a96e; font-weight: 700; background: rgba(255,255,255,0.1); }
+
+  /* ===== HISTORY LIST ===== */
+  .lec-list-wrap {
+    display: none;
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 20px 28px 100px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
+    z-index: 10;
+  }
+
+  .history-list {
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .history-year-group { margin-bottom: 32px; }
+  .history-year-group h3 {
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--accent-gold, #c9a96e);
+    margin: 0 0 4px 0;
+    border-bottom: none;
+    padding-bottom: 0;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+  }
+  .history-year-group ul { list-style: none; padding: 0; margin: 0; }
+  .history-year-group li {
+    font-size: 16px;
+    color: #ffffff;
+    margin-bottom: 4px;
+    line-height: 1.5;
+    position: relative;
+    padding-left: 0;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .history-year-group li::before {
+    content: "•";
+    color: rgba(255,255,255,0.4);
+    position: relative;
+  }
+
   /* ===== CARDS AREA (over image) ===== */
   .lec-cards-area {
     position: relative;
@@ -96,7 +242,7 @@
     flex: 1 1 0;
     min-height: 0;
     overflow-y: auto;
-    padding: 60px 28px 100px;
+    padding: 10px 28px 100px; /* modified top padding */
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.15) transparent;
   }
@@ -581,7 +727,9 @@
     .lec-panel-empty { display: none; }
     .lec-panel-detail { display: none !important; }
     .lec-msg { display: none; }
-    .lec-cards-area { padding: 48px 16px 80px; }
+    .lec-cards-area { padding: 16px 16px 80px; }
+    .lec-tabs { padding-top: 48px; }
+    .lec-list-wrap { padding: 16px 16px 80px; }
     .lec-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   }
 </style>
@@ -707,6 +855,30 @@
   ];
 
   var DEFAULT_LECTURES = LECTURES_DATA.slice();
+
+  // Tab switching logic
+  window.switchLecTab = function(tabId) {
+    const btnMat = document.getElementById('tab-material');
+    const btnList = document.getElementById('tab-list');
+    const areaMat = document.getElementById('lecMaterialArea');
+    const areaList = document.getElementById('lecListArea');
+    
+    if (tabId === 'material') {
+      btnMat.classList.add('active');
+      btnList.classList.remove('active');
+      areaMat.style.display = 'block';
+      areaList.style.display = 'none';
+      document.querySelector('.lec-msg').style.display = '';
+    } else {
+      btnMat.classList.remove('active');
+      btnList.classList.add('active');
+      areaMat.style.display = 'none';
+      areaList.style.display = 'block';
+      document.querySelector('.lec-msg').style.display = 'none';
+      // Hide detail panel if a card was selected
+      showLecPanelEmpty();
+    }
+  };
 
   function loadLecturesData() {
     try {

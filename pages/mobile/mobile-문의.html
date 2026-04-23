@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>문의 - aimt</title>
-  <link rel="stylesheet" href="../../assets/css/tab-card.css">
-  <link rel="stylesheet" href="../../assets/css/fonts.css">
+  <link rel="stylesheet" href="../../assets/css/tab-card.css?v=3">
+  <link rel="stylesheet" href="../../assets/css/fonts.css?v=3">
+  <link rel="stylesheet" href="../../assets/css/mobile-frame.css?v=3">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -58,38 +59,7 @@
       border: none;
     }
 
-    /* ===== DRAWER ===== */
-    .drawer {
-      position: fixed;
-      top: 0; right: 0;
-      width: 160px;
-      height: 100%;
-      background: rgba(10,10,10,0.45);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      z-index: 999;
-      padding: 56px 20px;
-      transform: translateX(100%);
-      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
-    }
-    .drawer.open { transform: translateX(0); }
-    .drawer a {
-      display: block;
-      color: #ccc;
-      text-decoration: none;
-      font-size: 20px;
-      margin-bottom: 18px;
-      font-family: 'Poppins', 'Noto Sans KR', sans-serif;
-    }
-    .drawer-close {
-      position: absolute;
-      top: 16px; right: 16px;
-      font-size: 16px;
-      color: rgba(255,255,255,0.4);
-      cursor: pointer;
-      background: none;
-      border: none;
-    }
+
 
     /* ===== CONTENT ===== */
     .content {
@@ -241,15 +211,7 @@
     <button class="hamburger" onclick="openDrawer()">☰</button>
   </div>
 
-  <!-- DRAWER -->
-  <div class="drawer" id="drawer">
-    <button class="drawer-close" onclick="closeDrawer()">✕</button>
-    <a href="mobile-page.html">Home</a>
-    <a href="mobile-강사.html">강사</a>
-    <a href="mobile-강의.html">강의</a>
-    <a href="mobile-작업들.html">작업들</a>
-    <a href="mobile-문의.html" style="color:#c9a96e;">문의</a>
-  </div>
+
 
   <!-- CONTENT -->
   <div class="content">
@@ -309,9 +271,7 @@
     // ===== EmailJS 초기화 =====
     emailjs.init('dY4Rp3auQyGaDLiNF');
 
-    // ===== 드로어 =====
-    function openDrawer() { document.getElementById('drawer').classList.add('open'); }
-    function closeDrawer() { document.getElementById('drawer').classList.remove('open'); }
+
 
     // ===== 팝업 =====
     function openPopup() {
@@ -378,5 +338,6 @@
     });
   </script>
 
+  <script src="../../assets/js/mobile-nav.js?v=2"></script>
 </body>
 </html>

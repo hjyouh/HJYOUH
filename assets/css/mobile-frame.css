@@ -1,0 +1,69 @@
+/* ===================================================
+   MOBILE FRAME — Desktop phone wireframe preview
+   Only applies when viewport > 430px (desktop browser)
+   =================================================== */
+
+@media (min-width: 431px) {
+
+  html {
+    background: #111;
+    min-height: 100vh;
+  }
+
+  body {
+    /* Phone dimensions */
+    width: 390px !important;
+    max-width: 390px !important;
+    margin: 28px auto 40px !important;
+
+    /* Phone bezel effect */
+    border-radius: 46px;
+    border: 10px solid #2c2c2c;
+    box-shadow:
+      0 0 0 1px #444,
+      0 0 0 3px #1e1e1e,
+      inset 0 0 0 1px #111,
+      0 40px 100px rgba(0,0,0,0.85);
+
+    position: relative;
+
+    /* Prevents content from going outside phone bounds */
+    overflow: hidden;
+  }
+
+  /* Drawer: constrained to phone right edge */
+  .drawer {
+    right: calc((100vw - 390px) / 2 + 10px) !important;
+  }
+}
+
+/* Side volume buttons (left) — on html element so not clipped by body overflow */
+@media (min-width: 431px) {
+  html::before {
+    content: '';
+    position: fixed;
+    left: calc(50% - 195px - 14px);
+    top: 160px;
+    width: 4px;
+    height: 28px;
+    background: #3a3a3a;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 40px 0 #3a3a3a, 0 80px 0 #3a3a3a;
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* Power button (right) */
+  html::after {
+    content: '';
+    position: fixed;
+    right: calc(50% - 195px - 14px);
+    top: 200px;
+    width: 4px;
+    height: 52px;
+    background: #3a3a3a;
+    border-radius: 0 2px 2px 0;
+    pointer-events: none;
+    z-index: 9998;
+  }
+}
