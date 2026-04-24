@@ -46,7 +46,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 700;
       color: #fff;
       white-space: nowrap;
@@ -63,15 +63,15 @@
 
     /* ===== CONTENT ===== */
     .content {
-      padding: 16px;
+      padding: 5px 16px 16px 16px;
     }
 
     /* ===== MESSAGE BOX ===== */
     .msg-box {
       background: #111;
       border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
+      padding: 10px 20px;
+      margin-bottom: 10px;
     }
     .msg-box-title {
       font-size: 16px;
@@ -81,7 +81,7 @@
       text-align: center;
     }
     .msg-box-sub {
-      font-size: 14px;
+      font-size: 13px;
       color: #a0a0a0;
       line-height: 1.65;
       text-align: center;
@@ -89,7 +89,7 @@
 
     /* ===== FORM ===== */
     .form-group {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .form-input {
       width: 100%;
@@ -111,7 +111,7 @@
       color: rgba(255,255,255,0.3);
     }
     textarea.form-input {
-      height: 140px;
+      height: 100px;
       resize: none;
       border-radius: 20px;
       padding: 12px 20px;
@@ -208,7 +208,10 @@
       <img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;">
     </button>
     <span class="header-title">문의</span>
-    <button class="hamburger" onclick="openDrawer()"><img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;"></button>
+    <div style="display:flex; align-items:center;">
+      <a href="../../admin/index.html"><img src="../../assets/images/admin.png" style="height:20px;opacity:0.7;margin-right:16px;"></a>
+      <button class="hamburger" onclick="openDrawer()"><img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;"></button>
+    </div>
   </div>
 
 

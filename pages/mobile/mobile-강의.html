@@ -62,7 +62,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 700;
       color: #fff;
       white-space: nowrap;
@@ -177,7 +177,7 @@
       background: rgba(0,0,0,0.85);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      padding: 10px 0 14px;
+      padding: 5px 0 8px;
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
     .sticky-msg {
@@ -185,7 +185,7 @@
       font-weight: 700;
       color: #fff;
       text-align: center;
-      margin-bottom: 12px;
+      margin-bottom: 6px;
     }
     .tab-bar { display: flex; justify-content: center; }
     .tab-segmented {
@@ -356,7 +356,10 @@
     <div class="header">
       <button class="header-back" onclick="location.href='mobile-page.html'"><img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;"></button>
       <span class="header-title">강의</span>
-      <button class="hamburger" onclick="openDrawer('drawer1')"><img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;"></button>
+      <div style="display:flex; align-items:center;">
+        <a href="../../admin/index.html"><img src="../../assets/images/admin.png" style="height:20px;opacity:0.7;margin-right:16px;"></a>
+        <button class="hamburger" onclick="openDrawer('drawer1')"><img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;"></button>
+      </div>
     </div>
 
     <!-- 상단 고정 영역: 메시지 + 탭 -->
@@ -623,7 +626,10 @@
   <div class="header" id="detail-header">
     <button class="header-back-label" onclick="showList()"><img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;"></button>
     <span class="header-title" id="detail-header-title"></span>
-    <button class="hamburger" onclick="openDrawer('drawer2')"><img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;"></button>
+    <div style="display:flex; align-items:center;">
+      <a href="../../admin/index.html"><img src="../../assets/images/admin.png" style="height:20px;opacity:0.7;margin-right:16px;"></a>
+      <button class="hamburger" onclick="openDrawer('drawer2')"><img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;"></button>
+    </div>
   </div>
 
 
