@@ -7,7 +7,7 @@ window._sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // Supabase에서 데이터 로드 (없으면 localStorage 폴백)
 window.sbLoad = async function(key, def) {
   try {
-    const { data, error } = await _sb.from('settings').select('value').eq('key', key).single();
+    const { data, error } = await _sb.from('settings').select('value').eq('key', key).maybeSingle();
     if (!error && data?.value !== undefined) {
       try { localStorage.setItem(key, JSON.stringify(data.value)); } catch(e) {}
       return data.value;
