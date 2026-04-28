@@ -67,6 +67,40 @@
     .tab-card-wrap {
       overflow: hidden;
     }
+
+    /* ===== 스크롤 탭 힌트 ===== */
+    .scroll-tap-hint {
+      position: fixed;
+      bottom: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10,10,10,0.80);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(201,169,110,0.5);
+      border-radius: 20px;
+      padding: 8px 18px 8px 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-family: 'SUITE', 'Poppins', sans-serif;
+      color: rgba(255,255,255,0.9);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 600;
+      opacity: 0;
+      transition: opacity 0.45s ease;
+    }
+    .scroll-tap-hint.visible { opacity: 1; }
+    .scroll-tap-hint svg {
+      flex-shrink: 0;
+      animation: mobileTap 0.75s ease-in-out infinite;
+    }
+    @keyframes mobileTap {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      40%       { transform: translateY(-3px) rotate(-6deg); }
+    }
   </style>
 </head>
 <body>
@@ -82,7 +116,7 @@
         <button class="hamburger" style="margin-left:0;" onclick="openDrawer()"><img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;"></button>
       </div>
     </div>
-    <div class="sticky-top-msg">AI로 바꾸는 당신의 내일</div>
+    <div class="sticky-top-msg" id="homeTopMsg">AI로 바꾸는 당신의 내일</div>
   </div>
 
 
@@ -119,7 +153,7 @@
     </div>
 
     <!-- 카드2: 강사 -->
-    <div class="tab-card-wrap" onclick="location.href='mobile-강사.html'">
+    <div class="tab-card-wrap" onclick="location.href='mobile-강사.html?v=2'">
       <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <clipPath id="cardClip2">
@@ -140,7 +174,7 @@
     </div>
 
     <!-- 카드3: 강의 -->
-    <div class="tab-card-wrap" onclick="location.href='mobile-강의.html'">
+    <div class="tab-card-wrap" onclick="location.href='mobile-강의.html?v=2'">
       <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <clipPath id="cardClip3">
@@ -161,7 +195,7 @@
     </div>
 
     <!-- 카드4: 작업들 -->
-    <a href="mobile-작업들.html" style="text-decoration:none;">
+    <a href="mobile-작업들.html?v=2" style="text-decoration:none;">
       <div class="tab-card-wrap">
         <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -185,6 +219,14 @@
 
   </div>
 
+  <!-- 스크롤 탭 힌트 (스크롤 시 1회 출현 후 소멸) -->
+  <div class="scroll-tap-hint" id="scrollTapHint" aria-hidden="true">
+    <svg width="12" height="15" viewBox="0 0 22 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 0C8.9 0 8 .9 8 2v10.3A5 5 0 0 0 1 17.2V18c0 5.5 4.5 10 10 10h1.4A9 9 0 0 0 22 19v-2c0-1.1-.9-2-2-2s-2 .9-2 2v-2c0-1.1-.9-2-2-2s-2 .9-2 2v-1c0-1.1-.9-2-2-2s-2 .9-2 2V2C10 .9 9.1 0 8 0h2z" fill="rgba(255,255,255,0.9)"/>
+    </svg>
+    <span>사진을 탭하면 자세히 보기</span>
+  </div>
+
   <!-- Footer -->
   <footer class="mobile-footer">
     <div class="footer-row1">
@@ -199,6 +241,15 @@
   </footer>
 
   <script>
+    // ===== 홈 Mobile Message 연동 =====
+    (function() {
+      try {
+        const cfg = JSON.parse(localStorage.getItem('homeConfig') || '{}');
+        const el = document.getElementById('homeTopMsg');
+        if (el && cfg.mobile) el.textContent = cfg.mobile;
+      } catch(e) {}
+    })();
+
     // ===== 슬라이드 (rAF + SVG transform attribute — SVG 유저 유닛 기준) =====
     let current = 0;
     let currentX = 0;
@@ -250,6 +301,26 @@
         document.body.classList.remove('is-scrolling');
       }, 800);
     });
+
+    // ===== 스크롤 탭 힌트 (1회만 표시) =====
+    (function() {
+      if (sessionStorage.getItem('tapHintShown')) return;
+      var triggered = false;
+      function onScroll() {
+        if (triggered || window.scrollY < 180) return;
+        triggered = true;
+        sessionStorage.setItem('tapHintShown', '1');
+        window.removeEventListener('scroll', onScroll);
+        var hint = document.getElementById('scrollTapHint');
+        hint.classList.add('visible');
+        // 2.5초 후 페이드 아웃
+        setTimeout(function() {
+          hint.style.transition = 'opacity 0.6s ease';
+          hint.style.opacity = '0';
+        }, 2500);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+    })();
   </script>
 
   <script src="../../assets/js/mobile-nav.js?v=1"></script>

@@ -1,36 +1,12 @@
 <section class="home-section">
 
   <!-- 전체 배경 슬라이드쇼 -->
-  <div class="slideshow-container">
-    <div class="slide active">
-      <img src="assets/images/lectures/main1.png" alt="AI 강의 현장">
-    </div>
-    <div class="slide">
-      <img src="assets/images/lectures/main5.png" alt="생성형 AI 교육">
-    </div>
-    <div class="slide">
-      <img src="assets/images/lectures/main4.png" alt="디지털 학습">
-    </div>
-    <div class="slide">
-      <img src="assets/images/lectures/main3.png" alt="AI 워크숍">
-    </div>
-
-    <!-- 반투명 오버레이 -->
+  <div class="slideshow-container" id="homeSlideshowContainer">
+    <!-- slides injected by JS -->
     <div class="slide-overlay"></div>
-
-    <!-- 화살표 -->
     <button class="prev-btn" aria-label="이전 슬라이드">&#10094;</button>
     <button class="next-btn" aria-label="다음 슬라이드">&#10095;</button>
-
-    <!-- 점 인디케이터 -->
-    <div class="dots-container">
-      <span class="dot active" data-slide="0"></span>
-      <span class="dot" data-slide="1"></span>
-      <span class="dot" data-slide="2"></span>
-      <span class="dot" data-slide="3"></span>
-    </div>
-
-    <!-- 좌하단 메시지 박스 -->
+    <div class="dots-container" id="homeDotsContainer"></div>
     <div class="message-box">
       <div class="message-box-text">
         AI를 활용해 더 나은 미래를 만드는<br>
@@ -45,31 +21,13 @@
 
   <!-- 우측 사이드 패널 (Gusto 스타일) -->
   <div class="desktop-side-panel">
-
-    <div class="side-card" onclick="navigateTo('about')">
-      <img src="assets/images/instructor1.png" alt="강사">
-      <div class="side-card-overlay"></div>
-      <span class="side-card-label">강사</span>
+    <div class="side-click-hint" aria-hidden="true">
+      <svg class="hint-hand" width="11" height="14" viewBox="0 0 22 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 0C8.9 0 8 .9 8 2v10.3A5 5 0 0 0 1 17.2V18c0 5.5 4.5 10 10 10h1.4A9 9 0 0 0 22 19v-2c0-1.1-.9-2-2-2s-2 .9-2 2v-2c0-1.1-.9-2-2-2s-2 .9-2 2v-1c0-1.1-.9-2-2-2s-2 .9-2 2V2C10 .9 9.1 0 8 0h2z" fill="rgba(255,255,255,0.92)"/>
+      </svg>
+      <span>사진 클릭 → 상세보기</span>
     </div>
-
-    <div class="side-card" onclick="navigateTo('lectures')">
-      <img src="assets/images/lectures/main6.png" alt="강의">
-      <div class="side-card-overlay"></div>
-      <span class="side-card-label">강의</span>
-    </div>
-
-    <div class="side-card" onclick="navigateTo('works')">
-      <img src="assets/images/posters/Jeong Poster.png" alt="Works">
-      <div class="side-card-overlay"></div>
-      <span class="side-card-label">작업들</span>
-    </div>
-
-    <div class="side-card" onclick="navigateTo('contact')">
-      <img src="assets/images/lectures/main3.png" alt="Contact">
-      <div class="side-card-overlay"></div>
-      <span class="side-card-label">문의</span>
-    </div>
-
+    <!-- side cards injected by JS -->
   </div>
 
 </section>
@@ -141,7 +99,7 @@
   .dots-container {
     position: absolute;
     bottom: 28px;
-    left: calc(50% - 160px);
+    left: 50%;
     transform: translateX(-50%);
     display: flex;
     gap: 8px;
@@ -163,25 +121,26 @@
     border-radius: 5px;
   }
 
-  /* 좌하단 메시지 박스 */
+  /* 하단 중앙 메시지 박스 */
   .message-box {
-    position: fixed;
-    bottom: 36px;
-    left: 36px;
+    position: absolute;
+    bottom: 20px;
+    left: 32px;
     background: rgba(0, 0, 0, 0.55);
     backdrop-filter: blur(12px);
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 20px 26px;
-    max-width: 380px;
+    padding: 16px 24px;
+    width: 500px;
     z-index: 10;
+    text-align: left;
   }
 
   .message-box-text {
     font-size: 20px;
     line-height: 1.65;
     color: #fff;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   .message-box-rating {
@@ -272,64 +231,181 @@
     text-shadow: 0 1px 4px rgba(0,0,0,0.6);
   }
 
+  /* ===== 랜딩 클릭 힌트 (데스크탑) ===== */
+  .side-click-hint {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10,10,10,0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(201,169,110,0.55);
+    border-radius: 20px;
+    padding: 6px 14px 6px 11px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    color: rgba(255,255,255,0.88);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 300;
+    /* 시작 상태: 투명 */
+    opacity: 0;
+    animation: sideHintAnim 4s ease forwards;
+    animation-delay: 1s;
+  }
+
+  .hint-hand {
+    flex-shrink: 0;
+    animation: hintTap 0.75s ease-in-out infinite;
+  }
+
+  @keyframes sideHintAnim {
+    0%   { opacity: 0; transform: translateX(-50%) translateY(7px); }
+    12%  { opacity: 1; transform: translateX(-50%) translateY(0);   }
+    78%  { opacity: 1; transform: translateX(-50%) translateY(0);   }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-5px);}
+  }
+
+  @keyframes hintTap {
+    0%, 100% { transform: translateY(0) rotate(0deg);  }
+    40%       { transform: translateY(-3px) rotate(-6deg); }
+  }
+
   /* 모바일 */
   @media (max-width: 900px) {
     .desktop-side-panel { display: none; }
     .next-btn { right: 20px; }
-    .message-box { left: 16px; bottom: 16px; max-width: calc(100% - 32px); }
+    .message-box { left: 16px; right: 16px; bottom: 16px; width: auto; }
     .prev-btn { left: 10px; }
   }
 </style>
 
 <script>
-  function initHomePage() {
-    const slides = document.querySelectorAll('.slide');
-    const dots = document.querySelectorAll('.dot');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
-    let current = 0;
-    let timer = null;
+  async function initHomePage() {
+    const DEFAULT_SLIDES_WEB = [
+      'assets/images/lectures/main1.png',
+      'assets/images/lectures/main5.png',
+      'assets/images/lectures/main4.png',
+      'assets/images/lectures/main3.png'
+    ];
+    const DEFAULT_PANELS_WEB = [
+      { label: '강사',   nav: 'about',    path: 'assets/images/instructor1.png' },
+      { label: '강의',   nav: 'lectures', path: 'assets/images/lectures/main6.png' },
+      { label: '작업들', nav: 'works',    path: 'assets/images/posters/Jeong Poster.png' },
+      { label: '문의',   nav: 'contact',  path: 'assets/images/lectures/main3.png' }
+    ];
+
+    function toWebPath(p) { return p ? p.replace(/^\.\.\//, '') : p; }
+
+    /* 슬라이드 로드 (Supabase → localStorage 폴백) */
+    let slidePaths = DEFAULT_SLIDES_WEB;
+    try {
+      const raw = window.sbLoad
+        ? await sbLoad('landingSlides', null)
+        : JSON.parse(localStorage.getItem('landingSlides') || 'null');
+      if (raw && Array.isArray(raw) && raw.length) slidePaths = raw.map(toWebPath);
+    } catch(e) {}
+
+    /* 사이드 패널 로드 */
+    let panels = DEFAULT_PANELS_WEB;
+    try {
+      const raw = window.sbLoad
+        ? await sbLoad('landingSidePanels', null)
+        : JSON.parse(localStorage.getItem('landingSidePanels') || 'null');
+      if (raw && Array.isArray(raw) && raw.length) panels = raw.map(p => ({ ...p, path: toWebPath(p.path) }));
+    } catch(e) {}
+
+    /* homeConfig 로드 */
+    let cfg = {};
+    try {
+      cfg = window.sbLoad
+        ? await sbLoad('homeConfig', {})
+        : JSON.parse(localStorage.getItem('homeConfig') || '{}');
+    } catch(e) {}
+
+    /* 슬라이드 DOM 주입 */
+    const container = document.getElementById('homeSlideshowContainer');
+    const dotsEl    = document.getElementById('homeDotsContainer');
+    if (!container) return;
+    container.querySelectorAll('.slide').forEach(s => s.remove());
+    dotsEl.innerHTML = '';
+    const overlay = container.querySelector('.slide-overlay');
+
+    slidePaths.forEach((src, i) => {
+      const div = document.createElement('div');
+      div.className = 'slide' + (i === 0 ? ' active' : '');
+      div.innerHTML = `<img src="${src}" alt="슬라이드 ${i+1}">`;
+      container.insertBefore(div, overlay);
+    });
+    slidePaths.forEach((_, i) => {
+      const span = document.createElement('span');
+      span.className = 'dot' + (i === 0 ? ' active' : '');
+      span.dataset.slide = i;
+      dotsEl.appendChild(span);
+    });
+
+    /* 슬라이드쇼 로직 */
+    const slides = container.querySelectorAll('.slide');
+    const dots   = dotsEl.querySelectorAll('.dot');
+    const prevBtn = container.querySelector('.prev-btn');
+    const nextBtn = container.querySelector('.next-btn');
+    let current = 0, timer = null;
 
     function showSlide(n) {
       if (n >= slides.length) current = 0;
-      if (n < 0) current = slides.length - 1;
+      else if (n < 0) current = slides.length - 1;
+      else current = n;
       slides.forEach(s => s.classList.remove('active'));
       dots.forEach(d => d.classList.remove('active'));
       slides[current].classList.add('active');
       if (dots[current]) dots[current].classList.add('active');
     }
-
-    function next() { current++; showSlide(current); resetTimer(); }
-    function prev() { current--; showSlide(current); resetTimer(); }
-    function startTimer() { timer = setInterval(() => { current++; showSlide(current); }, 5000); }
+    function startTimer() { timer = setInterval(() => showSlide(current + 1), 5000); }
     function resetTimer() { clearInterval(timer); startTimer(); }
 
-    if (prevBtn) prevBtn.addEventListener('click', prev);
-    if (nextBtn) nextBtn.addEventListener('click', next);
-
-    dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => { current = i; showSlide(current); resetTimer(); });
-    });
-
-    const container = document.querySelector('.slideshow-container');
-    if (container) {
-      container.addEventListener('mouseenter', () => clearInterval(timer));
-      container.addEventListener('mouseleave', startTimer);
-    }
-
-    showSlide(current);
+    if (prevBtn) prevBtn.addEventListener('click', () => { showSlide(current - 1); resetTimer(); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { showSlide(current + 1); resetTimer(); });
+    dots.forEach((dot, i) => dot.addEventListener('click', () => { showSlide(i); resetTimer(); }));
+    container.addEventListener('mouseenter', () => clearInterval(timer));
+    container.addEventListener('mouseleave', startTimer);
+    showSlide(0);
     startTimer();
 
-    // Apply homeConfig from localStorage if available
-    try {
-      const cfg = JSON.parse(localStorage.getItem('homeConfig') || '{}');
-      const msgEl = document.querySelector('.message-box-text');
-      const starsEl = document.querySelector('.message-box-rating .stars');
-      const ratingEl = document.querySelector('.message-box-rating span:last-child');
-      if (cfg.message && msgEl) msgEl.innerHTML = cfg.message.replace(/\n/g, '<br>');
-      if (cfg.stars && starsEl) starsEl.textContent = cfg.stars;
-      if (cfg.rating && ratingEl) ratingEl.textContent = cfg.rating;
-    } catch(e) {}
+    /* 사이드 패널 렌더 */
+    const sidePanel = document.querySelector('.desktop-side-panel');
+    if (sidePanel) {
+      sidePanel.querySelectorAll('.side-card').forEach(c => c.remove());
+      panels.forEach(panel => {
+        const card = document.createElement('div');
+        card.className = 'side-card';
+        card.onclick = () => navigateTo(panel.nav);
+        card.innerHTML = `
+          <img src="${panel.path}" alt="${panel.label}">
+          <div class="side-card-overlay"></div>
+          <span class="side-card-label">${panel.label}</span>
+        `;
+        sidePanel.appendChild(card);
+      });
+    }
+
+    /* 메시지 적용 */
+    const msgEl    = document.querySelector('.message-box-text');
+    const starsEl  = document.querySelector('.message-box-rating .stars');
+    const ratingEl = document.querySelector('.message-box-rating span:last-child');
+    if (msgEl) {
+      const main = cfg.mainMsg || cfg.message || '';
+      const sub  = cfg.subtitle || '';
+      if (main) {
+        msgEl.innerHTML = main.replace(/\n/g, '<br>')
+          + (sub ? `<br><span style="font-size:0.75em; opacity:0.75; font-weight:400;">${sub.replace(/\n/g,'<br>')}</span>` : '');
+      }
+    }
+    if (cfg.stars  && starsEl)  starsEl.textContent  = cfg.stars;
+    if (cfg.rating && ratingEl) ratingEl.textContent = cfg.rating;
   }
 
   initHomePage();

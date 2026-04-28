@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>작품 관리 | 관리자 패널</title>
+  <link rel="stylesheet" href="../assets/css/fonts.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    /* 인라인 레이블 행 (강의와 동일 패턴) */
+    .wk-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .wk-row label {
+      font-size: 12px;
+      color: var(--sub);
+      white-space: nowrap;
+      flex-shrink: 0;
+      width: 44px;
+      text-align: right;
+    }
+    .wk-row input,
+    .wk-row select {
+      flex: 1;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .wk-row input:focus,
+    .wk-row select:focus { border-color: rgba(201,169,110,0.5); }
+
+    /* 섹션 구분 */
+    .wk-section {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin: 14px 0 8px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* 모달 넓게 */
+    #workModal .modal-box { max-width: 660px; }
+
+    /* 유형 select 고정 */
+    #workType { flex: none; width: 140px; }
+
+    /* 배지 이모지 select */
+    #workBadgeEmoji { flex: none; width: 140px; }
+
+    /* 수상 동적 행 */
+    .award-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .award-emoji-sel {
+      flex: none;
+      width: 130px;
+      font-size: 13px;
+      padding: 7px 10px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+    }
+    .award-text-inp {
+      flex: 1;
+      font-size: 13px;
+      padding: 7px 10px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      outline: none;
+    }
+    .award-text-inp:focus,
+    .award-emoji-sel:focus { border-color: rgba(201,169,110,0.5); }
+
+    /* 링크 동적 행 */
+    .link-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .link-label-inp {
+      width: 130px;
+      flex: none;
+      font-size: 13px;
+      padding: 7px 10px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      outline: none;
+    }
+    .link-url-inp {
+      flex: 1;
+      font-size: 13px;
+      padding: 7px 10px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      outline: none;
+    }
+    .link-label-inp:focus,
+    .link-url-inp:focus { border-color: rgba(201,169,110,0.5); }
+    .link-check-btn {
+      flex: none;
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--sub);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex; align-items:center; justify-content:center;
+    }
+    .link-check-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .link-check-btn.ok  { border-color: var(--green); color: var(--green); }
+    .link-check-btn.err { border-color: var(--red);   color: var(--red);   }
+
+    /* 썸네일 패널 */
+    #thumbBox {
+      position: relative;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      background: var(--bg);
+      flex: 1;
+      min-height: 200px;
+    }
+    #thumbImg  { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:none; }
+    #thumbHint {
+      position: absolute; inset:0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: var(--sub); text-align:center; line-height:1.5;
+    }
+    /* 썸네일 + 파일 선택 버튼 */
+    .thumb-plus-btn {
+      position: absolute;
+      bottom: 6px; right: 6px;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.55);
+      border: 1.5px solid rgba(255,255,255,0.35);
+      color: #fff;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2;
+      transition: background 0.2s;
+    }
+    .thumb-plus-btn:hover { background: rgba(185,147,85,0.8); }
+    /* 이미지 경로 확인 버튼 */
+    .thumb-confirm-btn {
+      flex: none;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--sub);
+      font-size: 12px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .thumb-confirm-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── 드래그 핸들 ── */
+    .drag-handle {
+      cursor: grab;
+      color: var(--sub);
+      font-size: 16px;
+      padding: 0 8px 0 0;
+      user-select: none;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .drag-handle:active { cursor: grabbing; }
+    .item-row.drag-over { border: 1px solid var(--gold) !important; background: rgba(201,169,110,0.06); border-radius: 10px; }
+
+    /* textarea 공통 */
+    .wk-textarea {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 9px 12px;
+      outline: none;
+      resize: vertical;
+      line-height: 1.6;
+      transition: border-color 0.2s;
+    }
+    .wk-textarea:focus { border-color: rgba(201,169,110,0.5); }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="admin-header">
+  <div class="admin-logo">유형재 <span>관리자 패널</span></div>
+  <div class="header-right">
+    <a href="../index.html" target="_blank" class="header-preview-btn">홈페이지 보기 →</a>
+  </div>
+</header>
+
+<!-- BODY -->
+<div class="admin-body">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <a href="home.html"       class="sidebar-item">관리자페이지</a>
+    <a href="landing.html"    class="sidebar-item">Landing</a>
+    <a href="instructor.html" class="sidebar-item">강사</a>
+    <a href="lectures.html"   class="sidebar-item">강의 관리</a>
+    <a href="#" class="sidebar-item" id="sideWorks" onclick="switchWorksTab('film'); return false;">작업들</a>
+    <a href="#" class="sidebar-item sidebar-item-sub" id="sideFilm" onclick="switchWorksTab('film'); return false;">AI영화</a>
+    <a href="#" class="sidebar-item sidebar-item-sub" id="sideBook" onclick="switchWorksTab('book'); return false;">도서</a>
+    <a href="mv.html"         class="sidebar-item">M/V</a>
+    <a href="contact.html"    class="sidebar-item">Contact</a>
+    <div style="flex:1;"></div>
+    <a href="members.html"    class="sidebar-item">회원관리</a>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">작품 관리</div>
+        <div class="panel-subtitle">AI 영화·도서 작품을 추가·수정·삭제합니다</div>
+      </div>
+      <button class="btn btn-gold" onclick="openWorkModal()">+ 작품 추가</button>
+    </div>
+
+    <!-- Tabs + 열 수 설정 -->
+    <div style="display:flex; gap:8px; margin-bottom:20px; align-items:center;">
+      <button class="btn btn-gold btn-sm" id="worksTabFilm" onclick="switchWorksTab('film')">🎬 AI 영화</button>
+      <button class="btn btn-outline btn-sm" id="worksTabBook" onclick="switchWorksTab('book')">📚 도서</button>
+      <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
+        <label style="font-size:12px; color:var(--sub); white-space:nowrap;">한줄 열 수</label>
+        <select id="worksColsSel" onchange="saveWorksCols()"
+          style="background:var(--bg2); border:1px solid var(--border); border-radius:8px; color:var(--text);
+                 font-family:inherit; font-size:13px; padding:5px 10px; outline:none; cursor:pointer; transition:border-color 0.2s;"
+          onfocus="this.style.borderColor='rgba(201,169,110,0.5)'" onblur="this.style.borderColor='var(--border)'">
+          <option value="1">1열</option>
+          <option value="2">2열</option>
+          <option value="3">3열</option>
+          <option value="4" selected>4열</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" id="worksListTitle">🎬 AI 영화 목록</div>
+      <div class="item-list" id="worksList"></div>
+    </div>
+
+    <!-- AI영화 메시지 카드 -->
+    <div class="card" id="filmMsgCard">
+      <div class="card-title">💬 AI영화 페이지 메시지</div>
+      <div style="display:flex; gap:16px; align-items:flex-start; margin-bottom:10px;">
+        <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
+          <label style="font-size:12px; color:var(--sub);">메인 문구</label>
+          <textarea id="filmMainMsg" rows="2"
+            style="width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:inherit; font-size:13px; padding:9px 12px; outline:none; resize:vertical; line-height:1.6; transition:border-color 0.2s;"
+            placeholder="AI로 탄생한 영화들"></textarea>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
+          <label style="font-size:12px; color:var(--sub);">부제목</label>
+          <textarea id="filmSubMsg" rows="2"
+            style="width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:inherit; font-size:13px; padding:9px 12px; outline:none; resize:vertical; line-height:1.6; transition:border-color 0.2s;"
+            placeholder="생성형 AI를 활용해 제작한&#10;단편 영화 작품들을 소개합니다"></textarea>
+        </div>
+      </div>
+      <div style="display:flex; align-items:flex-end; gap:8px;">
+        <div style="flex:1;">
+          <label style="font-size:12px; color:var(--sub); display:block; margin-bottom:6px;">Mobile Message <span style="font-size:10px;">(20자 이내)</span></label>
+          <input id="filmMobile" type="text" placeholder="AI 영화, 세계를 만나다" maxlength="20"
+            style="width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:inherit; font-size:14px; padding:9px 12px; outline:none; transition:border-color 0.2s;">
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="saveWorksMsg('film')" style="flex-shrink:0; height:38px;">저장</button>
+      </div>
+    </div>
+
+    <!-- 도서 메시지 카드 -->
+    <div class="card" id="bookMsgCard" style="display:none;">
+      <div class="card-title">💬 도서 페이지 메시지</div>
+      <div style="display:flex; gap:16px; align-items:flex-start; margin-bottom:10px;">
+        <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
+          <label style="font-size:12px; color:var(--sub);">메인 문구</label>
+          <textarea id="bookMainMsg" rows="2"
+            style="width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:inherit; font-size:13px; padding:9px 12px; outline:none; resize:vertical; line-height:1.6; transition:border-color 0.2s;"
+            placeholder="출간 도서"></textarea>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
+          <label style="font-size:12px; color:var(--sub);">부제목</label>
+          <textarea id="bookSubMsg" rows="2"
+            style="width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:inherit; font-size:13px; padding:9px 12px; outline:none; resize:vertical; line-height:1.6; transition:border-color 0.2s;"
+            placeholder="AI 교육과 실무 노하우를 담은&#10;도서들을 소개합니다"></textarea>
+        </div>
+      </div>
+      <div style="display:flex; align-items:flex-end; gap:8px;">
+        <div style="flex:1;">
+          <label style="font-size:12px; color:var(--sub); display:block; margin-bottom:6px;">Mobile Message <span style="font-size:10px;">(20자 이내)</span></label>
+          <input id="bookMobile" type="text" placeholder="실무 노하우를 담은 출간 도서" maxlength="20"
+            style="width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:inherit; font-size:14px; padding:9px 12px; outline:none; transition:border-color 0.2s;">
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="saveWorksMsg('book')" style="flex-shrink:0; height:38px;">저장</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ 작품 팝업 모달 ══ -->
+<div class="modal-overlay" id="workModal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <div class="modal-title" id="workModalTitle">작품 추가</div>
+      <button class="modal-close-btn" onclick="confirmCloseWork()">✕</button>
+    </div>
+
+    <input type="hidden" id="workEditId" value="">
+
+    <!-- 전체를 좌(입력)/우(이미지) 2열로 -->
+    <div style="display:flex; gap:14px; align-items:stretch; margin-bottom:4px;">
+
+      <!-- 좌: 모든 입력 (유형~이미지경로) -->
+      <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:0;">
+
+        <!-- 기본 정보 -->
+        <div class="wk-section" style="margin-top:0;">기본 정보</div>
+        <div class="wk-row">
+          <label>유형</label>
+          <select id="workType" onchange="toggleWorkFields()">
+            <option value="film">🎬 AI 영화</option>
+            <option value="book">📚 도서</option>
+          </select>
+          <label style="width:auto; margin-left:8px;">연도</label>
+          <input id="workYear" type="number" placeholder="2025" min="2000" max="2050" style="width:90px; flex:none;">
+        </div>
+
+        <!-- 제목 (공통) -->
+        <div class="wk-row">
+          <label>제목 *</label>
+          <input id="workTitle" type="text" placeholder="작품명">
+        </div>
+
+        <!-- film 전용: 영문 + 배지 + 이미지 경로 -->
+        <div id="filmFieldsTop">
+          <div class="wk-row">
+            <label>영문</label>
+            <input id="workTitleEn" type="text" placeholder="English Title">
+          </div>
+          <div class="wk-row">
+            <label>배지</label>
+            <select id="workBadgeEmoji">
+              <option value="🏆">🏆 트로피</option>
+              <option value="🥇">🥇 금메달</option>
+              <option value="🥈">🥈 은메달</option>
+              <option value="🥉">🥉 동메달</option>
+              <option value="🎖️">🎖️ 훈장/표창</option>
+              <option value="🌟">🌟 특별상</option>
+              <option value="⭐">⭐ 선정</option>
+              <option value="🎗️">🎗️ 리본</option>
+              <option value="🏅">🏅 메달</option>
+              <option value="🎬">🎬 영화제</option>
+            </select>
+            <input id="workBadgeText" type="text" placeholder="금상" style="flex:1;">
+          </div>
+          <div class="wk-row">
+            <label>이미지</label>
+            <input id="workThumb" type="text" placeholder="../assets/images/poster.png"
+                   style="flex:1; font-size:12px; padding:7px 10px;">
+            <button class="thumb-confirm-btn" onclick="updateThumbPreview()">확인</button>
+          </div>
+        </div>
+
+        <!-- book 전용: 저자 + 이미지 경로 -->
+        <div id="bookFieldsTop" style="display:none;">
+          <div class="wk-row">
+            <label>저자</label>
+            <input id="workAuthor" type="text" placeholder="유형재 저">
+          </div>
+          <div class="wk-row">
+            <label>이미지</label>
+            <input id="workThumbBook" type="text" placeholder="../assets/images/cover.png"
+                   style="flex:1; font-size:12px; padding:7px 10px;"
+                   oninput="syncThumb(this.value)">
+            <button class="thumb-confirm-btn" onclick="updateThumbPreview()">확인</button>
+          </div>
+        </div>
+
+      </div><!-- /좌 -->
+
+      <!-- 우: 이미지 미리보기 (유형 행부터 이미지 경로 행까지 풀 높이) -->
+      <div style="width:160px; flex-shrink:0; display:flex; flex-direction:column;">
+        <div id="thumbBox">
+          <img id="thumbImg">
+          <span id="thumbHint">미리보기<br><span style="font-size:10px; opacity:.6;">+ 버튼으로<br>파일 선택</span></span>
+          <button class="thumb-plus-btn"
+                  onclick="document.getElementById('thumbFilePicker').click()"
+                  title="파일 선택">+</button>
+        </div>
+        <input type="file" id="thumbFilePicker" accept="image/*" style="display:none;"
+               onchange="onThumbFilePicked(this)">
+      </div><!-- /우 -->
+
+    </div><!-- /2열 -->
+
+    <!-- ③ film 전용: 수상 + 내용 -->
+    <div id="filmFields">
+      <div class="wk-section">수상 목록</div>
+      <div id="awardRows"></div>
+      <button type="button" class="add-cur-btn" onclick="addAwardRow()">+ 수상 내역 추가</button>
+
+      <div class="wk-section" style="margin-top:14px;">내용</div>
+      <div style="margin-bottom:8px;">
+        <div style="font-size:12px; color:var(--sub); margin-bottom:5px;">시놉시스 <span style="font-weight:400;">(단락 단위, 빈 줄로 구분)</span></div>
+        <textarea id="workSynopsis" class="wk-textarea" rows="4" placeholder="첫 번째 단락...&#10;&#10;두 번째 단락..."></textarea>
+      </div>
+      <div>
+        <div style="font-size:12px; color:var(--sub); margin-bottom:5px;">작품 정보 <span style="font-weight:400;">(줄 단위, 예: 러닝타임: 5분)</span></div>
+        <textarea id="workInfo" class="wk-textarea" rows="3" placeholder="주요 인물 : ...&#10;배경 : ...&#10;러닝타임 : ..."></textarea>
+      </div>
+    </div>
+
+    <!-- ④ book 전용: 내용 -->
+    <div id="bookFields" style="display:none;">
+      <div class="wk-section">내용</div>
+      <div style="font-size:12px; color:var(--sub); margin-bottom:5px;">책 소개 <span style="font-weight:400;">(단락 단위, 빈 줄로 구분)</span></div>
+      <textarea id="workDesc" class="wk-textarea" rows="5" placeholder="첫 번째 단락...&#10;&#10;두 번째 단락..."></textarea>
+    </div>
+
+    <!-- ⑤ 링크 -->
+    <div class="wk-section" style="margin-top:14px;">링크</div>
+    <div id="linkRows"></div>
+    <button type="button" class="add-cur-btn" onclick="addLinkRow()">+ 링크 추가</button>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeWorkModal()">취소</button>
+      <button class="btn btn-gold" onclick="saveWork()">저장</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="admin-data.js"></script>
+<script>
+let worksData = loadData('worksData', DEFAULT_WORKS);
+let currentWorksTab = 'film';
+
+/* ── 드래그 리오더 ── */
+let wkDragSrcIdx = null;
+
+function onWkDragStart(e, idx) {
+  wkDragSrcIdx = idx;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => e.target.closest('.item-row').style.opacity = '0.4', 0);
+}
+function onWkDragEnd(e) {
+  e.target.closest('.item-row').style.opacity = '';
+  document.querySelectorAll('#worksList .item-row').forEach(r => r.classList.remove('drag-over'));
+}
+function onWkDragOver(e, idx) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('#worksList .item-row').forEach(r => r.classList.remove('drag-over'));
+  const rows = document.querySelectorAll('#worksList .item-row');
+  if (rows[idx]) rows[idx].classList.add('drag-over');
+}
+function onWkDrop(e, idx) {
+  e.preventDefault();
+  document.querySelectorAll('#worksList .item-row').forEach(r => r.classList.remove('drag-over'));
+  if (wkDragSrcIdx === null || wkDragSrcIdx === idx) { wkDragSrcIdx = null; return; }
+  const arr = worksData[currentWorksTab] || [];
+  const moved = arr.splice(wkDragSrcIdx, 1)[0];
+  arr.splice(idx, 0, moved);
+  saveData('worksData', worksData);
+  renderWorksList();
+  toast('순서가 저장되었습니다');
+  wkDragSrcIdx = null;
+}
+
+/* ── 이모지 상수 ── */
+const AWARD_EMOJIS = [
+  {v:'🏆', l:'트로피'}, {v:'🥇', l:'금메달'}, {v:'🥈', l:'은메달'},
+  {v:'🥉', l:'동메달'}, {v:'🎖️', l:'훈장/표창'}, {v:'🌟', l:'특별상'},
+  {v:'⭐', l:'선정'}, {v:'🎗️', l:'리본'}, {v:'🏅', l:'메달'}, {v:'🎬', l:'영화제'}
+];
+
+function awardEmojiOpts(selected) {
+  return AWARD_EMOJIS.map(e =>
+    `<option value="${e.v}" ${selected === e.v ? 'selected' : ''}>${e.v} ${e.l}</option>`
+  ).join('');
+}
+
+/* ── 열 수 저장/로드 ── */
+function saveWorksCols() {
+  const sel = document.getElementById('worksColsSel');
+  const key = currentWorksTab === 'film' ? 'worksColsFilm' : 'worksColsBook';
+  localStorage.setItem(key, sel.value);
+  toast('저장되었습니다');
+}
+
+function loadWorksCols(tab) {
+  const key = tab === 'film' ? 'worksColsFilm' : 'worksColsBook';
+  const val = localStorage.getItem(key) || '4';
+  const sel = document.getElementById('worksColsSel');
+  if (sel) sel.value = val;
+}
+
+/* ── 탭 전환 + 사이드바 active ── */
+function switchWorksTab(tab) {
+  currentWorksTab = tab;
+  const isFilm = tab === 'film';
+
+  // 탭 버튼
+  document.getElementById('worksTabFilm').className = 'btn btn-sm ' + (isFilm ? 'btn-gold' : 'btn-outline');
+  document.getElementById('worksTabBook').className = 'btn btn-sm ' + (isFilm ? 'btn-outline' : 'btn-gold');
+
+  // 사이드바 active
+  document.getElementById('sideWorks').classList.remove('active');
+  document.getElementById('sideFilm').classList.toggle('active', isFilm);
+  document.getElementById('sideBook').classList.toggle('active', !isFilm);
+
+  // 목록 타이틀
+  document.getElementById('worksListTitle').textContent = isFilm ? '🎬 AI 영화 목록' : '📚 도서 목록';
+
+  // 열 수 드롭다운 + 메시지 카드 전환
+  loadWorksCols(tab);
+  loadWorksMsg(tab);
+
+  renderWorksList();
+}
+
+/* ── 목록 렌더 ── */
+function renderWorksList() {
+  const el = document.getElementById('worksList');
+  const items = worksData[currentWorksTab] || [];
+  if (!items.length) {
+    el.innerHTML = '<div class="empty-state">작품이 없습니다. 추가해주세요.</div>';
+    return;
+  }
+  el.innerHTML = items.map((item, i) => `
+    <div class="item-row" draggable="true"
+         ondragstart="onWkDragStart(event,${i})"
+         ondragend="onWkDragEnd(event)"
+         ondragover="onWkDragOver(event,${i})"
+         ondrop="onWkDrop(event,${i})">
+      <div class="item-info">
+        <span class="drag-handle" title="드래그로 순서 변경">☰</span>
+        ${item.thumb
+          ? `<img class="item-thumb" src="${item.thumb}" onerror="this.style.display='none'">`
+          : `<span class="item-emoji">${currentWorksTab === 'film' ? '🎬' : '📚'}</span>`}
+        <div style="min-width:0">
+          <div class="item-name">${escHtml(item.title)}</div>
+          <div class="item-meta">${item.year || ''}${item.badge ? ` · <span class="badge badge-gold">${escHtml(item.badge)}</span>` : ''}</div>
+        </div>
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-outline btn-sm" onclick="openWorkModal('${item.id}')">수정</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteWork('${item.id}')">삭제</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ── 모달 열기/닫기 ── */
+function openWorkModal(id) {
+  document.getElementById('workEditId').value = id || '';
+  if (id) {
+    const items = worksData[currentWorksTab] || [];
+    const item = items.find(i => i.id === id);
+    document.getElementById('workModalTitle').textContent = '작품 수정';
+    if (item) fillWorkForm(item);
+  } else {
+    document.getElementById('workModalTitle').textContent = '작품 추가';
+    clearWorkForm();
+    document.getElementById('workType').value = currentWorksTab;
+    toggleWorkFields();
+  }
+  document.getElementById('workModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeWorkModal() {
+  document.getElementById('workModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function confirmCloseWork() {
+  if (confirm('수정하신 내용을 취소하시겠습니까?')) closeWorkModal();
+}
+
+/* ── 폼 초기화 ── */
+function clearWorkForm() {
+  document.getElementById('workYear').value    = new Date().getFullYear();
+  document.getElementById('workTitle').value   = '';
+  document.getElementById('workTitleEn').value = '';
+  document.getElementById('workBadgeEmoji').value = '🏆';
+  document.getElementById('workBadgeText').value  = '';
+  document.getElementById('workSynopsis').value   = '';
+  document.getElementById('workInfo').value       = '';
+  document.getElementById('workAuthor').value     = '';
+  document.getElementById('workDesc').value       = '';
+  document.getElementById('workThumb').value     = '';
+  document.getElementById('workThumbBook').value = '';
+  document.getElementById('thumbImg').style.display  = 'none';
+  document.getElementById('thumbHint').style.display = 'flex';
+  document.getElementById('awardRows').innerHTML = '';
+  document.getElementById('linkRows').innerHTML  = '';
+}
+
+/* ── 폼 채우기 ── */
+function fillWorkForm(item) {
+  document.getElementById('workType').value    = item.type  || 'film';
+  document.getElementById('workYear').value    = item.year  || '';
+  document.getElementById('workTitle').value   = item.title || '';
+  document.getElementById('workTitleEn').value = item.titleEn || '';
+
+  // 배지 파싱 (구형: "🏆 금상" → emoji + text)
+  const { bEmoji, bText } = parseBadge(item.badge || '');
+  document.getElementById('workBadgeEmoji').value = bEmoji;
+  document.getElementById('workBadgeText').value  = bText;
+
+  document.getElementById('workSynopsis').value = (item.synopsisFull || []).join('\n\n');
+  document.getElementById('workInfo').value     = (item.info || []).join('\n');
+  document.getElementById('workAuthor').value   = (item.info || [])[0] || '';
+  document.getElementById('workDesc').value     = (item.descFull || []).join('\n\n');
+
+  // 썸네일
+  const thumbVal = item.thumb || '';
+  document.getElementById('workThumb').value     = thumbVal;
+  document.getElementById('workThumbBook').value = thumbVal;
+  updateThumbPreview();
+
+  // 수상 목록 (정규화: string[] → {emoji,text}[])
+  document.getElementById('awardRows').innerHTML = '';
+  normalizeAwards(item.awards || []).forEach(a => addAwardRow(a));
+
+  // 링크
+  document.getElementById('linkRows').innerHTML = '';
+  (item.links || []).forEach(l => addLinkRow(l));
+
+  toggleWorkFields();
+}
+
+/* ── 유형에 따라 필드 표시 ── */
+function toggleWorkFields() {
+  const isFilm = document.getElementById('workType').value === 'film';
+  document.getElementById('filmFieldsTop').style.display = isFilm ? '' : 'none';
+  document.getElementById('bookFieldsTop').style.display = isFilm ? 'none' : '';
+  document.getElementById('filmFields').style.display    = isFilm ? 'block' : 'none';
+  document.getElementById('bookFields').style.display    = isFilm ? 'none' : 'block';
+}
+
+/* ── 배지 파싱 ── */
+function parseBadge(str) {
+  if (!str) return { bEmoji: '🏆', bText: '' };
+  for (const e of AWARD_EMOJIS) {
+    if (str.startsWith(e.v)) return { bEmoji: e.v, bText: str.slice(e.v.length).trim() };
+  }
+  return { bEmoji: '🏆', bText: str };
+}
+
+/* ── 수상 정규화 (구형 string[] 호환) ── */
+function normalizeAwards(awards) {
+  if (!awards.length) return [];
+  if (typeof awards[0] === 'string') return awards.map(a => ({ emoji: '⭐', text: a }));
+  return awards;
+}
+
+/* ── 수상 행 추가 ── */
+function addAwardRow(data) {
+  const sel = (data && data.emoji) || '⭐';
+  const txt = (data && data.text)  || '';
+  const row = document.createElement('div');
+  row.className = 'award-row';
+  row.innerHTML = `
+    <select class="award-emoji-sel">${awardEmojiOpts(sel)}</select>
+    <input type="text" class="award-text-inp" placeholder="2025 서울 국제 AI 영화제 금상" value="${escHtml(txt)}">
+    <button type="button" class="cur-del-btn" onclick="this.closest('.award-row').remove()">✕</button>
+  `;
+  document.getElementById('awardRows').appendChild(row);
+}
+
+/* ── 링크 행 추가 ── */
+function addLinkRow(data) {
+  const lbl = (data && data.label) || '';
+  const url = (data && data.url)   || '';
+  const row = document.createElement('div');
+  row.className = 'link-row';
+  row.innerHTML = `
+    <input type="text" class="link-label-inp" placeholder="영화 보러가기" value="${escHtml(lbl)}">
+    <input type="text" class="link-url-inp"   placeholder="https://..."   value="${escHtml(url)}">
+    <button type="button" class="link-check-btn" onclick="checkWorkLink(this)" title="링크 열기">↗</button>
+    <button type="button" class="cur-del-btn"    onclick="this.closest('.link-row').remove()">✕</button>
+  `;
+  document.getElementById('linkRows').appendChild(row);
+}
+
+/* ── 링크 확인 버튼 ── */
+function checkWorkLink(btn) {
+  const url = btn.closest('.link-row').querySelector('.link-url-inp').value.trim();
+  try {
+    const u = new URL(url);
+    if (!['http:', 'https:'].includes(u.protocol)) throw new Error();
+    btn.textContent = '✓';
+    btn.classList.add('ok');
+    window.open(url, '_blank', 'noopener');
+    setTimeout(() => { btn.textContent = '↗'; btn.classList.remove('ok'); }, 2000);
+  } catch {
+    btn.textContent = '✗';
+    btn.classList.add('err');
+    setTimeout(() => { btn.textContent = '↗'; btn.classList.remove('err'); }, 2000);
+  }
+}
+
+/* ── 썸네일 미리보기 ── */
+function updateThumbPreview() {
+  // film/book 현재 보이는 입력란 값 사용
+  const isFilm = document.getElementById('workType').value === 'film';
+  const path = document.getElementById(isFilm ? 'workThumb' : 'workThumbBook').value.trim();
+  // workThumb 통합 (저장용)
+  if (!isFilm) document.getElementById('workThumb').value = path;
+  const img  = document.getElementById('thumbImg');
+  const hint = document.getElementById('thumbHint');
+  if (!path) {
+    img.style.display  = 'none';
+    hint.style.display = 'flex';
+    return;
+  }
+  img.onload  = () => { img.style.display = 'block'; hint.style.display = 'none'; };
+  img.onerror = () => { img.style.display = 'none';  hint.style.display = 'flex'; hint.innerHTML = '이미지 없음'; };
+  img.src = path;
+}
+
+/* book 이미지 입력과 workThumb 동기화 */
+function syncThumb(val) {
+  document.getElementById('workThumb').value = val;
+}
+
+/* ── 파일 선택 → 미리보기 + 경로 자동입력 ── */
+function onThumbFilePicked(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  // 미리보기 (FileReader로 즉시 표시)
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img  = document.getElementById('thumbImg');
+    const hint = document.getElementById('thumbHint');
+    img.src = e.target.result;
+    img.style.display  = 'block';
+    hint.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+  // 경로 자동 입력 (유형별 하위 폴더)
+  const isFilm = document.getElementById('workType').value === 'film';
+  const subfolder = isFilm ? 'posters' : 'books';
+  const suggestedPath = `../assets/images/${subfolder}/` + file.name;
+  document.getElementById('workThumb').value = suggestedPath;
+  const visibleInput = document.getElementById(isFilm ? 'workThumb' : 'workThumbBook');
+  visibleInput.value = suggestedPath;
+  // 파일 input 리셋 (같은 파일 재선택 가능하게)
+  input.value = '';
+}
+
+/* ── 저장 ── */
+function saveWork() {
+  const title = document.getElementById('workTitle').value.trim();
+  if (!title) { toast('제목을 입력해주세요', true); return; }
+
+  const type = document.getElementById('workType').value;
+  const year = parseInt(document.getElementById('workYear').value) || new Date().getFullYear();
+
+  // 배지
+  const bEmoji = document.getElementById('workBadgeEmoji').value;
+  const bText  = document.getElementById('workBadgeText').value.trim();
+  const badge  = bText ? `${bEmoji} ${bText}` : null;
+
+  // 수상 목록
+  const awards = [...document.querySelectorAll('#awardRows .award-row')].map(r => ({
+    emoji: r.querySelector('.award-emoji-sel').value,
+    text:  r.querySelector('.award-text-inp').value.trim()
+  })).filter(a => a.text);
+
+  // 링크
+  const links = [...document.querySelectorAll('#linkRows .link-row')].map(r => ({
+    label: r.querySelector('.link-label-inp').value.trim(),
+    url:   r.querySelector('.link-url-inp').value.trim()
+  })).filter(l => l.url);
+
+  const editId = document.getElementById('workEditId').value;
+  const id = editId || (type + '-' + Date.now());
+
+  let item = {
+    id, type, title, year,
+    badge,
+    thumb: document.getElementById('workThumb').value.trim() || null,
+    links
+  };
+
+  if (type === 'film') {
+    item.titleEn     = document.getElementById('workTitleEn').value.trim();
+    item.awards      = awards;
+    item.synopsisFull = document.getElementById('workSynopsis').value.trim()
+      .split(/\n\n+/).map(s => s.trim()).filter(Boolean);
+    item.info = document.getElementById('workInfo').value.trim()
+      .split('\n').map(s => s.trim()).filter(Boolean);
+  } else {
+    item.info = [document.getElementById('workAuthor').value.trim()].filter(Boolean);
+    item.descFull = document.getElementById('workDesc').value.trim()
+      .split(/\n\n+/).map(s => s.trim()).filter(Boolean);
+  }
+
+  if (!worksData[type]) worksData[type] = [];
+  if (editId) {
+    const idx = worksData[type].findIndex(i => i.id === editId);
+    if (idx > -1) worksData[type][idx] = item; else worksData[type].push(item);
+  } else {
+    worksData[type].push(item);
+  }
+
+  saveData('worksData', worksData);
+  closeWorkModal();
+  if (currentWorksTab !== type) switchWorksTab(type); else renderWorksList();
+  toast(editId ? '작품이 수정되었습니다' : '작품이 추가되었습니다');
+}
+
+/* ── 삭제 ── */
+function deleteWork(id) {
+  const items = worksData[currentWorksTab] || [];
+  const item  = items.find(i => i.id === id);
+  if (!confirm(`"${item?.title}" 작품을 삭제하시겠습니까?`)) return;
+  worksData[currentWorksTab] = items.filter(i => i.id !== id);
+  saveData('worksData', worksData);
+  renderWorksList();
+  toast('작품이 삭제되었습니다');
+}
+
+/* ── 페이지 메시지 저장/로드 ── */
+function loadWorksMsg(tab) {
+  const isFilm = tab === 'film';
+  const key  = isFilm ? 'pageMsgWorksFilm' : 'pageMsgWorksBook';
+  const def  = isFilm ? DEFAULT_PAGE_MSGS.worksFilm : DEFAULT_PAGE_MSGS.worksBook;
+  const d    = loadData(key, def);
+  const mainId   = isFilm ? 'filmMainMsg' : 'bookMainMsg';
+  const subId    = isFilm ? 'filmSubMsg'  : 'bookSubMsg';
+  const mobileId = isFilm ? 'filmMobile'  : 'bookMobile';
+  document.getElementById(mainId).value   = d.mainMsg  || '';
+  document.getElementById(subId).value    = d.subtitle || '';
+  document.getElementById(mobileId).value = d.mobile   || '';
+
+  // 카드 표시 전환
+  document.getElementById('filmMsgCard').style.display = isFilm ? '' : 'none';
+  document.getElementById('bookMsgCard').style.display = isFilm ? 'none' : '';
+}
+
+function saveWorksMsg(tab) {
+  const isFilm   = tab === 'film';
+  const key      = isFilm ? 'pageMsgWorksFilm' : 'pageMsgWorksBook';
+  const mainId   = isFilm ? 'filmMainMsg' : 'bookMainMsg';
+  const subId    = isFilm ? 'filmSubMsg'  : 'bookSubMsg';
+  const mobileId = isFilm ? 'filmMobile'  : 'bookMobile';
+  const d = {
+    mainMsg:  document.getElementById(mainId).value.trim(),
+    subtitle: document.getElementById(subId).value.trim(),
+    mobile:   document.getElementById(mobileId).value.trim()
+  };
+  if (saveData(key, d)) toast('메시지가 저장되었습니다');
+  else toast('저장 실패', true);
+}
+
+// ── 경로 마이그레이션: posters/books 하위폴더 누락 수정 ──
+(function migrateThumbPaths() {
+  const raw = localStorage.getItem('worksData');
+  if (!raw) return;
+  const data = JSON.parse(raw);
+  let changed = false;
+  (data.film || []).forEach(item => {
+    if (item.thumb && /\.\.\/assets\/images\/[^/]+\.(png|jpg|jpeg|webp)/i.test(item.thumb)) {
+      item.thumb = item.thumb.replace('../assets/images/', '../assets/images/posters/');
+      changed = true;
+    }
+  });
+  (data.book || []).forEach(item => {
+    if (item.thumb && /\.\.\/assets\/images\/[^/]+\.(png|jpg|jpeg|webp)/i.test(item.thumb)) {
+      item.thumb = item.thumb.replace('../assets/images/', '../assets/images/books/');
+      changed = true;
+    }
+  });
+  if (changed) localStorage.setItem('worksData', JSON.stringify(data));
+})();
+
+// ── INIT ──
+switchWorksTab('film'); // loadWorksMsg는 switchWorksTab 내부에서 호출됨
+</script>
+</body>
+</html>

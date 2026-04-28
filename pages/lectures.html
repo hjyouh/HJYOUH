@@ -28,54 +28,7 @@
     <!-- List area -->
     <div class="lec-list-wrap" id="lecListArea">
       <div class="history-list">
-        <div class="history-year-group">
-          <h3>2026</h3>
-          <ul>
-            <li>청주시 사회복지협의회</li>
-            <li>한국저작권 위원회</li>
-            <li>부경대학교 나노공학</li>
-          </ul>
-        </div>
-        <div class="history-year-group">
-          <h3>2025</h3>
-          <ul>
-            <li>보험설계사 (6주)</li>
-            <li>충청남도 소상공인 프랜차이즈 협회 (6주)</li>
-            <li>외국인 유학생(10주)</li>
-            <li>글공방 (8주)</li>
-            <li>맘카페</li>
-            <li>한국언론진흥재단</li>
-            <li>경북일보</li>
-            <li>한국건설생활환경시험연구원</li>
-            <li>개인 소그룹 (8주)</li>
-            <li>한진그룹</li>
-            <li>효성오앤비</li>
-            <li>인천소상공인협의회 (6주)</li>
-            <li>창원공업고등학교</li>
-            <li>안성평생학습원 (12회차)</li>
-            <li>강남 이젠학원</li>
-          </ul>
-        </div>
-        <div class="history-year-group">
-          <h3>2024</h3>
-          <ul>
-            <li>어린이집 교사 AI 연수 특강</li>
-            <li>맘카페</li>
-            <li>한국경제인협회(구 전경련)</li>
-            <li>성신여자대학교</li>
-            <li>경북일보 기자</li>
-            <li>파속채소연구소</li>
-            <li>인천소상공인 (5주)</li>
-            <li>부산여자대학교</li>
-            <li>경북일보 기자</li>
-            <li>제주여상 (2회차)</li>
-            <li>중구새로일자리센터 (10주)</li>
-            <li>인천 소상공인 (6주)</li>
-            <li>육군 전쟁사 집필 위원</li>
-            <li>전국 소상공인 연합회 간담회</li>
-            <li>성신여자대학교</li>
-          </ul>
-        </div>
+        <div id="lecHistoryList"></div>
       </div>
     </div>
 
@@ -189,50 +142,61 @@
     flex: 1 1 0;
     min-height: 0;
     overflow-y: auto;
-    padding: 20px 28px 100px;
+    padding: 60px 48px 100px;
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.15) transparent;
     z-index: 10;
   }
 
+  /* 강의이력 탭 활성화 시 패널 숨김 → 전체 너비 사용 */
+  .lec-section.history-mode .lec-panel { display: none; }
+
   .history-list {
-    max-width: 600px;
-    margin: 0 auto;
     width: 100%;
-    background: rgba(0,0,0,0.65);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  #lecHistoryList {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+  .history-year-group {
+    background: rgba(0,0,0,0.60);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 16px;
     border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
   }
-  .history-year-group { margin-bottom: 32px; }
   .history-year-group h3 {
-    font-size: 22px;
-    font-weight: 400;
-    color: var(--accent-gold, #c9a96e);
-    margin: 0 0 4px 0;
-    border-bottom: none;
-    padding-bottom: 0;
-    font-family: 'Poppins', 'SUITE', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #c9a96e;
+    margin: 0;
+    padding: 16px 24px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 0.5px;
   }
-  .history-year-group ul { list-style: none; padding: 0; margin: 0; }
+  .history-year-group ul { list-style: none; padding: 12px 24px 16px; margin: 0; }
   .history-year-group li {
-    font-size: 16px;
-    color: #ffffff;
-    margin-bottom: 4px;
-    line-height: 1.5;
-    position: relative;
-    padding-left: 0;
+    font-size: 15px;
+    color: rgba(255,255,255,0.88);
+    margin-bottom: 6px;
+    line-height: 1.55;
     text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     display: flex;
     align-items: flex-start;
-    gap: 6px;
+    gap: 8px;
   }
+  .history-year-group li:last-child { margin-bottom: 0; }
   .history-year-group li::before {
     content: "•";
-    color: rgba(255,255,255,0.4);
-    position: relative;
+    color: #c9a96e;
+    flex-shrink: 0;
+    margin-top: 1px;
   }
 
   /* ===== CARDS AREA (over image) ===== */
@@ -266,13 +230,14 @@
 
   .lec-msg {
     position: absolute;
-    bottom: 28px;
-    left: 28px;
+    bottom: 20px;
+    left: 32px;
     background: rgba(0, 0, 0, 0.55);
     backdrop-filter: blur(12px);
     border-radius: 16px;
     border: 1px solid rgba(255,255,255,0.15);
-    padding: 16px 20px;
+    padding: 16px 24px;
+    width: 500px;
     z-index: 20;
   }
 
@@ -548,7 +513,7 @@
 
   .lec-cur-title {
     display: block;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     color: #fff;
     margin-bottom: 2px;
@@ -556,7 +521,7 @@
 
   .lec-cur-desc {
     display: block;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-secondary);
     line-height: 1.5;
   }
@@ -571,7 +536,7 @@
   /* ===== FIXED CONTACT FOOTER ===== */
   .lec-panel-footer {
     flex-shrink: 0;
-    padding: 12px 24px 14px;
+    padding: 8px 20px;
     border-top: 1px solid var(--border-color);
     display: flex;
     align-items: center;
@@ -583,7 +548,8 @@
   .lec-footer-left {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
+    align-items: center;
   }
 
   .lec-footer-row {
@@ -598,7 +564,7 @@
   }
 
   .lec-footer-item {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--text-secondary);
     text-decoration: none;
     transition: color 0.2s ease;
@@ -631,7 +597,7 @@
   .lec-zoom-layer {
     position: absolute;
     inset: 0;
-    z-index: 15;
+    z-index: 25;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
@@ -663,7 +629,7 @@
 
   .lec-zoom-close {
     position: absolute;
-    top: 16px;
+    top: 70px;
     right: 16px;
     width: 40px;
     height: 40px;
@@ -678,7 +644,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    z-index: 5;
+    z-index: 10;
   }
 
   .lec-zoom-close:hover {
@@ -856,36 +822,130 @@
 
   var DEFAULT_LECTURES = LECTURES_DATA.slice();
 
+  var DEFAULT_LECTURE_HISTORY = [
+    { year: 2026, items: [
+      '인사이트 코리아 AI 특강',
+      '청주시 사회복지협의회 생성형 AI활용 자기개발 특강',
+      '한국저작권 위원회 보도자료 역량강화 특강',
+      '부경대학교 나노공학 AI 활용 대학생 교육 (3주)'
+    ]},
+    { year: 2025, items: [
+      'GA 보험설계사 AI 마케팅 특강, online (2차시 * 6주)',
+      '충청남도 소상공인 역량강화 특강',
+      '프랜차이즈 협회 FC AI 활용 전략교육 (6주)',
+      '외국인 유학생 AI 마케팅 활용 강좌 (10주)',
+      '글공방 "도서 출간"',
+      "맘카페 '고수특강'",
+      '한국언론진흥재단 AI를 활용한 뉴스 기사 작성 심화과정',
+      '경북일보 ChatGPT 활용 보도자료',
+      '한국건설생활환경시험연구원 데이터 분석 감사 업무',
+      '개인 소그룹 AI 영화 제작 (8주)',
+      '한진그룹 IT 업무 혁신 AI Agent 실무 활용',
+      '효성오앤비 업무 생산성 10배 UP!',
+      '인천소상공인협의회 생성형AI 심화과정 (6주)',
+      '창원공업고등학교 프롬프트엔지니어링',
+      '안성평생학습원 생성형AI활용 심화과정 (12주)',
+      '강남 이젠학원 영화제작 심화반'
+    ]},
+    { year: 2024, items: [
+      '어린이집 교사 AI 연수 특강',
+      '맘카페 고수특강',
+      '한국경제인협회(구 전경련) AI 특강',
+      '성신여자대학교 특강',
+      '경북일보 기자 "생성형AI-2" 특강',
+      '파속채소연구소 특강',
+      '인천소상공인 역량 강화 특강 (5주)',
+      '부산여자대학교 "AI 업무효율화" 특강',
+      '경북일보 기자 "생성형AI-2" 특강',
+      '제주여상 "생성형AI" 특강',
+      '중구새로일자리센터 경력보유자 특강 (10주)',
+      '인천 소상공인 3차 역량 강화 (6주)',
+      '육군 전쟁사 집필 위원 "GPTs 특강"',
+      '전국 소상공인 연합회 간담회',
+      '성신여자대학교 특강'
+    ]}
+  ];
+
+  function renderLecHistory() {
+    var histList = document.getElementById('lecHistoryList');
+    if (!histList) return;
+    var history;
+    try {
+      var saved = localStorage.getItem('lectureHistoryData');
+      history = saved ? JSON.parse(saved) : DEFAULT_LECTURE_HISTORY;
+    } catch(e) {
+      history = DEFAULT_LECTURE_HISTORY;
+    }
+    history = history.slice().sort(function(a, b) { return b.year - a.year; });
+    histList.innerHTML = history.map(function(group) {
+      return '<div class="history-year-group"><h3>' + group.year + '</h3><ul>' +
+        group.items.map(function(item) { return '<li>' + item + '</li>'; }).join('') +
+        '</ul></div>';
+    }).join('');
+  }
+
+  // 페이지 메시지 로드 (localStorage → .lec-msg)
+  function loadLecPageMsg() {
+    try {
+      const cfg = JSON.parse(localStorage.getItem('pageMsgLectures') || '{}');
+      const textEl = document.querySelector('.lec-msg .message-box-text');
+      const subEl  = document.querySelector('.lec-msg .message-box-sub');
+      if (textEl && cfg.mainMsg)  textEl.innerHTML  = cfg.mainMsg.replace(/\n/g,'<br>');
+      if (subEl  && cfg.subtitle) subEl.innerHTML   = cfg.subtitle.replace(/\n/g,'<br>');
+    } catch(e) {}
+  }
+  loadLecPageMsg();
+
   // Tab switching logic
   window.switchLecTab = function(tabId) {
-    const btnMat = document.getElementById('tab-material');
+    const btnMat  = document.getElementById('tab-material');
     const btnList = document.getElementById('tab-list');
-    const areaMat = document.getElementById('lecMaterialArea');
+    const areaMat  = document.getElementById('lecMaterialArea');
     const areaList = document.getElementById('lecListArea');
-    
+    const section  = document.querySelector('.lec-section');
+
     if (tabId === 'material') {
       btnMat.classList.add('active');
       btnList.classList.remove('active');
-      areaMat.style.display = 'block';
+      areaMat.style.display  = 'block';
       areaList.style.display = 'none';
       document.querySelector('.lec-msg').style.display = '';
+      section.classList.remove('history-mode');
     } else {
       btnMat.classList.remove('active');
       btnList.classList.add('active');
-      areaMat.style.display = 'none';
+      areaMat.style.display  = 'none';
       areaList.style.display = 'block';
-      document.querySelector('.lec-msg').style.display = 'none';
-      // Hide detail panel if a card was selected
+      document.querySelector('.lec-msg').style.display = '';
+      section.classList.add('history-mode');
       showLecPanelEmpty();
+      renderLecHistory();
     }
   };
+
+  function fixLecPaths(arr) {
+    return (arr || []).map(lec => {
+      if (lec.image && lec.image.startsWith('../assets/')) lec.image = lec.image.replace('../assets/', 'assets/');
+      return lec;
+    });
+  }
 
   function loadLecturesData() {
     try {
       const saved = localStorage.getItem('lecturesData');
-      if (saved) return JSON.parse(saved);
+      if (saved) return fixLecPaths(JSON.parse(saved));
     } catch(e) {}
     return DEFAULT_LECTURES;
+  }
+
+  async function loadLecturesDataCloud() {
+    try {
+      if (window.sbLoad) {
+        const data = await sbLoad('lecturesData', null);
+        if (data && Array.isArray(data) && data.length) return fixLecPaths(data);
+      }
+    } catch(e) {}
+    return loadLecturesData();
   }
 
   function showLecPanelEmpty() {
@@ -899,7 +959,7 @@
   function renderLecGrid() {
     const grid = document.getElementById('lecGrid');
     if (!grid) return;
-    const data = loadLecturesData();
+    const data = _cachedLectures || loadLecturesData();
     grid.innerHTML = data.map((lec, i) => `
       <div class="lec-card" data-idx="${i}" onclick="openLecDetail(${i})">
         <div class="lec-card-inner" style="background-image:url('${lec.image || ''}')">
@@ -915,7 +975,7 @@
   }
 
   function openLecDetail(index) {
-    const data = loadLecturesData();
+    const data = _cachedLectures || loadLecturesData();
     const lec = data[index];
     if (!lec) return;
 
@@ -992,7 +1052,10 @@
     renderLecGrid();
   }
 
-  function initLecturesPage() {
+  let _cachedLectures = null;
+
+  async function initLecturesPage() {
+    _cachedLectures = await loadLecturesDataCloud();
     renderLecGrid();
     showLecPanelEmpty();
   }

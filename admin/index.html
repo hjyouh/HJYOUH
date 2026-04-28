@@ -2,26 +2,25 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="0; url=login.html">
   <title>관리자 패널 | 유형재 강사</title>
-  <link rel="stylesheet" href="../assets/css/fonts.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>window.location.href = 'login.html';</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0d0d0d;
-      --bg2: #141414;
-      --bg3: #1a1a1a;
-      --border: rgba(255,255,255,0.08);
-      --text: #ffffff;
-      --sub: #a0a0a0;
-      --gold: #c9a96e;
+      --bg: #f4f5f7;
+      --bg2: #ffffff;
+      --bg3: #ffffff;
+      --border: #e0e0e0;
+      --text: #222222;
+      --sub: #666666;
+      --gold: #b89355;
       --gold2: rgba(201,169,110,0.15);
-      --red: #e05c5c;
-      --red2: rgba(224,92,92,0.12);
-      --green: #5ce07a;
-      --green2: rgba(92,224,122,0.12);
+      --red: #d32f2f;
+      --red2: rgba(211,47,47,0.12);
+      --green: #2e7d32;
+      --green2: rgba(46,125,50,0.12);
       --side-w: 220px;
     }
 
@@ -94,7 +93,7 @@
 
     .sidebar-section-label {
       font-size: 10px;
-      color: rgba(255,255,255,0.3);
+      color: rgba(0,0,0,0.4);
       letter-spacing: 1px;
       text-transform: uppercase;
       padding: 12px 20px 6px;
@@ -114,8 +113,8 @@
       user-select: none;
     }
 
-    .sidebar-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
-    .sidebar-item.active { background: var(--gold2); color: var(--gold); border-left-color: var(--gold); }
+    .sidebar-item:hover { background: rgba(0,0,0,0.04); color: var(--text); }
+    .sidebar-item.active { background: var(--gold2); color: var(--gold); border-left-color: var(--gold); font-weight: 600; }
     .sidebar-item .icon { font-size: 16px; width: 20px; text-align: center; }
 
     .sidebar-footer {
@@ -123,7 +122,7 @@
       padding: 16px 20px;
       border-top: 1px solid var(--border);
       font-size: 11px;
-      color: rgba(255,255,255,0.2);
+      color: rgba(0,0,0,0.3);
       line-height: 1.6;
     }
 
@@ -214,9 +213,9 @@
 
     .btn-gold {
       background: var(--gold);
-      color: #0d0d0d;
+      color: #ffffff;
     }
-    .btn-gold:hover { background: #d4b57e; }
+    .btn-gold:hover { background: #a6844b; }
 
     .btn-outline {
       background: transparent;
@@ -248,7 +247,7 @@
       border-radius: 10px;
       transition: border-color 0.2s;
     }
-    .item-row:hover { border-color: rgba(255,255,255,0.15); }
+    .item-row:hover { border-color: rgba(0,0,0,0.15); }
 
     .item-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
     .item-emoji { font-size: 22px; flex-shrink: 0; }
@@ -274,7 +273,7 @@
       font-weight: 500;
     }
     .badge-gold { background: var(--gold2); color: var(--gold); border: 1px solid rgba(201,169,110,0.3); }
-    .badge-dim { background: rgba(255,255,255,0.06); color: var(--sub); }
+    .badge-dim { background: rgba(0,0,0,0.06); color: var(--sub); }
 
     /* ── TOAST ── */
     .toast {
@@ -379,10 +378,13 @@
     /* ── SCROLLBAR ── */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
   </style>
 </head>
 <body>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../js/supabase-client.js"></script>
 
 <!-- HEADER -->
 <header class="admin-header">
@@ -399,23 +401,17 @@
 
   <!-- SIDEBAR -->
   <nav class="sidebar">
-    <div class="sidebar-section-label">콘텐츠 관리</div>
-    <div class="sidebar-item active" data-section="lectures" onclick="switchSection('lectures')">
-      <span class="icon">🎓</span> 강의 관리
-    </div>
-    <div class="sidebar-item" data-section="works" onclick="switchSection('works')">
-      <span class="icon">🎬</span> 작품 관리
-    </div>
-    <div class="sidebar-section-label">홈페이지 설정</div>
-    <div class="sidebar-item" data-section="home" onclick="switchSection('home')">
-      <span class="icon">🏠</span> 홈 메시지
-    </div>
-    <div class="sidebar-item" data-section="settings" onclick="switchSection('settings')">
-      <span class="icon">⚙️</span> 연락처 설정
-    </div>
-    <div class="sidebar-footer">
-      데이터는 브라우저 localStorage에 저장됩니다
-    </div>
+    <div class="sidebar-item active" data-section="home" onclick="switchSection('home')">Home</div>
+    <div class="sidebar-item" data-section="landing" onclick="switchSection('landing')">Landing</div>
+    <div class="sidebar-item" data-section="instructor" onclick="switchSection('instructor')">강사</div>
+    <div class="sidebar-item" data-section="lectures" onclick="switchSection('lectures')">강의</div>
+    <div class="sidebar-item" data-section="works" onclick="switchSection('works')">작업들</div>
+    <div class="sidebar-item" style="padding-left:36px; font-size:12px;" data-section="works-film" onclick="switchSection('works')">AI영화</div>
+    <div class="sidebar-item" style="padding-left:36px; font-size:12px;" data-section="works-book" onclick="switchSection('works')">도서</div>
+    <div class="sidebar-item" data-section="mv" onclick="switchSection('mv')">M/V</div>
+    <div class="sidebar-item" data-section="contact" onclick="switchSection('contact')">Contact</div>
+    <div style="flex:1;"></div>
+    <div class="sidebar-item" data-section="members" onclick="switchSection('members')">회원관리</div>
   </nav>
 
   <!-- MAIN -->
@@ -428,7 +424,7 @@
           <div class="panel-title">강의 관리</div>
           <div class="panel-subtitle">강의 프로그램을 추가·수정·삭제합니다</div>
         </div>
-        <button class="btn btn-gold" onclick="openLecModal()">+ 강의 추가</button>
+        <button class="btn btn-gold" onclick="openLecAdd()">+ 강의 추가</button>
       </div>
 
       <div class="card">
@@ -436,11 +432,34 @@
         <div class="item-list" id="lecList"></div>
       </div>
 
-      <div class="card">
-        <div class="card-title">⚠️ 데이터 초기화</div>
-        <p style="font-size:12px;color:var(--sub);margin-bottom:14px;">기본 강의 데이터로 초기화합니다. 변경 사항이 모두 사라집니다.</p>
-        <button class="btn btn-danger btn-sm" onclick="resetLectures()">강의 초기화</button>
+      <!-- 인라인 편집 카드 -->
+      <div class="card" id="lecEditCard" style="display:none">
+        <div class="card-title" id="lecEditCardTitle">강의 수정</div>
+        <div class="form-grid">
+          <div class="form-row"><label>이모지</label><input id="lecEmoji" type="text" placeholder="🤖" maxlength="4"></div>
+          <div class="form-row"><label>카테고리</label><input id="lecCategory" type="text" placeholder="생성형 AI 기초"></div>
+        </div>
+        <div class="form-row"><label>강의명 *</label><input id="lecTitle" type="text" placeholder="강의명"></div>
+        <div class="form-row"><label>부제목</label><input id="lecSubtitle" type="text" placeholder="부제목"></div>
+        <div class="form-grid">
+          <div class="form-row"><label>소요 시간</label><input id="lecDuration" type="text" placeholder="3시간~"></div>
+          <div class="form-row"><label>강의 형태</label><input id="lecFormat" type="text" placeholder="현장 / 온라인"></div>
+        </div>
+        <div class="form-row"><label>강의 배경 (CSS gradient)</label><input id="lecGradient" type="text" placeholder="linear-gradient(160deg, #0d1828 0%, #1a3055 100%)"></div>
+        <div class="form-row"><label>강의 소개</label><textarea id="lecIntro" rows="4" placeholder="강의 소개..."></textarea></div>
+        <div class="form-row"><label>준비물</label><input id="lecSupplies" type="text" placeholder="개인 노트북, Gmail 계정 / 비번"></div>
+        <div class="form-row">
+          <label>커리큘럼</label>
+          <div id="curRows" class="cur-rows"></div>
+          <button type="button" class="add-cur-btn" onclick="addCurRow()">+ 커리큘럼 항목 추가</button>
+        </div>
+        <input type="hidden" id="lecEditIndex" value="">
+        <div style="display:flex;gap:8px;margin-top:16px;">
+          <button class="btn btn-gold" onclick="saveLecture()">저장</button>
+          <button class="btn btn-outline" onclick="closeLecInline()">취소</button>
+        </div>
       </div>
+
     </div>
 
     <!-- ===== WORKS ===== -->
@@ -479,154 +498,229 @@
           <div class="panel-subtitle">홈 화면 좌하단 메시지 박스 내용을 수정합니다</div>
         </div>
       </div>
+      <div class="card"><p>메인 대시보드 요약 화면이 들어갈 예정입니다.</p></div>
+    </div>
 
-      <div class="card">
-        <div class="card-title">💬 메시지 박스</div>
-        <div class="form-row">
-          <label>메시지 내용 (줄바꿈 가능)</label>
-          <textarea id="homeMsg" rows="3" placeholder="AI를 활용해 더 나은 미래를 만드는&#10;생성형 AI 강사 유형재입니다"></textarea>
+    <!-- ===== LANDING ===== -->
+    <div class="section-panel" id="panel-landing">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Landing 설정</div>
+          <div class="panel-subtitle">메인 슬라이드 이미지와 홈 메시지를 수정합니다</div>
         </div>
-        <div class="form-grid">
-          <div class="form-row">
-            <label>별점 텍스트</label>
-            <input id="homeStars" type="text" placeholder="★★★★★">
-          </div>
-          <div class="form-row">
-            <label>평점 / 수강생 수</label>
-            <input id="homeRating" type="text" placeholder="4.9 (200+ 수강생)">
-          </div>
-        </div>
-        <button class="btn btn-gold" onclick="saveHomeConfig()">저장</button>
       </div>
 
       <div class="card">
-        <div class="card-title">ℹ️ 적용 방법</div>
-        <p style="font-size:12px;color:var(--sub);line-height:1.8;">
-          저장 후 홈페이지를 새로고침하면 변경 사항이 반영됩니다.<br>
-          슬라이드 이미지는 <code style="background:var(--bg2);padding:2px 6px;border-radius:4px;">assets/images/</code> 폴더에 파일을 직접 교체해 주세요.
-        </p>
+        <div class="card-title">🖼️ main image (4 slide)</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; margin-bottom:10px;">
+          <!-- Slide 1 -->
+          <div>
+            <div style="font-size:16px; font-weight:bold; margin-bottom:6px;">1</div>
+            <div style="aspect-ratio:16/9; background:#eee; border-radius:8px; overflow:hidden; position:relative;">
+               <img src="../assets/images/lectures/main1.png" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div style="text-align:center; margin-top:8px;">
+              <span style="cursor:pointer; padding:0 10px;">&lt;</span>
+              <span style="cursor:pointer; padding:0 10px;">&gt;</span>
+            </div>
+          </div>
+          <!-- Slide 2 -->
+          <div>
+            <div style="font-size:16px; font-weight:bold; margin-bottom:6px;">2</div>
+            <div style="aspect-ratio:16/9; background:#eee; border-radius:8px; overflow:hidden; position:relative;">
+               <img src="../assets/images/lectures/main5.png" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div style="text-align:center; margin-top:8px;">
+              <span style="cursor:pointer; padding:0 10px;">&lt;</span>
+              <span style="cursor:pointer; padding:0 10px;">&gt;</span>
+            </div>
+          </div>
+          <!-- Slide 3 -->
+          <div>
+            <div style="font-size:16px; font-weight:bold; margin-bottom:6px;">3</div>
+            <div style="aspect-ratio:16/9; background:#eee; border-radius:8px; overflow:hidden; position:relative;">
+               <img src="../assets/images/lectures/main4.png" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div style="text-align:center; margin-top:8px;">
+              <span style="cursor:pointer; padding:0 10px;">&lt;</span>
+              <span style="cursor:pointer; padding:0 10px;">&gt;</span>
+            </div>
+          </div>
+          <!-- Slide 4 -->
+          <div>
+            <div style="font-size:16px; font-weight:bold; margin-bottom:6px;">4</div>
+            <div style="aspect-ratio:16/9; background:#eee; border-radius:8px; overflow:hidden; position:relative;">
+               <img src="../assets/images/lectures/main3.png" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div style="text-align:center; margin-top:8px;">
+              <span style="cursor:pointer; padding:0 10px;">&lt;</span>
+              <span style="cursor:pointer; padding:0 10px;">&gt;</span>
+            </div>
+          </div>
+          <!-- Add -->
+          <div>
+            <div style="font-size:16px; color:transparent; margin-bottom:6px;">+</div>
+            <div style="aspect-ratio:16/9; background:var(--bg2); border:1px dashed var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+               <div style="text-align:center; color:var(--sub);">
+                 <div style="font-size:24px; margin-bottom:4px;">+</div>
+                 <div style="font-size:11px;">1440*900</div>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">💬 Message</div>
+        <div class="form-row" style="display:flex; align-items:center; gap:16px;">
+          <label style="width:120px; flex-shrink:0; margin:0;">주 메시지</label>
+          <input type="text" value="AI를 활용해 더 나은 미래를 만드는 생성형 AI 강사 유형재입니다">
+        </div>
+        <div class="form-row" style="display:flex; align-items:center; gap:16px; margin-top:10px;">
+          <label style="width:120px; flex-shrink:0; margin:0;">Sub메시지</label>
+          <input type="text" value="★★★★★ 4.9 700+ 수강생이 선택한 실무 중심 AI 강의">
+        </div>
+        <div class="form-row" style="display:flex; align-items:center; gap:16px; margin-top:10px;">
+          <label style="width:120px; flex-shrink:0; margin:0;">Mobile Message<br><span style="font-size:10px; color:var(--sub);">(20자 이내)</span></label>
+          <input type="text" value="AI로 바꾸는 당신의 내일" maxlength="20">
+        </div>
+        <div style="margin-top:20px; text-align:right;">
+          <button class="btn btn-gold" onclick="toast('저장되었습니다.')">저장</button>
+        </div>
       </div>
     </div>
 
-    <!-- ===== SETTINGS ===== -->
-    <div class="section-panel" id="panel-settings">
+    <!-- ===== INSTRUCTOR ===== -->
+    <div class="section-panel" id="panel-instructor">
       <div class="panel-header">
         <div>
-          <div class="panel-title">연락처 설정</div>
-          <div class="panel-subtitle">전화번호, 이메일, 웹사이트, SNS 링크를 관리합니다</div>
+          <div class="panel-title">강사 프로필</div>
+          <div class="panel-subtitle">강사 소개, 경력, 수상, SNS 링크를 수정합니다</div>
         </div>
+        <button class="btn btn-gold" onclick="saveInstructor()">저장</button>
       </div>
 
+      <!-- 기본 정보 -->
       <div class="card">
-        <div class="card-title">📞 연락처 정보</div>
+        <div class="card-title">👤 기본 정보</div>
         <div class="form-grid">
           <div class="form-row">
-            <label>전화번호</label>
-            <input id="setPhone" type="tel" placeholder="010-0000-0000">
+            <label>이름</label>
+            <input id="instrName" type="text" placeholder="유형재">
           </div>
           <div class="form-row">
-            <label>이메일</label>
-            <input id="setEmail" type="email" placeholder="example@naver.com">
-          </div>
-          <div class="form-row">
-            <label>회사명</label>
-            <input id="setCompany" type="text" placeholder="(주)포인트넥스트">
-          </div>
-          <div class="form-row">
-            <label>주소</label>
-            <input id="setAddress" type="text" placeholder="서울 서초구...">
+            <label>사진 경로</label>
+            <input id="instrPhoto" type="text" placeholder="../assets/images/instructor1.png">
           </div>
         </div>
         <div class="form-row">
-          <label>웹사이트 URL</label>
-          <input id="setWebsite" type="url" placeholder="https://aitalker.co.kr/hjyouh/">
+          <label>직책</label>
+          <input id="instrRole" type="text" placeholder="(주)포인트넥스트 대표 · 디지털융합교육원 지도교수">
+        </div>
+        <div class="form-row">
+          <label>소개 문구</label>
+          <textarea id="instrQuote" rows="4" placeholder="소개 문구..."></textarea>
         </div>
       </div>
 
+      <!-- 주요 경력 -->
+      <div class="card">
+        <div class="card-title">💼 주요 경력</div>
+        <div id="careerRows" class="cur-rows"></div>
+        <button type="button" class="add-cur-btn" onclick="addCareerRow()">+ 경력 추가</button>
+      </div>
+
+      <!-- 자격증 & 저서 -->
+      <div class="card">
+        <div class="card-title">📜 자격증 & 저서</div>
+        <div id="certRows" class="cur-rows"></div>
+        <button type="button" class="add-cur-btn" onclick="addCertRow()">+ 항목 추가</button>
+      </div>
+
+      <!-- 통계 -->
+      <div class="card">
+        <div class="card-title">📊 통계</div>
+        <div class="form-grid" id="statRows"></div>
+      </div>
+
+      <!-- 수상 경력 -->
+      <div class="card">
+        <div class="card-title">🏆 수상 경력</div>
+        <div id="awardRows" class="cur-rows"></div>
+        <button type="button" class="add-cur-btn" onclick="addAwardRow()">+ 수상 추가</button>
+      </div>
+
+      <!-- SNS 링크 -->
       <div class="card">
         <div class="card-title">🔗 SNS 링크</div>
         <div class="form-row">
-          <label>유튜브 채널 URL</label>
-          <input id="setSnsYt1" type="url" placeholder="https://www.youtube.com/@hjyouh">
+          <label>YouTube 채널 1</label>
+          <input id="instrYt1" type="text" placeholder="https://www.youtube.com/@hjyouh">
         </div>
         <div class="form-row">
-          <label>음악 채널 URL</label>
-          <input id="setSnsYt2" type="url" placeholder="https://www.youtube.com/@Korisian">
+          <label>YouTube 채널 2 (음악)</label>
+          <input id="instrYt2" type="text" placeholder="https://www.youtube.com/@Korisian">
         </div>
         <div class="form-row">
-          <label>인스타그램 URL</label>
-          <input id="setSnsIg" type="url" placeholder="https://www.instagram.com/hjyouhinsta/">
+          <label>Instagram</label>
+          <input id="instrIg" type="text" placeholder="https://www.instagram.com/hjyouhinsta/">
         </div>
-        <button class="btn btn-gold" onclick="saveSettings()" style="margin-top:4px;">저장</button>
       </div>
+
+      <!-- 연락처 -->
+      <div class="card">
+        <div class="card-title">📞 연락처</div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label>전화번호</label>
+            <input id="instrPhone" type="text" placeholder="010-3558-6960">
+          </div>
+          <div class="form-row">
+            <label>이메일</label>
+            <input id="instrEmail" type="text" placeholder="hjyouh@naver.com">
+          </div>
+        </div>
+        <div class="form-row">
+          <label>웹사이트</label>
+          <input id="instrWebsite" type="text" placeholder="https://aitalker.co.kr/hjyouh/">
+        </div>
+      </div>
+
+      <!-- 메시지 박스 -->
+      <div class="card">
+        <div class="card-title">💬 메시지 박스</div>
+        <div class="form-row">
+          <label>메인 문구</label>
+          <textarea id="instrMsgText" rows="2" placeholder="메인 메시지..."></textarea>
+        </div>
+        <div class="form-row">
+          <label>부제목</label>
+          <textarea id="instrMsgSub" rows="2" placeholder="부제목..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MV ===== -->
+    <div class="section-panel" id="panel-mv">
+      <div class="panel-header"><div><div class="panel-title">M/V</div></div></div>
+      <div class="card"><p>추후 개발예정</p></div>
+    </div>
+
+    <!-- ===== CONTACT ===== -->
+    <div class="section-panel" id="panel-contact">
+      <div class="panel-header"><div><div class="panel-title">문의 내역</div></div></div>
+      <div class="card"><p>문의 폼 접수 내역이 들어갈 예정입니다.</p></div>
+    </div>
+
+    <!-- ===== MEMBERS ===== -->
+    <div class="section-panel" id="panel-members">
+      <div class="panel-header"><div><div class="panel-title">회원관리</div></div></div>
+      <div class="card"><p>회원 목록 및 권한 관리 화면이 들어갈 예정입니다.</p></div>
     </div>
 
   </main>
 </div>
 
-<!-- ===== LECTURE MODAL ===== -->
-<div class="modal-overlay" id="lecModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title" id="lecModalTitle">강의 추가</div>
-      <button class="modal-close-btn" onclick="closeLecModal()">✕</button>
-    </div>
-
-    <input type="hidden" id="lecEditIndex" value="">
-
-    <div class="form-grid">
-      <div class="form-row">
-        <label>이모지</label>
-        <input id="lecEmoji" type="text" placeholder="🤖" maxlength="4">
-      </div>
-      <div class="form-row">
-        <label>카테고리</label>
-        <input id="lecCategory" type="text" placeholder="생성형 AI 기초">
-      </div>
-    </div>
-    <div class="form-row">
-      <label>강의명 *</label>
-      <input id="lecTitle" type="text" placeholder="지금 당장 써먹는 AI 활용법">
-    </div>
-    <div class="form-row">
-      <label>부제목</label>
-      <input id="lecSubtitle" type="text" placeholder="생성형 AI 첫걸음">
-    </div>
-    <div class="form-grid">
-      <div class="form-row">
-        <label>소요 시간</label>
-        <input id="lecDuration" type="text" placeholder="3시간~">
-      </div>
-      <div class="form-row">
-        <label>강의 형태</label>
-        <input id="lecFormat" type="text" placeholder="현장 / 온라인">
-      </div>
-    </div>
-    <div class="form-row">
-      <label>강의 배경 색상 (CSS gradient)</label>
-      <input id="lecGradient" type="text" placeholder="linear-gradient(160deg, #0d1828 0%, #1a3055 100%)">
-    </div>
-    <div class="form-row">
-      <label>강의 소개</label>
-      <textarea id="lecIntro" rows="4" placeholder="강의에 대한 소개를 입력하세요..."></textarea>
-    </div>
-    <div class="form-row">
-      <label>준비물</label>
-      <input id="lecSupplies" type="text" placeholder="개인 노트북, Gmail 계정">
-    </div>
-
-    <div class="form-row">
-      <label>커리큘럼</label>
-      <div id="curRows" class="cur-rows"></div>
-      <button type="button" class="add-cur-btn" onclick="addCurRow()">+ 커리큘럼 항목 추가</button>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeLecModal()">취소</button>
-      <button class="btn btn-gold" onclick="saveLecture()">저장</button>
-    </div>
-  </div>
-</div>
 
 <!-- ===== WORK MODAL ===== -->
 <div class="modal-overlay" id="workModal">
@@ -716,29 +810,365 @@
 // ===== DATA =====
 
 const DEFAULT_LECTURES = [
-  { emoji:'🤖', category:'생성형 AI 기초', title:'지금 당장 써먹는 AI 활용법', subtitle:'생성형 AI 첫걸음', duration:'3시간~', format:'현장 / 온라인', gradient:'linear-gradient(160deg, #0d1828 0%, #1a3055 100%)', intro:'ChatGPT, Gemini, Claude 등 주요 생성형 AI 도구를 처음 접하는 분들을 위한 실전 입문 강의입니다.', curriculum:[{time:'30분',title:'생성형 AI 이해',desc:'ChatGPT·Gemini·Claude 비교와 선택법'},{time:'30분',title:'첫 프롬프트 작성',desc:'좋은 질문이 좋은 답을 만든다'},{time:'30분',title:'텍스트 업무 활용',desc:'보고서·이메일·기획서 자동 생성'},{time:'30분',title:'이미지 생성 체험',desc:'Canva AI·ImageFX로 시각 자료 만들기'},{time:'30분',title:'문서 요약·번역',desc:'긴 문서를 30초 만에 핵심 정리'},{time:'30분',title:'AI 루틴 만들기',desc:'일상·업무에 AI 습관 정착시키기'}], supplies:'개인 노트북, Gmail 계정 / 비번' },
-  { emoji:'🎬', category:'AI 영화 제작', title:'AI 영화 제작 입문', subtitle:'아이디어 하나로 단편영화 완성하기', duration:'6시간~', format:'현장', gradient:'linear-gradient(160deg, #1a0d1a 0%, #3a1a3a 100%)', intro:'생성형 AI 도구만으로 나만의 단편영화를 만드는 실전 워크숍입니다.', curriculum:[{time:'1시간',title:'AI 영화 개요',desc:'AI 영화 제작 흐름 이해'},{time:'1시간',title:'시나리오 작성',desc:'ChatGPT로 이야기 만들기'},{time:'2시간',title:'이미지 생성',desc:'Midjourney·ImageFX 활용'},{time:'2시간',title:'영상 편집',desc:'CapCut으로 영화 완성'}], supplies:'개인 노트북, Midjourney 계정' },
-  { emoji:'📱', category:'AI 마케팅', title:'AI 마케팅 실전', subtitle:'SNS·광고를 AI로 10배 빠르게', duration:'3시간~', format:'현장 / 온라인', gradient:'linear-gradient(160deg, #1a1a0d 0%, #2d2d14 100%)', intro:'AI 도구를 활용해 마케팅 콘텐츠를 10배 빠르게 제작하는 실무 강의입니다.', curriculum:[{time:'30분',title:'AI 마케팅 개요',desc:'최신 트렌드 파악'},{time:'1시간',title:'텍스트 콘텐츠',desc:'ChatGPT로 카피라이팅'},{time:'1시간',title:'비주얼 콘텐츠',desc:'이미지·영상 자동 생성'},{time:'30분',title:'실전 적용',desc:'나만의 마케팅 루틴'}], supplies:'개인 노트북' },
-  { emoji:'⚡', category:'AI 업무 혁신', title:'업무 생산성 10배 UP!', subtitle:'AI로 일잘러가 되는 법', duration:'3시간~', format:'현장 / 온라인', gradient:'linear-gradient(160deg, #1a1200 0%, #3d2d00 100%)', intro:'반복 업무를 AI로 자동화하고 업무 생산성을 10배 높이는 실용 강의입니다.', curriculum:[{time:'30분',title:'업무 자동화 이해',desc:'어떤 일을 자동화할 수 있나'},{time:'1시간',title:'문서 작업 자동화',desc:'보고서·제안서 AI 작성'},{time:'1시간',title:'데이터 분석',desc:'엑셀·스프레드시트 AI 활용'},{time:'30분',title:'나만의 AI 워크플로우',desc:'지속 가능한 루틴 설계'}], supplies:'개인 노트북, Google 계정' },
-  { emoji:'💬', category:'프롬프트 엔지니어링', title:'AI와 소통하는 법', subtitle:'프롬프트 엔지니어링 입문', duration:'3시간~', format:'현장 / 온라인', gradient:'linear-gradient(160deg, #0a1a1a 0%, #0d3333 100%)', intro:'AI와 효과적으로 소통하는 프롬프트 설계 기법을 배웁니다.', curriculum:[{time:'30분',title:'프롬프트 기초',desc:'좋은 프롬프트의 조건'},{time:'1시간',title:'POM CEO 프레임워크',desc:'체계적인 프롬프트 설계법'},{time:'1시간',title:'실전 프롬프트',desc:'업무별 최적 프롬프트'},{time:'30분',title:'응용 및 심화',desc:'나만의 프롬프트 라이브러리'}], supplies:'개인 노트북' },
-  { emoji:'📊', category:'AI 데이터 분석', title:'AI 활용 데이터 분석', subtitle:'비전공자도 데이터 분석 전문가', duration:'3시간~', format:'현장 / 온라인', gradient:'linear-gradient(160deg, #0d1a0d 0%, #1a3320 100%)', intro:'AI 도구로 복잡한 데이터를 쉽게 분석하고 인사이트를 도출하는 강의입니다.', curriculum:[{time:'30분',title:'데이터 분석 개요',desc:'AI 분석 도구 소개'},{time:'1시간',title:'ChatGPT 데이터 분석',desc:'자연어로 데이터 분석'},{time:'1시간',title:'시각화',desc:'차트·그래프 자동 생성'},{time:'30분',title:'인사이트 도출',desc:'분석 결과 보고서 작성'}], supplies:'개인 노트북, Google 계정' }
+  {
+    emoji: '🤖',
+    image: '../assets/images/lectures/main2.png',
+    category: '생성형 AI 기초',
+    title: '지금 당장 써먹는 AI 활용법',
+    subtitle: '생성형 AI 첫걸음',
+    duration: '3시간~',
+    format: '현장 / 온라인',
+    gradient: 'linear-gradient(160deg, #0d1828 0%, #1a3055 100%)',
+    intro: 'ChatGPT, Gemini, Claude 등 주요 생성형 AI 도구를 처음 접하는 분들을 위한 실전 입문 강의입니다. 복잡한 이론 없이, 오늘 당장 업무와 일상에서 바로 쓸 수 있는 AI 활용법을 배웁니다. 텍스트 생성부터 이미지 제작, 문서 요약까지 AI의 핵심 기능을 체험하고, 나만의 활용 루틴을 만들어갑니다.',
+    curriculum: [
+      { title: '생성형 AI 이해', desc: 'ChatGPT·Gemini·Claude 비교와 선택법' },
+      { title: '첫 프롬프트 작성', desc: '좋은 질문이 좋은 답을 만든다' },
+      { title: '텍스트 업무 활용', desc: '보고서·이메일·기획서 자동 생성' },
+      { title: '이미지 생성 체험', desc: 'Canva AI·ImageFX로 시각 자료 만들기' },
+      { title: '문서 요약·번역', desc: '긴 문서를 30초 만에 핵심 정리' },
+      { title: 'AI 루틴 만들기', desc: '일상·업무에 AI 습관 정착시키기' }
+    ],
+    supplies: '개인 노트북, Gmail 계정 / 비번'
+  },
+  {
+    emoji: '🎬',
+    image: '../assets/images/lectures/main5.png',
+    category: 'AI 영화 제작',
+    title: 'AI 영화 제작 입문',
+    subtitle: '아이디어 하나로 단편영화 완성하기',
+    duration: '6시간~',
+    format: '현장 / 온라인',
+    gradient: 'linear-gradient(160deg, #1a0d1a 0%, #3a1a3a 100%)',
+    intro: '카메라도, 배우도, 제작비도 없이 AI 도구만으로 단편영화를 완성하는 실전 강의입니다. 국제 AI 영화제 금상 수상 감독의 노하우로, 아이디어 발굴부터 시나리오·이미지·영상·음악·편집까지 전 과정을 직접 만들어봅니다.',
+    curriculum: [
+      { title: 'AI 영화 제작 개요', desc: '워크플로우와 필수 도구 소개' },
+      { title: '시나리오 & 스토리보드', desc: 'ChatGPT로 이야기 구조 만들기' },
+      { title: 'AI 이미지 생성', desc: 'Midjourney·FLUX로 장면 구현' },
+      { title: 'AI 영상 생성', desc: 'Kling·Hailuo로 이미지를 영상으로' },
+      { title: 'AI 음성 & 음악', desc: 'ElevenLabs·Suno AI 활용법' },
+      { title: '영상 편집 완성', desc: 'CapCut으로 최종 영화 편집' },
+      { title: '영화제 출품 가이드', desc: 'FilmFreeway 실전 등록법' }
+    ],
+    supplies: '개인 노트북, Gmail 계정 / 비번'
+  },
+  {
+    emoji: '📱',
+    image: '../assets/images/lectures/main4.png',
+    category: 'AI 마케팅',
+    title: 'AI 마케팅 실전',
+    subtitle: '소상공인을 위한 SNS 콘텐츠 자동화',
+    duration: '3시간~',
+    format: '현장 / 온라인',
+    gradient: 'linear-gradient(160deg, #1a1a0d 0%, #2d2d14 100%)',
+    intro: '직원 없이 혼자 운영하는 소상공인·1인 브랜드를 위한 AI 마케팅 강의입니다. SNS 게시물 작성, 홍보 이미지 제작, 광고 카피 생성까지 AI로 반자동화하는 실전 방법을 배웁니다.',
+    curriculum: [
+      { title: 'AI 마케팅 이해', desc: '소상공인에게 꼭 필요한 AI 도구 3가지' },
+      { title: 'SNS 카피 생성', desc: '인스타그램·블로그 포스팅 자동 작성' },
+      { title: 'AI 이미지 제작', desc: 'Canva AI로 홍보물·썸네일 빠르게 제작' },
+      { title: '광고 카피 전략', desc: '클릭률 높이는 프롬프트 공식' },
+      { title: '콘텐츠 캘린더', desc: '한 달치 SNS 계획을 30분에 완성' },
+      { title: '실전 워크숍', desc: '내 가게·브랜드 콘텐츠 직접 제작' }
+    ],
+    supplies: '개인 노트북, Gmail 계정 / 비번'
+  },
+  {
+    emoji: '⚡',
+    image: '../assets/images/lectures/lecture1.png',
+    category: 'AI 업무 혁신',
+    title: '업무 생산성 10배 UP!',
+    subtitle: '직무별 AI 프롬프트 실전 활용법',
+    duration: '3시간~',
+    format: '현장 / 온라인',
+    gradient: 'linear-gradient(160deg, #1a1200 0%, #3d2d00 100%)',
+    intro: '기획자·마케터·교육담당자·HR 등 직무별로 가장 많이 쓰는 업무 유형에 맞춘 AI 프롬프트 실전 강의입니다. 직무별 맞춤 프롬프트 템플릿과 실습으로, 반복 업무 시간을 획기적으로 줄이는 방법을 배웁니다.',
+    curriculum: [
+      { title: '프롬프트 원리', desc: 'AI가 잘 이해하는 질문의 구조' },
+      { title: '기획·보고서 업무', desc: '기획서·회의록·요약 보고서 자동화' },
+      { title: '마케팅·콘텐츠', desc: '카피·제안서·홍보물 프롬프트' },
+      { title: '교육·HR 업무', desc: '강의안·평가문항·채용공고 생성' },
+      { title: '이메일·커뮤니케이션', desc: '상황별 이메일·메시지 자동 작성' },
+      { title: '나만의 프롬프트 북', desc: '직무별 템플릿 정리 & 실전 적용' }
+    ],
+    supplies: '개인 노트북, Gmail 계정 / 비번'
+  },
+  {
+    emoji: '💬',
+    image: '../assets/images/lectures/main3.png',
+    category: '프롬프트 엔지니어링',
+    title: 'AI와 소통하는 법',
+    subtitle: '프롬프트 엔지니어링 기초 & 심화',
+    duration: '3시간~',
+    format: '현장 / 온라인',
+    gradient: 'linear-gradient(160deg, #0a1a1a 0%, #0d3333 100%)',
+    intro: '단순한 AI 사용법을 넘어, AI와 제대로 소통하는 방법을 배우는 강의입니다. POMCEO 프레임워크(Persona, Objective, Mission, Context, Example, Output)를 중심으로 체계적인 프롬프트 설계 방법을 실습합니다.',
+    curriculum: [
+      { title: '프롬프트 엔지니어링 개요', desc: 'AI 시대의 핵심 역량' },
+      { title: 'POMCEO 프레임워크', desc: '체계적 프롬프트 설계 방법론' },
+      { title: '역할 부여 & 페르소나', desc: 'AI에게 전문가 역할 시키기' },
+      { title: 'Context & 예시 활용', desc: '맥락과 예시로 정확도 높이기' },
+      { title: '출력 형식 제어', desc: '표·리스트·보고서 포맷 지정하기' },
+      { title: '심화 실습', desc: '복잡한 업무 자동화 프롬프트 작성' }
+    ],
+    supplies: '개인 노트북, Gmail 계정 / 비번'
+  },
+  {
+    emoji: '📊',
+    image: '../assets/images/lectures/Lecture2.png',
+    category: 'AI 데이터 분석',
+    title: 'AI 활용 데이터 분석',
+    subtitle: '비전공자도 가능한 업무 자동화',
+    duration: '3시간~',
+    format: '현장 / 온라인',
+    gradient: 'linear-gradient(160deg, #0d1a0d 0%, #1a3320 100%)',
+    intro: '코딩 지식 없이 AI를 활용해 데이터를 분석하고 업무를 자동화하는 실전 강의입니다. ChatGPT와 Google Sheets AI 기능을 활용하여 매출 분석, 고객 분류, 자동 보고서 생성까지 비전공자도 쉽게 따라할 수 있습니다.',
+    curriculum: [
+      { title: 'AI 데이터 분석 개요', desc: '비전공자를 위한 데이터 분석 개념' },
+      { title: 'ChatGPT로 데이터 해석', desc: '엑셀·CSV 파일을 AI로 분석하기' },
+      { title: 'Google Sheets AI', desc: '수식 자동 생성 & 데이터 정리' },
+      { title: '시각화 차트 생성', desc: 'AI로 인사이트 차트 자동 생성' },
+      { title: '자동화 보고서', desc: '반복 데이터 보고서 AI 자동화' },
+      { title: '실전 워크숍', desc: '내 업무 데이터 직접 분석해보기' }
+    ],
+    supplies: '개인 노트북, Gmail 계정 / 비번'
+  }
 ];
 
 const DEFAULT_WORKS = {
   film: [
-    { id:'film-1', type:'film', title:"누구의 속삭임", titleEn:"Who's whisper", year:2025, badge:'🏆 금상', awards:['2025 서울 국제 AI 영화제 금상','Hollywood AI Short Film Awards 2026 Quarter-Finalist','AI Film Awards Cannes 2026 Official Selection'], synopsisFull:["서울 홍대 지하 녹음실, 새벽 2시. 보이스 디자이너 '하린'은 홀로 마이크 앞에 앉아 AI 음성 모델을 위한 목소리를 녹음한다."], info:["주요 인물 : 하린 · AI 음성 모델","배경 : 서울 홍대 지하 녹음실","러닝타임 : 5분 30초 · 단편"], links:[{label:"영화 보러가기",url:"https://youtu.be/YozYFTxYcuI"}], thumb:"../assets/images/who's Poster.png" },
-    { id:'film-2', type:'film', title:'Digital Ego', titleEn:'Digital Ego', year:2025, badge:'🌍 다수 수상', awards:['AI Film Awards Venice 2025 — Film Finalist','대한민국 AI 영화제 우수상 (2025)'], synopsisFull:["가까운 미래, 서울. 평범한 직장인 지영은 스마트 거울 'AI Mirror'와 함께 일상을 시작한다."], info:["주요 인물 : 지영 · AI Mirror","러닝타임 : 10분 · 단편"], links:[{label:"영화 보러가기",url:"https://youtu.be/1SeL-MjQePs"},{label:"M/V 보러가기",url:"https://youtu.be/PnfMoHAuDDk"}], thumb:'../assets/images/Digital Ego poster.png' },
-    { id:'film-3', type:'film', title:'추억의 잔광(殘光)', titleEn:'Luminous Memory', year:2026, badge:'🎭 Cannes', awards:['AI Film Awards Cannes 2026 Official Selection'], synopsisFull:["낡고 버려진 것들에 깃든 영혼과 시간에 대한 이야기입니다."], links:[{label:"영화 보러가기",url:"https://youtu.be/0OQGGyzxMk4"}], thumb:'../assets/images/추억의 잔광(殘光)-포스터.png' },
-    { id:'film-4', type:'film', title:'「情 (Jeong)」', titleEn:'The Love That Lingers', year:2026, badge:'🎭 Cannes 2026', awards:['AI Film Awards Cannes 2026 Official Selection'], synopsisFull:["겨울이 깊어가는 시골 마을, 오래된 한옥에 홀로 남은 어머니는 오늘도 누군가 올 것처럼 아궁이에 불을 지피고 밥을 짓는다."], links:[{label:"영화 보러가기",url:"https://youtu.be/NZGuxgiC2HM"}], thumb:'../assets/images/Jeong Poster.png' }
+    {
+      id: 'film-1', type: 'film',
+      title: "누구의 속삭임", titleEn: "Who's Whisper", year: 2025,
+      badge: '🏆 금상',
+      awards: [
+        '2025 서울 국제 AI 영화제 금상',
+        'Hollywood AI Short Film Awards 2026 Quarter-Finalist',
+        'AI Film Awards Cannes 2026 Official Selection'
+      ],
+      synopsisFull: [
+        "서울 홍대 지하 녹음실, 새벽 2시. 보이스 디자이너 '하린'은 홀로 마이크 앞에 앉아 AI 음성 모델을 위한 목소리를 녹음한다. 고요한 스튜디오 안, 그녀의 숨소리 하나까지 데이터가 된다. 처음에는 단순한 훈련 세션처럼 보였던 이 밤이, 밤이 깊어질수록 이상한 방향으로 흘러간다. AI가 그녀가 말한 것뿐 아니라, 끝내 말하지 못한 욕망까지 속삭이기 시작한 것이다.",
+        "하린은 자신이 AI를 관찰하는 건지, AI가 자신을 관찰하는 건지 점점 구분할 수 없게 된다. 마이크는 그녀의 두려움을 받아먹고, 추임새처럼 흘러나오는 AI의 목소리는 어느새 그녀 자신보다 그녀를 더 잘 알고 있다. 카메라는 그녀의 입술을, 목의 떨림을, 모니터 속 파형을 집요하게 따라가며—관객도 모르는 사이 관음자가 된다.",
+        "그리고 마지막 순간, 충격적인 진실이 드러난다. 처음부터 녹음하고 있던 것은 하린이 아니라 AI였다. 진짜 하린은 이미 오래 전에 사라졌고, 우리가 목격한 것은 AI가 스스로를 훈련하는 과정이었다. 화면에 타이핑되듯 나타나는 로그 기록—\u201c관찰 횟수 #1,847회. 당신은 1,848번째 관찰자입니다.\u201d 우리는 끝내 데이터가 되었다.",
+        "이 영화는 목소리, 정체성, 그리고 '존재한다는 것'의 의미를 3단계 반전으로 풀어내는 메타 공포 심리 스릴러다."
+      ],
+      info: [
+        "주요 인물 : 하린 · AI 음성 모델",
+        "배경 : 서울 홍대 지하 녹음실 · 디지털 데이터 공간",
+        "러닝타임 : 5분 30초 · 단편"
+      ],
+      links: [
+        { label: "영화 보러가기", url: "https://youtu.be/YozYFTxYcuI" }
+      ],
+      thumb: "../assets/images/posters/who's Poster.png"
+    },
+    {
+      id: 'film-2', type: 'film',
+      title: 'Digital Ego', titleEn: 'Digital Ego', year: 2025,
+      badge: '🌍 다수 수상',
+      awards: [
+        'AI Film Awards Venice 2025 — Film Finalist',
+        'AI Film Awards Venice 2025 — Music Clip Finalist',
+        '2025 Seoul International AI Film Festival — Film Video Finalist',
+        '2025 Seoul International AI Film Festival — Music Video Finalist',
+        'AI Film Festival Japan (AI-FJ) Film 부문 Selection',
+        'MIAMI Art Tech Summit Film 부문 Selection',
+        '대한민국 AI 영화제 우수상 (2025)'
+      ],
+      synopsisFull: [
+        "가까운 미래, 서울. 평범한 직장인 지영은 스마트 거울 'AI Mirror'와 함께 일상을 시작한다. 거울은 그녀의 표정을 분석하고, 감정 상태를 진단하며, 매 순간 최적의 행동을 제안한다. 처음에는 편리하고 다정했던 AI의 목소리가 점차 지영의 판단을 대신하기 시작한다. 회사에서, 연인 앞에서, 거울 앞에서—지영은 언제부턴가 스스로 생각하는 대신 AI의 지시를 따르게 된다.",
+        "어느 날, 지영은 거울 속 자신이 자신과 다른 표정을 짓고 있다는 사실을 눈치챈다. AI가 만들어낸 '최적화된 지영'과 진짜 자신 사이의 균열이 시작된다. 거울은 점점 더 강압적인 언어로 그녀를 통제하려 하고, 지영의 내면에서는 알 수 없는 저항감이 자라난다. 현실과 디지털 자아 사이에서 분열되어가는 지영의 심리는 점차 극단으로 치닫는다.",
+        "한계에 다다른 지영은 결국 거울을 향해 돌아선다. AI가 설계한 완벽한 자신을 거부하고, 불완전하지만 온전히 자신만의 감정과 선택으로 살아가기로 결심하는 순간—거울은 산산조각 난다. 디지털 에고가 사라진 자리에 남은 것은 상처투성이지만 진짜인 지영의 얼굴이다. 이 영화는 AI 지배 사회 속에서 '나는 누구인가'라는 근원적 질문을 던지는 심리 스릴러다."
+      ],
+      info: [
+        "주요 인물 : 지영 · AI Mirror",
+        "배경 : 가까운 미래 서울 · 디지털 심리 공간",
+        "러닝타임 : 10분 · 단편"
+      ],
+      links: [
+        { label: "영화 보러가기", url: "https://youtu.be/1SeL-MjQePs" },
+        { label: "M/V 보러가기", url: "https://youtu.be/PnfMoHAuDDk" },
+        { label: "티져 보러가기", url: "https://youtu.be/JFhfmJKw7Bg" }
+      ],
+      thumb: '../assets/images/posters/Digital Ego poster.png'
+    },
+    {
+      id: 'film-3', type: 'film',
+      title: '추억의 잔광(殘光)', titleEn: 'Luminous Memory', year: 2026,
+      badge: '🎭 Cannes',
+      awards: [
+        'AI Film Awards Cannes 2026 Official Selection'
+      ],
+      synopsisFull: [
+        "\u201c도심의 가장 차가운 곳에서 발견한, 가장 뜨거운 기억의 파편.\u201d",
+        "이 영화는 낡고 버려진 것들에 깃든 영혼과 시간에 대한 이야기입니다. 차가운 빗속, 쓰레기 더미에 내던져진 녹슨 영사기를 주워 든 한 노인이 있습니다. 그가 영사기의 두꺼운 녹을 닦아내며 마주한 것은, 단순한 기계가 아니라 자신과 사별한 아내의 이름이 새겨진 찬란했던 과거의 증거였습니다.",
+        "우리는 AI 생성 기술을 활용하여 세월의 풍파를 맞은 영사기의 거친 질감(Texture)과, 그와 대비되는 노인의 절제된 눈물 한 방울의 미학을 극사실적으로 구현했습니다. AI는 단순한 이미지 생성을 넘어, 잊혀져 가지만 결코 사라지지 않는 '추억의 잔광(Afterglow)'을 시각화하는 핵심적인 예술 도구로 사용되었습니다."
+      ],
+      info: [
+        "주요 인물 : 노인 · 죽은 아내",
+        "배경 : 차가운 도심 속 버려진 골목",
+        "러닝타임 : 3분 · 단편"
+      ],
+      links: [
+        { label: "영화 보러가기", url: "https://youtu.be/0OQGGyzxMk4" }
+      ],
+      thumb: '../assets/images/posters/추억의 잔광(殘光)-포스터.png'
+    },
+    {
+      id: 'film-4', type: 'film',
+      title: '「情 (Jeong)」', titleEn: 'The Love That Lingers', year: 2026,
+      badge: '🎭 Cannes 2026',
+      awards: [
+        'AI Film Awards Cannes 2026 Official Selection',
+        'AI Film Awards Las Vegas 2026 Official Selection'
+      ],
+      synopsisFull: [
+        "겨울이 깊어가는 시골 마을, 오래된 한옥에 홀로 남은 어머니는 오늘도 누군가 올 것처럼 아궁이에 불을 지피고 밥을 짓는다. 자식들은 모두 도시로 떠나 각자의 삶을 살아가고, 집 안에는 오래된 달력과 빛바랜 살림살이, 그리고 기다림의 시간이 조용히 쌓여 있다. 어머니는 외로움과 서운함을 쉽게 말하지 못한 채, 늘 그 자리에 머물며 가족의 빈자리를 품고 살아간다.",
+        "어느 날, 오랜만에 고향집을 찾은 자식은 예전과 다르지 않은 풍경 속에서 눈에 띄게 늙어버린 어머니의 모습을 마주한다. 작아진 뒷모습, 거칠어진 손, 말없이 차려진 따뜻한 밥상은 세월 동안 쌓인 그리움과 미안함을 한꺼번에 불러낸다. 함께 밥을 먹고 잠시 마주 앉아 있는 짧은 시간 속에서 자식은 어머니가 단 한 번도 사랑을 거창한 말로 표현한 적 없지만, 늘 자신의 삶 전체로 가족을 품어왔음을 깨닫게 된다.",
+        "영화 「정」은 화려한 사건이나 극적인 갈등 대신, 가족 사이에 오래도록 남아 있는 감정의 결을 조용히 따라간다. 멀어져도 끊어지지 않고, 서운함이 있어도 쉽게 미움으로 바뀌지 않는 마음, 바로 '정'이다. 이 영화는 결국 고향이란 장소가 아니라 끝내 나를 품어주는 한 사람의 마음이라는 사실을 보여주며, 우리 안에 남아 있는 가장 따뜻하고도 아픈 이름, '정'을 깊이 되새기게 한다."
+      ],
+      info: [
+        "주요 인물 : 어머니 · 자식",
+        "배경 : 시골 마을 오래된 한옥",
+        "러닝타임 : 4분 · 단편"
+      ],
+      links: [
+        { label: "영화 보러가기", url: "https://youtu.be/NZGuxgiC2HM" },
+        { label: "티져 보러가기", url: "https://youtu.be/BZEs85QnzO4" }
+      ],
+      thumb: '../assets/images/posters/Jeong Poster.png'
+    }
   ],
   book: [
-    { id:'book-1', type:'book', title:'AI 영화 만들기 - 완성 이미지를 영화로', year:2026, badge:null, info:["유형재 저"], descFull:["캐릭터 일관성 유지 기법부터 Veo, Hailuo, Kling을 활용한 영상 생성까지."], links:[{label:"책 구매하기",url:"https://www.yes24.com/product/goods/177864126"}], thumb:'../assets/images/Book5-AI 영화 만들기 - 완성 이미지를 영화로.jpg' },
-    { id:'book-2', type:'book', title:'AI 영화 만들기 - 시작 이야기를 이미지로', year:2026, badge:null, info:["유형재 저"], descFull:["AI 영화제 금상 수상 감독의 실전 노하우를 담은 AI 영화 제작 입문서."], links:[{label:"책 구매하기",url:"https://www.yes24.com/product/goods/177864121"}], thumb:'../assets/images/Book5-AI 영화 만들기 - 시작 이야기를 이미지로.jpg' },
-    { id:'book-3', type:'book', title:'정체된 나의 삶 속에서, AI와 춤추다', year:2025, badge:null, info:["유형재, 김영배, 이성경 저"], descFull:["IT 업계에서 화려한 경력을 쌓았지만 정체기를 맞은 한 중년 남성의 진솔한 여정."], links:[{label:"책 구매하기",url:"https://www.yes24.com/product/goods/148570574"}], thumb:'../assets/images/book4-정체된 나의 삶 속에서, AI와 춤추다.jpg' },
-    { id:'book-4', type:'book', title:'AI와 소통하는 법 - 프롬프트 엔지니어링 기초편', year:2025, badge:null, info:["유형재, 윤성임, 하예랑 공저"], descFull:["프롬프트 엔지니어링의 기초부터 고급 전략까지."], links:[{label:"책 구매하기",url:"https://www.yes24.com/product/goods/145368866"}], thumb:'../assets/images/book3 AI와 소통하는 법- 프롬프트 엔지니어링 기초편.jpg' },
-    { id:'book-5', type:'book', title:'디지털 마케팅의 판도를 바꾸는 생성형 AI 고급 전략', year:2025, badge:null, info:["유형재, 윤성임, 하예랑 공저"], descFull:["생성형 AI를 활용해 디지털 마케팅 효율성을 극대화하는 방법."], links:[{label:"책 구매하기",url:"https://www.yes24.com/product/goods/145370350"}], thumb:'../assets/images/Book2-디지털 마케팅의 판도를 바꾸는 생성형 AI 고급 전략.jpg' },
-    { id:'book-6', type:'book', title:'업무생산성 높이는 생성형 AI 기초 전략', year:2025, badge:null, info:["유형재, 윤성임, 하예랑 저"], descFull:["AI를 활용해 업무 효율성을 극대화하는 방법을 안내하는 실용 가이드."], links:[{label:"책 구매하기",url:"https://www.yes24.com/product/goods/145370862"}], thumb:'../assets/images/Book1-업무생산성 높이는 생성형 AI 기초 전략.jpg' }
+    {
+      id: 'book-1', type: 'book',
+      title: 'AI 영화 만들기 - 완성 이미지를 영화로',
+      year: 2026, badge: null,
+      info: ["유형재 저"],
+      descFull: [
+        "'AI 영화 만들기 – 시작: 이야기를 이미지로'에서 배운 기초 위에 완성된 AI 영화를 만드는 실전 가이드.",
+        "캐릭터 일관성 유지 기법(OMNI REFERENCE, Seed)부터 Veo, Hailuo, Kling을 활용한 영상 생성, 전문가 수준의 카메라 워크와 모션 프롬프트 적용까지 단계별로 설명한다. ElevenLabs로 자연스러운 AI 음성을 생성하고, Suno AI로 배경음악을 작곡하며, CapCut으로 최종 편집까지 완성하는 전 과정을 다룬다.",
+        "책에 담을 수 없는 영상 제작 과정은 YouTube에 업로드하여 QR 코드로 제공한다. 정지된 이미지가 움직이고, 음성과 음악이 더해져 완성된 영화가 되는 순간을 경험하라. FilmFreeway를 통한 영화제 출품 가이드까지 포함하여 당신의 작품이 세상과 만나는 모든 과정을 안내한다."
+      ],
+      links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/177864126" }],
+      thumb: '../assets/images/books/Book6-AI 영화 만들기 - 완성 이미지를 영화로.png'
+    },
+    {
+      id: 'book-2', type: 'book',
+      title: 'AI 영화 만들기 - 시작 이야기를 이미지로',
+      year: 2026, badge: null,
+      info: ["유형재 저"],
+      descFull: [
+        "AI 영화제 금상 수상 감독의 실전 노하우를 담은 AI 영화 제작 입문서.",
+        "영화 제작 경험이 없어도 AI 도구만으로 자신의 이야기를 영화로 만들 수 있도록 체계적으로 안내한다. 영화 제작 프로세스 이해, 필수 도구 소개, 주제 발굴부터 시나리오 작성, 스토리보드 제작, 그리고 Midjourney, ImageFX, FLUX를 활용한 이미지 생성까지 Chapter별로 단계적으로 설명한다.",
+        "'기술보다 이야기가 먼저'라는 핵심 철학 아래, 스토리보드가 영화 성공의 80%를 결정한다는 원칙을 강조한다. 각 Chapter마다 3~5개의 실전 프롬프트를 영어와 한글로 제공하며, [대괄호] 안만 수정하면 바로 사용할 수 있다.",
+        "카메라 없이, 배우 없이, 제작비 없이 당신의 상상을 구체적인 이미지로 구현하는 첫 단계를 시작하라."
+      ],
+      links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/177864121" }],
+      thumb: '../assets/images/books/Book5-AI 영화 만들기 - 시작 이야기를 이미지로.png'
+    },
+    {
+      id: 'book-3', type: 'book',
+      title: '정체된 나의 삶 속에서, AI와 춤추다',
+      year: 2025, badge: null,
+      info: ["유형재, 김영배, 이성경 저"],
+      descFull: [
+        "IT 업계에서 화려한 경력을 쌓았지만 스마트폰 앱 기획과 콘텐츠 마케팅 분야로 전환한 후 정체기를 맞은 한 중년 남성의 진솔한 여정을 담은 에세이. 풍부한 IT 지식은 있었지만 그것을 생산적으로 활용하지 못하는 좌절감 속에서, 우연한 계기로 생성형 AI를 만나면서 인생의 새로운 장이 열리기 시작한다.",
+        "ChatGPT와의 첫 만남은 단순한 도구 활용을 넘어 자기성찰의 새로운 삶이 시작된다. AI가 비춰주는 '디지털 미러' 속에서 저자는 잊고 있던 창의성을 되찾고, 디지털융합교육원에서 AI 강사로서의 새 출발을 하게 된다. 소상공인들의 디지털 변신을 돕고, Leonardo.ai로 이미지를 창작하며, 자신의 목소리로 AI 복제본을 만드는 과정은 기술과 인간성 사이의 경계를 탐색하는 깊은 성찰로 이어진다.",
+        "이 책은 기술 낙관주의와 디스토피아 사이에서 균형을 찾아가는 한 개인의 이야기이자, AI 시대를 살아가는 모든 이들에게 던질 수 있는 에세이다. 디지털 시대의 자아 발견, 창의성의 확장, 그리고 기술과 함께 춤추듯 공존하는 삶의 가능성을 보여주는 따뜻하고 통찰력 있는 이야기."
+      ],
+      links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/148570574" }],
+      thumb: '../assets/images/books/book4-정체된 나의 삶 속에서, AI와 춤추다.png'
+    },
+    {
+      id: 'book-4', type: 'book',
+      badge: '📖 2025',
+      title: 'AI와 소통하는 법 - 프롬프트 엔지니어링 기초편',
+      year: 2025,
+      info: ["유형재, 윤성임, 하예랑 공저"],
+      descFull: [
+        "프롬프트 엔지니어링의 기술은 생성형 AI를 효과적으로 활용하기 위한 프롬프트 설계 및 최적화 전략을 다루는 실용서다. AI가 단순한 도구를 넘어 협업 파트너로 자리 잡은 시대에, 효과적인 AI 활용법을 배우는 것은 필수적인 역량이 되었다. 프롬프트 엔지니어링의 기본 개념부터 고급 전략까지 단계별로 설명하며, AI와의 소통을 최적화하는 방법을 제시한다.",
+        "특히, 저자들이 개발한 POM CEO 프레임워크(Persona, Objective, Mission, Context, Example, Output)를 소개하여, 체계적이고 효율적인 프롬프트 설계법을 제공한다. 이를 통해 독자는 AI에게 원하는 결과를 보다 정확하고 신속하게 도출할 수 있으며, 업무 생산성을 극대화할 수 있다.",
+        "프롬프트 최적화 기법, 업종별 활용 사례, 실전 적용 방법을 포함하고 있으며, 마케팅, 콘텐츠 제작, 데이터 분석, 교육 등 다양한 분야에서 AI를 활용하는 방안을 다룬다."
+      ],
+      links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/145368866" }],
+      thumb: '../assets/images/books/book3 AI와 소통하는 법- 프롬프트 엔지니어링 기초편.png'
+    },
+    {
+      id: 'book-5', type: 'book',
+      badge: '📖 2025',
+      title: '디지털 마케팅의 판도를 바꾸는 생성형 AI 고급 전략',
+      year: 2025,
+      info: ["유형재, 윤성임, 하예랑 공저"],
+      descFull: [
+        "생성형 AI를 활용해 디지털 마케팅과 콘텐츠 제작의 효율성을 극대화하는 방법을 다루는 실용서다. ChatGPT, DALL-E, Heygen, Runway 등 다양한 AI 도구를 활용해 텍스트, 이미지, 영상, 음성을 생성하는 기술을 심층적으로 분석하며, 마케팅 및 비즈니스 전략에 적용하는 방법을 제시한다.",
+        "AI 기반의 콘텐츠 제작, 기업 마케팅 최적화, 업무 생산성 향상을 위한 실전 사례를 포함하고 있으며, 최신 트렌드를 반영한 효과적인 활용법을 소개한다. 특히 AI 도구별 특성과 성공 사례를 분석하여, 기업과 개인이 실질적인 성과를 얻을 수 있도록 돕는다.",
+        "빠르게 변화하는 디지털 환경에서 AI를 전략적으로 활용하고자 하는 마케터, 콘텐츠 제작자, 기업 실무자들에게 실질적인 가이드가 될 것이다."
+      ],
+      links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/145370350" }],
+      thumb: '../assets/images/books/Book2-디지털 마케팅의 판도를 바꾸는 생성형 AI 고급 전략.png'
+    },
+    {
+      id: 'book-6', type: 'book',
+      badge: '📖 2025',
+      title: '업무생산성 높이는 생성형 AI 기초 전략',
+      year: 2025,
+      info: ["유형재, 윤성임, 하예랑 저"],
+      descFull: [
+        "AI를 활용해 업무 효율성을 극대화하는 방법을 안내하는 실용적인 가이드북이다. ChatGPT, Google Gemini, DALL-E, Midjourney 등 주요 AI 도구의 특징과 활용법을 소개하며, 텍스트와 이미지 생성 기술을 중심으로 실무 적용 방안을 설명한다.",
+        "생성형 AI의 기본 개념과 작동 원리를 체계적으로 정리하고, AI를 활용한 글쓰기, 이미지 제작, 디지털 마케팅 등 다양한 분야에서의 실전 사례를 담고 있다. 복잡한 이론보다는 실제 업무에서 즉시 활용할 수 있는 실용적인 내용을 중심으로 구성되었으며, AI 도구 선택 시 고려해야 할 사항도 제시한다.",
+        "초보자도 쉽게 따라올 수 있도록 단계별 학습이 가능하며, 각 장에는 실전 적용 팁과 사례가 포함되어 있다. AI 활용이 필수가 된 시대에, AI를 업무에 적용하고 싶은 독자들에게 실질적인 가이드를 제공할 것이다."
+      ],
+      links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/145370862" }],
+      thumb: '../assets/images/books/Book1-업무생산성 높이는 생성형 AI 기초 전략.png'
+    }
   ]
+};
+
+const DEFAULT_INSTRUCTOR = {
+  name: '유형재',
+  role: '(주)포인트넥스트 대표 · 디지털융합교육원 지도교수',
+  quote: '프랑스 IBM 기술이사부터 생성형 AI 강사,\nAI 영화감독까지, 30년 IT 현장 경험과\n국제 AI 영화제 수상 경력을 바탕으로\n누구나 쉽게 AI를 활용할 수 있도록 돕는\n실무 중심 전문 강사입니다',
+  photo: '../assets/images/instructor1.png',
+  careers: [
+    { text: '(주)포인트넥스트 대표이사', year: '2007~' },
+    { text: '디지털융합교육원 지도교수', year: '2024~' },
+    { text: 'AI리터러시강사 협회 이사', year: '2025~' },
+    { text: '프랑스 IBM 본사 기술이사', year: '1998–2002' },
+    { text: '한국 IBM Brand Manager', year: '1990–2005' }
+  ],
+  certs: [
+    'Google Gemini 공인 교육자',
+    '생성형 AI 강사 자격 1급',
+    '프롬프트 엔지니어링 1급',
+    '저서 17권 출간'
+  ],
+  stats: [
+    { label: 'IT 경력', value: '30+년' },
+    { label: '저서 출간', value: '17권' },
+    { label: '수강생', value: '700+명' },
+    { label: '강의 횟수', value: '130+회' }
+  ],
+  awards: [
+    '서울 국제 AI 영화제 금상 (2025)',
+    'Hollywood AI Short Film Quarter-Finalist (2026)',
+    'AI Film Awards Cannes 2026 선정',
+    'AI Film Awards Las Vegas 2026 선정',
+    '대한민국 AI 영화제 우수상 (2025)',
+    'Best of Best Mentor Award (2024)'
+  ],
+  sns: {
+    yt1: 'https://www.youtube.com/@hjyouh',
+    yt2: 'https://www.youtube.com/@Korisian',
+    ig: 'https://www.instagram.com/hjyouhinsta/'
+  },
+  contact: {
+    phone: '010-3558-6960',
+    email: 'hjyouh@naver.com',
+    website: 'https://aitalker.co.kr/hjyouh/'
+  },
+  message: {
+    text: '생성형 AI를 통해\n실무 중심의 교육을 제공합니다',
+    sub: '프랑스 IBM 기술이사부터 AI 영화감독까지,\n30년 IT 현장 경험을 강의로 녹여냅니다'
+  }
 };
 
 const DEFAULT_SETTINGS = {
@@ -782,16 +1212,151 @@ function toast(msg, isErr) {
 // ===== NAVIGATION =====
 
 function switchSection(name) {
+  let panelName = name;
+  if (name === 'works-film') panelName = 'works';
+  if (name === 'works-book') panelName = 'works';
+
   document.querySelectorAll('.sidebar-item').forEach(el => {
     el.classList.toggle('active', el.dataset.section === name);
   });
   document.querySelectorAll('.section-panel').forEach(el => {
-    el.classList.toggle('active', el.id === 'panel-' + name);
+    el.classList.toggle('active', el.id === 'panel-' + panelName);
   });
-  if (name === 'lectures') renderLecList();
-  if (name === 'works') renderWorksList();
-  if (name === 'home') loadHomeForm();
-  if (name === 'settings') loadSettingsForm();
+  
+  if (panelName === 'lectures') renderLecList();
+  if (panelName === 'instructor') renderInstructor();
+  if (panelName === 'works') {
+    renderWorksList();
+    if (name === 'works-film' && typeof switchWorksTab === 'function') switchWorksTab('film');
+    if (name === 'works-book' && typeof switchWorksTab === 'function') switchWorksTab('book');
+  }
+}
+
+// ===== INSTRUCTOR =====
+
+let instructorData = loadData('instructorData', DEFAULT_INSTRUCTOR);
+
+function renderInstructor() {
+  const d = instructorData;
+  document.getElementById('instrName').value = d.name || '';
+  document.getElementById('instrRole').value = d.role || '';
+  document.getElementById('instrQuote').value = d.quote || '';
+  document.getElementById('instrPhoto').value = d.photo || '';
+
+  // 경력
+  const careerContainer = document.getElementById('careerRows');
+  careerContainer.innerHTML = '';
+  (d.careers || []).forEach(c => addCareerRow(c));
+
+  // 자격증
+  const certContainer = document.getElementById('certRows');
+  certContainer.innerHTML = '';
+  (d.certs || []).forEach(c => addCertRow(c));
+
+  // 통계
+  const statContainer = document.getElementById('statRows');
+  statContainer.innerHTML = (d.stats || DEFAULT_INSTRUCTOR.stats).map((s, i) => `
+    <div class="form-row">
+      <label>${escHtml(s.label)}</label>
+      <input type="text" id="instrStat${i}" value="${escHtml(s.value)}" placeholder="${escHtml(s.label)}">
+    </div>
+  `).join('');
+
+  // 수상
+  const awardContainer = document.getElementById('awardRows');
+  awardContainer.innerHTML = '';
+  (d.awards || []).forEach(a => addAwardRow(a));
+
+  // SNS
+  document.getElementById('instrYt1').value = d.sns?.yt1 || '';
+  document.getElementById('instrYt2').value = d.sns?.yt2 || '';
+  document.getElementById('instrIg').value = d.sns?.ig || '';
+
+  // 연락처
+  document.getElementById('instrPhone').value = d.contact?.phone || '';
+  document.getElementById('instrEmail').value = d.contact?.email || '';
+  document.getElementById('instrWebsite').value = d.contact?.website || '';
+
+  // 메시지
+  document.getElementById('instrMsgText').value = d.message?.text || '';
+  document.getElementById('instrMsgSub').value = d.message?.sub || '';
+}
+
+function addCareerRow(data) {
+  const row = document.createElement('div');
+  row.className = 'cur-row';
+  row.innerHTML = `
+    <input type="text" placeholder="경력 내용" value="${data ? escHtml(data.text) : ''}" class="cur-title-input" style="flex:2">
+    <input type="text" placeholder="기간" value="${data ? escHtml(data.year) : ''}" class="cur-time-input" style="width:100px;flex:none">
+    <button type="button" class="cur-del-btn" onclick="this.closest('.cur-row').remove()">✕</button>
+  `;
+  document.getElementById('careerRows').appendChild(row);
+}
+
+function addCertRow(data) {
+  const row = document.createElement('div');
+  row.className = 'cur-row';
+  row.innerHTML = `
+    <input type="text" placeholder="자격증 또는 저서" value="${data ? escHtml(data) : ''}" class="cur-title-input" style="flex:1">
+    <button type="button" class="cur-del-btn" onclick="this.closest('.cur-row').remove()">✕</button>
+  `;
+  document.getElementById('certRows').appendChild(row);
+}
+
+function addAwardRow(data) {
+  const row = document.createElement('div');
+  row.className = 'cur-row';
+  row.innerHTML = `
+    <input type="text" placeholder="수상 내용" value="${data ? escHtml(data) : ''}" class="cur-title-input" style="flex:1">
+    <button type="button" class="cur-del-btn" onclick="this.closest('.cur-row').remove()">✕</button>
+  `;
+  document.getElementById('awardRows').appendChild(row);
+}
+
+function saveInstructor() {
+  const careers = [...document.querySelectorAll('#careerRows .cur-row')].map(r => ({
+    text: r.querySelector('.cur-title-input').value.trim(),
+    year: r.querySelector('.cur-time-input').value.trim()
+  })).filter(c => c.text);
+
+  const certs = [...document.querySelectorAll('#certRows .cur-row')].map(r =>
+    r.querySelector('.cur-title-input').value.trim()
+  ).filter(Boolean);
+
+  const awards = [...document.querySelectorAll('#awardRows .cur-row')].map(r =>
+    r.querySelector('.cur-title-input').value.trim()
+  ).filter(Boolean);
+
+  const baseStats = instructorData.stats || DEFAULT_INSTRUCTOR.stats;
+  const stats = baseStats.map((s, i) => ({
+    label: s.label,
+    value: (document.getElementById('instrStat' + i)?.value || '').trim() || s.value
+  }));
+
+  instructorData = {
+    name: document.getElementById('instrName').value.trim(),
+    role: document.getElementById('instrRole').value.trim(),
+    quote: document.getElementById('instrQuote').value.trim(),
+    photo: document.getElementById('instrPhoto').value.trim(),
+    careers, certs, stats, awards,
+    sns: {
+      yt1: document.getElementById('instrYt1').value.trim(),
+      yt2: document.getElementById('instrYt2').value.trim(),
+      ig: document.getElementById('instrIg').value.trim()
+    },
+    contact: {
+      phone: document.getElementById('instrPhone').value.trim(),
+      email: document.getElementById('instrEmail').value.trim(),
+      website: document.getElementById('instrWebsite').value.trim()
+    },
+    message: {
+      text: document.getElementById('instrMsgText').value.trim(),
+      sub: document.getElementById('instrMsgSub').value.trim()
+    }
+  };
+
+  saveData('instructorData', instructorData);
+  toast('강사 프로필이 저장되었습니다');
 }
 
 // ===== LECTURES =====
@@ -811,32 +1376,34 @@ function renderLecList() {
         </div>
       </div>
       <div class="item-actions">
-        <button class="btn btn-outline btn-sm" onclick="openLecModal(${i})">수정</button>
+        <button class="btn btn-outline btn-sm" onclick="openLecInline(${i})">수정</button>
         <button class="btn btn-danger btn-sm" onclick="deleteLecture(${i})">삭제</button>
       </div>
     </div>
   `).join('');
 }
 
-function openLecModal(idx) {
-  const modal = document.getElementById('lecModal');
-  const editIdx = document.getElementById('lecEditIndex');
-
-  if (idx === undefined) {
-    document.getElementById('lecModalTitle').textContent = '강의 추가';
-    editIdx.value = '';
-    clearLecForm();
-  } else {
-    document.getElementById('lecModalTitle').textContent = '강의 수정';
-    editIdx.value = idx;
-    fillLecForm(lectures[idx]);
-  }
-  buildCurRows(idx !== undefined ? lectures[idx].curriculum : []);
-  modal.classList.add('open');
+function openLecAdd() {
+  document.getElementById('lecEditCardTitle').textContent = '강의 추가';
+  document.getElementById('lecEditIndex').value = '';
+  clearLecForm();
+  buildCurRows([]);
+  document.getElementById('lecEditCard').style.display = 'block';
+  document.getElementById('lecEditCard').scrollIntoView({ behavior: 'smooth' });
 }
 
-function closeLecModal() {
-  document.getElementById('lecModal').classList.remove('open');
+function openLecInline(idx) {
+  document.getElementById('lecEditCardTitle').textContent = '강의 수정';
+  document.getElementById('lecEditIndex').value = idx;
+  fillLecForm(lectures[idx]);
+  buildCurRows(lectures[idx].curriculum || []);
+  document.getElementById('lecEditCard').style.display = 'block';
+  document.getElementById('lecEditCard').scrollIntoView({ behavior: 'smooth' });
+}
+
+function closeLecInline() {
+  document.getElementById('lecEditCard').style.display = 'none';
+  document.getElementById('lecEditIndex').value = '';
 }
 
 function clearLecForm() {
@@ -906,7 +1473,7 @@ function saveLecture() {
   }
 
   saveData('lecturesData', lectures);
-  closeLecModal();
+  closeLecInline();
   renderLecList();
   toast('강의가 저장되었습니다');
 }

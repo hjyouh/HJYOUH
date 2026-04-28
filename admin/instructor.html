@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>강사 프로필 | 관리자 패널</title>
+  <link rel="stylesheet" href="../assets/css/fonts.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    /* ── 공통 인풋 스타일 (form-row 밖에서도 사용) ── */
+    .fi {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .fi:focus { border-color: rgba(201,169,110,0.5); }
+    .fi-w100 { width: 100%; }
+
+    /* ── 인라인 라벨+인풋 행 ── */
+    .il-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .il-row .il-lbl {
+      font-size: 12px;
+      color: var(--sub);
+      flex-shrink: 0;
+    }
+
+    /* ── 강사 동적 행 (경력/자격증/수상) ── */
+    .instr-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .instr-row input { flex: 1; }
+    .instr-year { width: 110px; flex: none !important; }
+
+    /* ── SNS 행 ── */
+    .sns-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .sns-platform { width: 140px; flex-shrink: 0; }
+    .sns-url      { flex: 1; }
+    .sns-check-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--sub);
+      cursor: pointer;
+      font-size: 15px;
+      padding: 6px 10px;
+      transition: all 0.2s;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .sns-check-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .sns-check-btn.verified { border-color: var(--green); color: var(--green); background: var(--green2); }
+
+    /* ── 사진 미리보기 ── */
+    .photo-box {
+      width: 80px;
+      height: 80px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 10px;
+      color: var(--sub);
+      text-align: center;
+      cursor: pointer;
+    }
+    .photo-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
+  </style>
+</head>
+<body>
+
+<header class="admin-header">
+  <div class="admin-logo">유형재 <span>관리자 패널</span></div>
+  <div class="header-right">
+    <a href="../index.html" target="_blank" class="header-preview-btn">홈페이지 보기 →</a>
+  </div>
+</header>
+
+<div class="admin-body">
+  <nav class="sidebar">
+    <a href="home.html"       class="sidebar-item">관리자페이지</a>
+    <a href="landing.html"    class="sidebar-item">Landing</a>
+    <a href="instructor.html" class="sidebar-item active">강사</a>
+    <a href="lectures.html"   class="sidebar-item">강의 관리</a>
+    <a href="works.html"      class="sidebar-item">작업들</a>
+    <a href="works.html"      class="sidebar-item sidebar-item-sub">AI영화</a>
+    <a href="works.html"      class="sidebar-item sidebar-item-sub">도서</a>
+    <a href="mv.html"         class="sidebar-item">M/V</a>
+    <a href="contact.html"    class="sidebar-item">Contact</a>
+    <div style="flex:1;"></div>
+    <a href="members.html"    class="sidebar-item">회원관리</a>
+  </nav>
+
+  <main class="admin-main">
+
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">강사 프로필</div>
+        <div class="panel-subtitle">강사 소개, 경력, 수상, SNS 링크를 수정합니다</div>
+      </div>
+      <button class="btn btn-gold" onclick="saveInstructor()">저장</button>
+    </div>
+
+    <!-- ① 기본 정보 -->
+    <div class="card">
+      <div class="card-title">👤 기본 정보</div>
+
+      <!-- 기본정보 2줄 + 우측 미리보기 -->
+      <div style="display:flex; gap:12px; align-items:stretch; margin-bottom:12px;">
+
+        <!-- 왼쪽: 2줄 -->
+        <div style="flex:1; display:flex; flex-direction:column; gap:10px; min-width:0;">
+
+          <!-- 줄 1: 이름 + 직책 (textarea, resize 가능) -->
+          <div style="display:flex; gap:10px; align-items:flex-start;">
+            <div style="flex-shrink:0;">
+              <div style="font-size:12px; color:var(--sub); margin-bottom:6px;">이름</div>
+              <input id="instrName" class="fi" type="text" placeholder="유형재" style="width:110px;">
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:12px; color:var(--sub); margin-bottom:6px;">직책</div>
+              <textarea id="instrRole" class="fi fi-w100" rows="2"
+                style="resize:vertical; min-height:42px;"
+                placeholder="(주)포인트넥스트 대표&#10;디지털융합교육원 지도교수"></textarea>
+            </div>
+          </div>
+
+          <!-- 줄 2: 사진 경로 + 확인 -->
+          <div>
+            <div style="font-size:12px; color:var(--sub); margin-bottom:6px;">사진 경로</div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <input id="instrPhoto" class="fi" type="text"
+                placeholder="../assets/images/instructor1.png" style="flex:1;">
+              <button class="btn btn-outline btn-sm" onclick="previewPhoto()">확인</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 오른쪽: 미리보기 — 왼쪽 전체 높이에 stretch, padding 없음 -->
+        <div style="flex-shrink:0; display:flex; align-self:stretch;">
+          <div id="photoBox" onclick="previewPhoto()" title="클릭하여 미리보기"
+            style="width:140px; min-height:110px; cursor:pointer;
+                   border:1px solid var(--border); border-radius:8px;
+                   overflow:hidden; position:relative;">
+            <!-- 이미지: box 전체 채움, padding 없음 -->
+            <img id="photoImg"
+              style="position:absolute; inset:0; width:100%; height:100%;
+                     object-fit:cover; display:none;"
+              onerror="this.style.display='none';
+                       document.getElementById('photoHint').style.display='flex';">
+            <!-- 힌트: 이미지 없을 때만 표시 -->
+            <span id="photoHint"
+              style="position:absolute; inset:0; display:flex; align-items:center;
+                     justify-content:center; font-size:11px; color:var(--sub);
+                     background:var(--bg);">미리보기</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 소개 문구 (전체 너비) -->
+      <div>
+        <div style="font-size:12px; color:var(--sub); margin-bottom:6px;">소개 문구</div>
+        <textarea id="instrQuote" class="fi fi-w100" rows="5" placeholder="소개 문구..."></textarea>
+      </div>
+    </div>
+
+    <!-- ② 주요 경력 -->
+    <div class="card">
+      <div class="card-title">💼 주요 경력</div>
+      <div id="careerRows"></div>
+      <button type="button" class="add-cur-btn" onclick="addCareerRow()">+ 경력 추가</button>
+    </div>
+
+    <!-- ③ 자격증 & 저서 -->
+    <div class="card">
+      <div class="card-title">📜 자격증 & 저서</div>
+      <div id="certRows"></div>
+      <button type="button" class="add-cur-btn" onclick="addCertRow()">+ 항목 추가</button>
+    </div>
+
+    <!-- ④ 통계 — 2열 그리드 -->
+    <div class="card">
+      <div class="card-title">📊 통계</div>
+      <div id="statRows" style="display:flex; gap:8px 20px; align-items:center; flex-wrap:wrap;"></div>
+    </div>
+
+    <!-- ⑤ 수상 경력 -->
+    <div class="card">
+      <div class="card-title">🏆 수상 경력</div>
+      <div id="awardRows"></div>
+      <button type="button" class="add-cur-btn" onclick="addAwardRow()">+ 수상 추가</button>
+    </div>
+
+    <!-- ⑥ SNS 링크 — 동적 + URL 확인 -->
+    <div class="card">
+      <div class="card-title">🔗 SNS 링크</div>
+      <div style="display:flex; gap:8px; padding-bottom:6px; margin-bottom:6px;
+                  border-bottom:1px solid var(--border); font-size:11px; color:var(--sub);">
+        <span style="width:140px; flex-shrink:0;">플랫폼명</span>
+        <span style="flex:1;">URL</span>
+        <span style="width:72px;"></span>
+      </div>
+      <div id="snsRows"></div>
+      <button type="button" class="add-cur-btn" onclick="addSnsRow()">+ 링크 추가</button>
+    </div>
+
+    <!-- ⑦ 연락처 — 한 줄 인라인 -->
+    <div class="card">
+      <div class="card-title">📞 연락처</div>
+      <div style="display:flex; gap:12px; align-items:center;">
+        <div class="il-row" style="flex:none; margin-bottom:0;">
+          <span class="il-lbl" style="white-space:nowrap;">전화번호</span>
+          <input id="instrPhone" class="fi" type="text" placeholder="010-3558-6960" style="width:140px;">
+        </div>
+        <div class="il-row" style="flex:none; margin-bottom:0;">
+          <span class="il-lbl" style="white-space:nowrap;">이메일</span>
+          <input id="instrEmail" class="fi" type="text" placeholder="hjyouh@naver.com" style="width:170px;">
+        </div>
+        <div class="il-row" style="flex:1; margin-bottom:0;">
+          <span class="il-lbl" style="white-space:nowrap;">웹사이트</span>
+          <input id="instrWebsite" class="fi" type="text" placeholder="https://aitalker.co.kr/hjyouh/" style="flex:1;">
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑧ 강사 페이지 메시지 -->
+    <div class="card">
+      <div class="card-title">💬 강사 페이지 메시지</div>
+      <div style="display:flex; gap:16px; align-items:flex-start; margin-bottom:14px;">
+        <div class="il-row" style="flex:1; align-items:flex-start; margin-bottom:0;">
+          <span class="il-lbl" style="width:60px; padding-top:9px; flex-shrink:0;">메인 문구</span>
+          <textarea id="instrMsgText" class="fi" rows="3" style="flex:1;"
+            placeholder="생성형 AI를 통해&#10;실무 중심의 교육을 제공합니다"></textarea>
+        </div>
+        <div class="il-row" style="flex:1; align-items:flex-start; margin-bottom:0;">
+          <span class="il-lbl" style="width:50px; padding-top:9px; flex-shrink:0;">부제목</span>
+          <textarea id="instrMsgSub" class="fi" rows="3" style="flex:1;"
+            placeholder="프랑스 IBM 기술이사부터 AI 영화감독까지,&#10;30년 IT 현장 경험을 강의로 녹여냅니다"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Mobile Message <span style="font-size:10px;color:var(--sub);">(20자 이내)</span></label>
+        <input id="instrMobile" type="text" placeholder="AI를 가장 쉽게 가르치는 사람" maxlength="20">
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="admin-data.js"></script>
+<script>
+let instructorData = loadData('instructorData', DEFAULT_INSTRUCTOR);
+
+// ── 사진 미리보기 ──
+function previewPhoto() {
+  const path = document.getElementById('instrPhoto').value.trim();
+  if (!path) { toast('경로를 입력해주세요', true); return; }
+  const img  = document.getElementById('photoImg');
+  const hint = document.getElementById('photoHint');
+  img.onload = () => {
+    img.style.display = 'block';   // position:absolute → box 전체 채움
+    hint.style.display = 'none';
+  };
+  img.onerror = () => {
+    img.style.display = 'none';
+    hint.style.display = 'flex';
+    hint.textContent = '이미지 없음';
+    toast('이미지를 찾을 수 없습니다', true);
+  };
+  img.src = path;
+}
+
+// ── SNS 구형식(object) → 배열 변환 ──
+function normalizeSns(sns) {
+  if (!sns) return [{ label: '', url: '' }];
+  if (Array.isArray(sns)) return sns;
+  const result = [];
+  if (sns.yt1) result.push({ label: 'YouTube 채널 1',       url: sns.yt1 });
+  if (sns.yt2) result.push({ label: 'YouTube 채널 2 (음악)', url: sns.yt2 });
+  if (sns.ig)  result.push({ label: 'Instagram',             url: sns.ig  });
+  return result.length ? result : [{ label: '', url: '' }];
+}
+
+// ── SNS URL 확인 ──
+function checkSnsUrl(btn) {
+  const row = btn.closest('.sns-row');
+  const url = row.querySelector('.sns-url').value.trim();
+  if (!url) { toast('URL을 입력해주세요', true); return; }
+  try {
+    const u = new URL(url);
+    if (!['http:', 'https:'].includes(u.protocol)) throw new Error();
+    // 유효한 URL → 초록색 + 새 탭 열기
+    btn.classList.add('verified');
+    btn.textContent = '✓';
+    btn.title = '링크 확인됨';
+    window.open(url, '_blank', 'noopener');
+  } catch {
+    btn.classList.remove('verified');
+    btn.style.color = 'var(--red)';
+    btn.style.borderColor = 'rgba(211,47,47,0.4)';
+    toast('올바른 URL이 아닙니다 (https://... 형식)', true);
+    setTimeout(() => {
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 2000);
+  }
+}
+
+// ── 렌더링 ──
+function renderInstructor() {
+  const d = instructorData;
+
+  document.getElementById('instrName').value  = d.name  || '';
+  document.getElementById('instrRole').value  = d.role  || '';
+  document.getElementById('instrQuote').value = d.quote || '';
+  document.getElementById('instrPhoto').value = d.photo || '';
+
+  // 사진 초기 미리보기
+  if (d.photo) previewPhoto();
+
+  // 경력
+  document.getElementById('careerRows').innerHTML = '';
+  (d.careers || []).forEach(c => addCareerRow(c));
+
+  // 자격증
+  document.getElementById('certRows').innerHTML = '';
+  (d.certs || []).forEach(c => addCertRow(c));
+
+  // 통계 — 한 줄 flex (라벨+짧은 입력)
+  const stats = d.stats || DEFAULT_INSTRUCTOR.stats;
+  document.getElementById('statRows').innerHTML = stats.map((s, i) => `
+    <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+      <span style="font-size:12px; color:var(--sub); white-space:nowrap;">${escHtml(s.label)}</span>
+      <input type="text" id="instrStat${i}" value="${escHtml(s.value)}"
+             class="fi" style="width:75px; padding:8px 10px; font-size:13px;">
+    </div>
+  `).join('');
+
+  // 수상
+  document.getElementById('awardRows').innerHTML = '';
+  (d.awards || []).forEach(a => addAwardRow(a));
+
+  // SNS
+  document.getElementById('snsRows').innerHTML = '';
+  normalizeSns(d.sns).forEach(s => addSnsRow(s));
+
+  // 연락처
+  document.getElementById('instrPhone').value   = d.contact?.phone   || '';
+  document.getElementById('instrEmail').value   = d.contact?.email   || '';
+  document.getElementById('instrWebsite').value = d.contact?.website || '';
+
+  // 메시지
+  document.getElementById('instrMsgText').value = d.message?.text || '';
+  document.getElementById('instrMsgSub').value  = d.message?.sub  || '';
+
+  // Mobile Message
+  const mob = loadData('pageMsgInstructor', DEFAULT_PAGE_MSGS.instructor);
+  document.getElementById('instrMobile').value = mob.mobile || '';
+}
+
+// ── 행 추가 함수 ──
+
+function addCareerRow(data) {
+  const row = document.createElement('div');
+  row.className = 'instr-row';
+  row.innerHTML = `
+    <input type="text" class="fi cur-title-input" placeholder="경력 내용" value="${data ? escHtml(data.text) : ''}">
+    <input type="text" class="fi instr-year" placeholder="기간" value="${data ? escHtml(data.year) : ''}">
+    <button type="button" class="cur-del-btn" onclick="this.closest('.instr-row').remove()">✕</button>
+  `;
+  document.getElementById('careerRows').appendChild(row);
+}
+
+function addCertRow(data) {
+  const row = document.createElement('div');
+  row.className = 'instr-row';
+  row.innerHTML = `
+    <input type="text" class="fi cur-title-input" placeholder="자격증 또는 저서명" value="${data ? escHtml(data) : ''}">
+    <button type="button" class="cur-del-btn" onclick="this.closest('.instr-row').remove()">✕</button>
+  `;
+  document.getElementById('certRows').appendChild(row);
+}
+
+function addAwardRow(data) {
+  const row = document.createElement('div');
+  row.className = 'instr-row';
+  row.innerHTML = `
+    <input type="text" class="fi cur-title-input" placeholder="수상 내용" value="${data ? escHtml(data) : ''}">
+    <button type="button" class="cur-del-btn" onclick="this.closest('.instr-row').remove()">✕</button>
+  `;
+  document.getElementById('awardRows').appendChild(row);
+}
+
+function addSnsRow(data) {
+  const row = document.createElement('div');
+  row.className = 'sns-row';
+  const verified = data?.url ? 'verified' : '';
+  row.innerHTML = `
+    <input type="text" class="fi sns-platform" placeholder="YouTube / Instagram..." value="${data ? escHtml(data.label) : ''}">
+    <input type="text" class="fi sns-url" placeholder="https://..." value="${data ? escHtml(data.url) : ''}">
+    <button type="button" class="sns-check-btn ${verified}" onclick="checkSnsUrl(this)" title="링크 열어서 확인">✓</button>
+    <button type="button" class="cur-del-btn" onclick="this.closest('.sns-row').remove()">✕</button>
+  `;
+  document.getElementById('snsRows').appendChild(row);
+}
+
+// ── 저장 ──
+function saveInstructor() {
+  const careers = [...document.querySelectorAll('#careerRows .instr-row')].map(r => ({
+    text: r.querySelector('.cur-title-input').value.trim(),
+    year: r.querySelector('.instr-year').value.trim()
+  })).filter(c => c.text);
+
+  const certs = [...document.querySelectorAll('#certRows .instr-row')].map(r =>
+    r.querySelector('.cur-title-input').value.trim()
+  ).filter(Boolean);
+
+  const awards = [...document.querySelectorAll('#awardRows .instr-row')].map(r =>
+    r.querySelector('.cur-title-input').value.trim()
+  ).filter(Boolean);
+
+  const baseStats = instructorData.stats || DEFAULT_INSTRUCTOR.stats;
+  const stats = baseStats.map((s, i) => ({
+    label: s.label,
+    value: (document.getElementById('instrStat' + i)?.value || '').trim() || s.value
+  }));
+
+  const sns = [...document.querySelectorAll('#snsRows .sns-row')].map(r => ({
+    label: r.querySelector('.sns-platform').value.trim(),
+    url:   r.querySelector('.sns-url').value.trim()
+  })).filter(s => s.url);
+
+  instructorData = {
+    name:    document.getElementById('instrName').value.trim(),
+    role:    document.getElementById('instrRole').value.trim(),
+    quote:   document.getElementById('instrQuote').value.trim(),
+    photo:   document.getElementById('instrPhoto').value.trim(),
+    careers, certs, stats, awards, sns,
+    contact: {
+      phone:   document.getElementById('instrPhone').value.trim(),
+      email:   document.getElementById('instrEmail').value.trim(),
+      website: document.getElementById('instrWebsite').value.trim()
+    },
+    message: {
+      text: document.getElementById('instrMsgText').value.trim(),
+      sub:  document.getElementById('instrMsgSub').value.trim()
+    }
+  };
+
+  saveData('instructorData', instructorData);
+  // Mobile Message 도 함께 저장
+  saveData('pageMsgInstructor', { mobile: document.getElementById('instrMobile').value.trim() });
+  toast('강사 프로필이 저장되었습니다');
+}
+
+// ── INIT ──
+renderInstructor();
+</script>
+</body>
+</html>

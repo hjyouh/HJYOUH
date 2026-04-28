@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
   <title>강의 - aimt</title>
   <link rel="stylesheet" href="../../assets/css/tab-card.css?v=3">
   <link rel="stylesheet" href="../../assets/css/fonts.css?v=3">
@@ -364,7 +366,7 @@
 
     <!-- 상단 고정 영역: 메시지 + 탭 -->
     <div class="sticky-top-area" id="lec-sticky-area">
-      <div class="sticky-msg">배우면 바로 써먹는 <span style="color:#c9a96e;">AI</span></div>
+      <div class="sticky-msg" id="lecTopMsg">배우면 바로 써먹는 <span style="color:#c9a96e;">AI</span></div>
       <div class="tab-bar">
         <div class="tab-segmented">
           <button class="tab-btn active-mat" id="tab-material" onclick="switchTab('material')">강의안</button>
@@ -376,179 +378,7 @@
 
   <div id="section-material" class="card-container">
 
-    <!-- 카드 1: 생성형 AI 기초 -->
-    <div class="tab-card-wrap" onclick="showDetail(0)">
-      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <clipPath id="lc1">
-            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
-              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
-              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
-          </clipPath>
-        </defs>
-        <rect width="360" height="220" fill="#111" clip-path="url(#lc1)"/>
-        <image href="../../assets/images/lectures/main2.png"
-          x="0" y="0" width="360" height="220"
-          clip-path="url(#lc1)" preserveAspectRatio="xMidYMid slice"/>
-        <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
-        <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
-          L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
-          Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"
-          fill="none" stroke="rgba(150,150,150,0.7)" stroke-width="1"/>
-      </svg>
-      <div class="lec-card-ov">
-        <span class="lec-ov-cat">생성형 AI</span>
-        <span class="lec-ov-more">더보기</span>
-        <div class="lec-ov-gradient"></div>
-        <p class="lec-ov-title-inner">지금 당장 써먹는 AI 활용법</p>
-        <span class="lec-ov-dur">⏱ 3시간~</span>
-      </div>
-    </div>
-
-    <!-- 카드 2: AI 영화 제작 -->
-    <div class="tab-card-wrap" onclick="showDetail(1)">
-      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <clipPath id="lc2">
-            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
-              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
-              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
-          </clipPath>
-        </defs>
-        <rect width="360" height="220" fill="#111" clip-path="url(#lc2)"/>
-        <image href="../../assets/images/lectures/main5.png"
-          x="0" y="0" width="360" height="220"
-          clip-path="url(#lc2)" preserveAspectRatio="xMidYMid slice"/>
-        <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
-        <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
-          L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
-          Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"
-          fill="none" stroke="rgba(150,150,150,0.7)" stroke-width="1"/>
-      </svg>
-      <div class="lec-card-ov">
-        <span class="lec-ov-cat">AI 영화</span>
-        <span class="lec-ov-more">더보기</span>
-        <div class="lec-ov-gradient"></div>
-        <p class="lec-ov-title-inner">AI 영화 제작 입문</p>
-        <span class="lec-ov-dur">⏱ 6시간~</span>
-      </div>
-    </div>
-
-    <!-- 카드 3: AI 마케팅 -->
-    <div class="tab-card-wrap" onclick="showDetail(2)">
-      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <clipPath id="lc3">
-            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
-              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
-              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
-          </clipPath>
-        </defs>
-        <rect width="360" height="220" fill="#111" clip-path="url(#lc3)"/>
-        <image href="../../assets/images/lectures/main4.png"
-          x="0" y="0" width="360" height="220"
-          clip-path="url(#lc3)" preserveAspectRatio="xMidYMid slice"/>
-        <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
-        <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
-          L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
-          Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"
-          fill="none" stroke="rgba(150,150,150,0.7)" stroke-width="1"/>
-      </svg>
-      <div class="lec-card-ov">
-        <span class="lec-ov-cat">AI 마케팅</span>
-        <span class="lec-ov-more">더보기</span>
-        <div class="lec-ov-gradient"></div>
-        <p class="lec-ov-title-inner">AI 마케팅 실전</p>
-        <span class="lec-ov-dur">⏱ 3시간~</span>
-      </div>
-    </div>
-
-    <!-- 카드 4: AI 업무 혁신 -->
-    <div class="tab-card-wrap" onclick="showDetail(3)">
-      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <clipPath id="lc4">
-            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
-              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
-              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
-          </clipPath>
-        </defs>
-        <rect width="360" height="220" fill="#111" clip-path="url(#lc4)"/>
-        <image href="../../assets/images/lectures/lecture1.png"
-          x="0" y="0" width="360" height="220"
-          clip-path="url(#lc4)" preserveAspectRatio="xMidYMid slice"/>
-        <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
-        <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
-          L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
-          Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"
-          fill="none" stroke="rgba(150,150,150,0.7)" stroke-width="1"/>
-      </svg>
-      <div class="lec-card-ov">
-        <span class="lec-ov-cat">AI 업무</span>
-        <span class="lec-ov-more">더보기</span>
-        <div class="lec-ov-gradient"></div>
-        <p class="lec-ov-title-inner">실무 중심의 생성형 AI 강의</p>
-        <span class="lec-ov-dur">⏱ 3시간~</span>
-      </div>
-    </div>
-
-    <!-- 카드 5: 프롬프트 엔지니어링 -->
-    <div class="tab-card-wrap" onclick="showDetail(4)">
-      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <clipPath id="lc5">
-            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
-              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
-              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
-          </clipPath>
-        </defs>
-        <rect width="360" height="220" fill="#111" clip-path="url(#lc5)"/>
-        <image href="../../assets/images/lectures/main3.png"
-          x="0" y="0" width="360" height="220"
-          clip-path="url(#lc5)" preserveAspectRatio="xMidYMid slice"/>
-        <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
-        <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
-          L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
-          Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"
-          fill="none" stroke="rgba(150,150,150,0.7)" stroke-width="1"/>
-      </svg>
-      <div class="lec-card-ov">
-        <span class="lec-ov-cat">프롬프트</span>
-        <span class="lec-ov-more">더보기</span>
-        <div class="lec-ov-gradient"></div>
-        <p class="lec-ov-title-inner">프롬프트 엔지니어링 실전</p>
-        <span class="lec-ov-dur">⏱ 3시간~</span>
-      </div>
-    </div>
-
-    <!-- 카드 6: AI 데이터 분석 -->
-    <div class="tab-card-wrap" onclick="showDetail(5)">
-      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <clipPath id="lc6">
-            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
-              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
-              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
-          </clipPath>
-        </defs>
-        <rect width="360" height="220" fill="#111" clip-path="url(#lc6)"/>
-        <image href="../../assets/images/lectures/Lecture2.png"
-          x="0" y="0" width="360" height="220"
-          clip-path="url(#lc6)" preserveAspectRatio="xMidYMid slice"/>
-        <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
-        <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
-          L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
-          Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"
-          fill="none" stroke="rgba(150,150,150,0.7)" stroke-width="1"/>
-      </svg>
-      <div class="lec-card-ov">
-        <span class="lec-ov-cat">데이터</span>
-        <span class="lec-ov-more">더보기</span>
-        <div class="lec-ov-gradient"></div>
-        <p class="lec-ov-title-inner">AI 데이터 분석 입문</p>
-        <span class="lec-ov-dur">⏱ 3시간~</span>
-      </div>
-    </div>
+    <!-- 카드가 자바스크립트로 동적 렌더링 됩니다. -->
 
   </div><!-- /section-material -->
 
@@ -676,7 +506,7 @@
 
 <script>
   /* ===== 강의 데이터 ===== */
-  const LECTURES = [
+  let LECTURES = [
     {
       category: '생성형 AI 기초',
       title: '지금 당장 써먹는 AI 활용법',
@@ -788,6 +618,64 @@
     }
   ];
 
+  /* ===== 데이터 초기화 ===== */
+  function fixLecPath(p) {
+    if (!p) return p;
+    if (p.startsWith('../assets/')) return p.replace('../assets/', '../../assets/');
+    if (p.startsWith('assets/'))   return '../../' + p;
+    return p;
+  }
+
+  function initLecturesData() {
+    try {
+      const saved = localStorage.getItem('lecturesData');
+      if (saved) {
+        LECTURES = JSON.parse(saved).map(lec => ({ ...lec, image: fixLecPath(lec.image) }));
+      } else {
+        LECTURES = LECTURES.map(lec => ({ ...lec, image: fixLecPath(lec.image) }));
+      }
+    } catch(e) {
+      LECTURES = LECTURES.map(lec => ({ ...lec, image: fixLecPath(lec.image) }));
+    }
+  }
+
+  /* ===== 강의 카드 동적 렌더링 ===== */
+  function renderLectures() {
+    const container = document.getElementById('section-material');
+    container.innerHTML = LECTURES.map((lec, i) => {
+      const imgEsc = (lec.image || '').replace(/'/g, "\\'");
+      return `
+        <div class="tab-card-wrap" onclick="showDetail(${i})">
+          <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <clipPath id="lc${i}">
+                <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+                  L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+                  Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
+              </clipPath>
+            </defs>
+            <rect width="360" height="220" fill="#111" clip-path="url(#lc${i})"/>
+            <image href="${imgEsc}"
+              x="0" y="0" width="360" height="220"
+              clip-path="url(#lc${i})" preserveAspectRatio="xMidYMid slice"/>
+            <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
+            <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
+              L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
+              Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"
+              fill="none" stroke="rgba(150,150,150,0.7)" stroke-width="1"/>
+          </svg>
+          <div class="lec-card-ov">
+            <span class="lec-ov-cat">${lec.category || ''}</span>
+            <span class="lec-ov-more">더보기</span>
+            <div class="lec-ov-gradient"></div>
+            <p class="lec-ov-title-inner">${lec.title || ''}</p>
+            <span class="lec-ov-dur">⏱ ${lec.duration || ''}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
   /* ===== 화면 전환 ===== */
   function showDetail(idx) {
     const lec = LECTURES[idx];
@@ -864,9 +752,23 @@
       document.body.classList.remove('is-scrolling');
     }, 800);
   });
+
+  /* 초기 렌더링 호출 */
+  initLecturesData();
+  renderLectures();
 </script>
 
   <script src="../../assets/js/mobile-nav.js?v=2"></script>
+  <script>
+    // 강의 Mobile Message 연동
+    (function() {
+      try {
+        const d = JSON.parse(localStorage.getItem('pageMsgLectures') || '{}');
+        const el = document.getElementById('lecTopMsg');
+        if (el && d.mobile) el.textContent = d.mobile;
+      } catch(e) {}
+    })();
+  </script>
 </body>
 </html>
 

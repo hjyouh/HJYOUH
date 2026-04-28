@@ -83,7 +83,7 @@ function setupEventListeners() {
 
   // Desktop navigation
   if (elements.nav) {
-    elements.nav.querySelectorAll('a').forEach(link => {
+    elements.nav.querySelectorAll('a[data-page]').forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         const page = link.dataset.page;

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | 관리자 패널</title>
+  <link rel="stylesheet" href="../assets/css/fonts.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<header class="admin-header">
+  <div class="admin-logo">유형재 <span>관리자 패널</span></div>
+  <div class="header-right">
+    <a href="../index.html" target="_blank" class="header-preview-btn">홈페이지 보기 →</a>
+  </div>
+</header>
+
+<div class="admin-body">
+  <nav class="sidebar">
+    <a href="home.html"       class="sidebar-item">관리자페이지</a>
+    <a href="landing.html"    class="sidebar-item">Landing</a>
+    <a href="instructor.html" class="sidebar-item">강사</a>
+    <a href="lectures.html"   class="sidebar-item">강의 관리</a>
+    <a href="works.html"      class="sidebar-item">작업들</a>
+    <a href="works.html"      class="sidebar-item sidebar-item-sub">AI영화</a>
+    <a href="works.html"      class="sidebar-item sidebar-item-sub">도서</a>
+    <a href="mv.html"         class="sidebar-item">M/V</a>
+    <a href="contact.html"    class="sidebar-item active">Contact</a>
+    <div style="flex:1;"></div>
+    <a href="members.html"    class="sidebar-item">회원관리</a>
+  </nav>
+
+  <main class="admin-main">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">문의 내역</div>
+        <div class="panel-subtitle">Contact 폼으로 접수된 문의를 확인합니다</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="empty-state">문의 폼 접수 내역이 들어갈 예정입니다.</div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="admin-data.js"></script>
+</body>
+</html>

@@ -111,7 +111,7 @@
   .works-zoom-layer {
     position: absolute;
     inset: 0;
-    z-index: 15;
+    z-index: 25;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
@@ -141,7 +141,7 @@
   }
   .works-zoom-close {
     position: absolute;
-    top: 16px;
+    top: 70px;
     right: 16px;
     width: 40px;
     height: 40px;
@@ -156,7 +156,8 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    z-index: 5;
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
   }
   .works-zoom-close:hover {
     background: rgba(201,169,110,0.8);
@@ -229,11 +230,12 @@
     scrollbar-color: rgba(255,255,255,0.2) transparent;
   }
 
-  /* ===== CARD GRID (flex) ===== */
+  /* ===== CARD GRID (Flexbox — last row centered) ===== */
   .card-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    justify-content: center;
     align-content: flex-start;
   }
 
@@ -248,6 +250,8 @@
     transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     opacity: 0;
     animation: slideUp 1s ease forwards;
+    /* 너비는 renderGrid()에서 --card-w 변수로 설정 */
+    width: var(--card-w, calc((100% - 30px) / 4));
     flex-shrink: 0;
   }
 
@@ -311,25 +315,8 @@
     font-family: 'Poppins', 'SUITE', sans-serif;
   }
 
-  /* ===== LAYOUT CLASSES (set by JS on .card-grid) ===== */
-
-  /* 4개: 4열 */
-  .card-grid.layout-4 .work-card           { width: calc(25% - 8px); }
-
-  /* 5개: 첫줄 3개, 둘째줄 2개 */
-  .card-grid.layout-5 .work-card           { width: calc(33.33% - 7px); }
-  .card-grid.layout-5 .work-card:nth-child(n+4) { width: calc(50% - 5px); }
-
-  /* 6개: 3열 (카드 크기는 4열과 동일, 가운데 정렬) */
-  .card-grid.layout-6                      { justify-content: center; }
-  .card-grid.layout-6 .work-card           { width: calc(25% - 8px); }
-
-  /* 7개: 첫줄 4개, 둘째줄 3개 */
-  .card-grid.layout-7 .work-card           { width: calc(33.33% - 7px); }
-  .card-grid.layout-7 .work-card:nth-child(-n+4) { width: calc(25% - 8px); }
-
-  /* 8개 이상: 4열 고정 */
-  .card-grid.layout-many .work-card        { width: calc(25% - 8px); }
+  /* ===== LAYOUT: CSS grid, columns controlled via --grid-cols ===== */
+  /* (모든 카드는 width:100%로 셀을 채움 — 크기 균일) */
 
   /* ===== MESSAGE BOX ===== */
   .works-msg {
@@ -369,7 +356,7 @@
   /* ===== WORKS PANEL FOOTER ===== */
   .works-panel-footer {
     flex-shrink: 0;
-    padding: 12px 24px 14px;
+    padding: 8px 20px;
     border-top: 1px solid var(--border-color);
     display: flex;
     align-items: center;
@@ -381,7 +368,8 @@
   .wpf-left {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
+    align-items: center;
   }
 
   .wpf-row {
@@ -396,7 +384,7 @@
   }
 
   .wpf-item {
-    font-size: 11px;
+    font-size: 14px;
     color: var(--text-secondary);
     text-decoration: none;
     transition: color 0.2s ease;
@@ -411,7 +399,7 @@
     border: none;
     border-radius: 8px;
     color: #0d0d0d;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     font-family: 'Poppins', 'SUITE', sans-serif;
     padding: 9px 18px;
@@ -428,20 +416,8 @@
 
 
   /* ===== 반응형 ===== */
-  @media (max-width: 1200px) {
-    .card-grid.layout-4 .work-card,
-    .card-grid.layout-many .work-card,
-    .card-grid.layout-7 .work-card:nth-child(-n+4) { width: calc(22.5% - 8px); }
-
-    .card-grid.layout-5 .work-card,
-    .card-grid.layout-6 .work-card,
-    .card-grid.layout-7 .work-card { width: calc(30% - 7px); }
-
-    .card-grid.layout-5 .work-card:nth-child(n+4) { width: calc(45% - 5px); }
-  }
-
   @media (max-width: 900px) {
-    .card-grid .work-card { width: calc(50% - 5px) !important; }
+    .card-grid { --grid-cols: 2 !important; }
   }
 
   @media (max-width: 767px) {
@@ -476,12 +452,12 @@
 
   .detail-awards { display: flex; flex-direction: column; gap: 6px; }
 
-  .award-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #fff; line-height: 1.5; }
+  .award-item { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; color: #fff; line-height: 1.5; }
   .award-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-gold); flex-shrink: 0; margin-top: 5px; }
 
   .detail-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.7; margin: 0; padding-top: 8px; border-top: 1px solid var(--border-color); }
   .detail-synopsis { display: flex; flex-direction: column; gap: 10px; padding-top: 10px; border-top: 1px solid var(--border-color); }
-  .detail-synopsis p { font-size: 13px; color: var(--text-secondary); line-height: 1.8; margin: 0; }
+  .detail-synopsis p { font-size: 14px; color: var(--text-secondary); line-height: 1.8; margin: 0; }
   .detail-info { display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-top: 1px solid var(--border-color); }
   .detail-info-item { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.5; }
   .detail-links { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 4px; }
@@ -491,11 +467,11 @@
 
 <script>
   /* ===== DATA ===== */
-  const DEFAULT_WORKS = {
+  var DEFAULT_WORKS = {
     film: [
       {
         id: 'film-1', type: 'film',
-        title: "누구의 속삭임", titleEn: "Who's whisper", year: 2025,
+        title: "누구의 속삭임", titleEn: "Who's Whisper", year: 2025,
         badge: '🏆 금상',
         awards: [
           '2025 서울 국제 AI 영화제 금상',
@@ -516,7 +492,7 @@
         links: [
           { label: "영화 보러가기", url: "https://youtu.be/YozYFTxYcuI" }
         ],
-        thumb: "assets/images/posters/who's Poster.png"
+        thumb: "../assets/images/posters/who's Poster.png"
       },
       {
         id: 'film-2', type: 'film',
@@ -546,7 +522,7 @@
           { label: "M/V 보러가기", url: "https://youtu.be/PnfMoHAuDDk" },
           { label: "티져 보러가기", url: "https://youtu.be/JFhfmJKw7Bg" }
         ],
-        thumb: 'assets/images/posters/Digital Ego poster.png'
+        thumb: '../assets/images/posters/Digital Ego poster.png'
       },
       {
         id: 'film-3', type: 'film',
@@ -563,7 +539,12 @@
         links: [
           { label: "영화 보러가기", url: "https://youtu.be/0OQGGyzxMk4" }
         ],
-        thumb: 'assets/images/posters/추억의 잔광(殘光)-포스터.png'
+        info: [
+          "주요 인물 : 노인 · 죽은 아내",
+          "배경 : 차가운 도심 속 버려진 골목",
+          "러닝타임 : 3분 · 단편"
+        ],
+        thumb: '../assets/images/posters/추억의 잔광(殘光)-포스터.png'
       },
       {
         id: 'film-4', type: 'film',
@@ -582,7 +563,12 @@
           { label: "영화 보러가기", url: "https://youtu.be/NZGuxgiC2HM" },
           { label: "티져 보러가기", url: "https://youtu.be/BZEs85QnzO4" }
         ],
-        thumb: 'assets/images/posters/Jeong Poster.png'
+        info: [
+          "주요 인물 : 어머니 · 자식",
+          "배경 : 시골 마을 오래된 한옥",
+          "러닝타임 : 4분 · 단편"
+        ],
+        thumb: '../assets/images/posters/Jeong Poster.png'
       }
     ],
     book: [
@@ -597,7 +583,7 @@
           "책에 담을 수 없는 영상 제작 과정은 YouTube에 업로드하여 QR 코드로 제공한다. 정지된 이미지가 움직이고, 음성과 음악이 더해져 완성된 영화가 되는 순간을 경험하라. FilmFreeway를 통한 영화제 출품 가이드까지 포함하여 당신의 작품이 세상과 만나는 모든 과정을 안내한다."
         ],
         links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/177864126" }],
-        thumb: 'assets/images/books/Book6-AI 영화 만들기 - 완성 이미지를 영화로.png'
+        thumb: '../assets/images/books/Book6-AI 영화 만들기 - 완성 이미지를 영화로.png'
       },
       {
         id: 'book-2', type: 'book',
@@ -611,7 +597,7 @@
           "카메라 없이, 배우 없이, 제작비 없이 당신의 상상을 구체적인 이미지로 구현하는 첫 단계를 시작하라."
         ],
         links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/177864121" }],
-        thumb: 'assets/images/books/Book5-AI 영화 만들기 - 시작 이야기를 이미지로.png'
+        thumb: '../assets/images/books/Book5-AI 영화 만들기 - 시작 이야기를 이미지로.png'
       },
       {
         id: 'book-3', type: 'book',
@@ -624,7 +610,7 @@
           "이 책은 기술 낙관주의와 디스토피아 사이에서 균형을 찾아가는 한 개인의 이야기이자, AI 시대를 살아가는 모든 이들에게 던질 수 있는 에세이다. 디지털 시대의 자아 발견, 창의성의 확장, 그리고 기술과 함께 춤추듯 공존하는 삶의 가능성을 보여주는 따뜻하고 통찰력 있는 이야기."
         ],
         links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/148570574" }],
-        thumb: 'assets/images/books/book4-정체된 나의 삶 속에서, AI와 춤추다.png'
+        thumb: '../assets/images/books/book4-정체된 나의 삶 속에서, AI와 춤추다.png'
       },
       {
         id: 'book-4', type: 'book',
@@ -637,7 +623,7 @@
           "프롬프트 최적화 기법, 업종별 활용 사례, 실전 적용 방법을 포함하고 있으며, 마케팅, 콘텐츠 제작, 데이터 분석, 교육 등 다양한 분야에서 AI를 활용하는 방안을 다룬다."
         ],
         links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/145368866" }],
-        thumb: 'assets/images/books/book3 AI와 소통하는 법- 프롬프트 엔지니어링 기초편.png'
+        thumb: '../assets/images/books/book3 AI와 소통하는 법- 프롬프트 엔지니어링 기초편.png'
       },
       {
         id: 'book-5', type: 'book',
@@ -650,7 +636,7 @@
           "빠르게 변화하는 디지털 환경에서 AI를 전략적으로 활용하고자 하는 마케터, 콘텐츠 제작자, 기업 실무자들에게 실질적인 가이드가 될 것이다."
         ],
         links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/145370350" }],
-        thumb: 'assets/images/books/Book2-디지털 마케팅의 판도를 바꾸는 생성형 AI 고급 전략.png'
+        thumb: '../assets/images/books/Book2-디지털 마케팅의 판도를 바꾸는 생성형 AI 고급 전략.png'
       },
       {
         id: 'book-6', type: 'book',
@@ -663,35 +649,46 @@
           "초보자도 쉽게 따라올 수 있도록 단계별 학습이 가능하며, 각 장에는 실전 적용 팁과 사례가 포함되어 있다. AI 활용이 필수가 된 시대에, AI를 업무에 적용하고 싶은 독자들에게 실질적인 가이드를 제공할 것이다."
         ],
         links: [{ label: "책 구매하기", url: "https://www.yes24.com/product/goods/145370862" }],
-        thumb: 'assets/images/books/Book1-업무생산성 높이는 생성형 AI 기초 전략.png'
+        thumb: '../assets/images/books/Book1-업무생산성 높이는 생성형 AI 기초 전략.png'
       }
     ]
   };
 
-  let currentTab = 'film';
-  let selectedId = null;
+  var currentTab = 'film';
+  var selectedId = null;
+
+  function fixWorksData(parsed) {
+    const fixPath = (items, subfolder) => (items || []).map(item => {
+      if (item.synopsisFull && !item.intro) item.intro = item.synopsisFull;
+      if (item.descFull && !item.desc) item.desc = item.descFull;
+      if (item.thumb && /\.\.\/assets\/images\/[^/]+\.(png|jpg|jpeg|webp)/i.test(item.thumb)) {
+        item.thumb = item.thumb.replace('../assets/images/', `../assets/images/${subfolder}/`);
+      }
+      if (item.thumb) item.thumb = item.thumb.replace(/^\.\.\/assets\//, 'assets/');
+      return item;
+    });
+    return { film: fixPath(parsed.film, 'posters'), book: fixPath(parsed.book, 'books') };
+  }
+
+  let _cachedWorks = null;
 
   function loadWorksData() {
+    if (_cachedWorks) return _cachedWorks;
     try {
       const saved = localStorage.getItem('worksData');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return {
-          film: [...DEFAULT_WORKS.film, ...(parsed.film || [])],
-          book: [...DEFAULT_WORKS.book, ...(parsed.book || [])]
-        };
-      }
+      if (saved) return fixWorksData(JSON.parse(saved));
     } catch(e) {}
     return DEFAULT_WORKS;
   }
 
-  /* ===== LAYOUT CLASS BY COUNT ===== */
-  function getLayoutClass(count) {
-    if (count <= 4) return 'layout-4';
-    if (count === 5) return 'layout-5';
-    if (count === 6) return 'layout-6';
-    if (count === 7) return 'layout-7';
-    return 'layout-many';
+  async function loadWorksDataCloud() {
+    try {
+      if (window.sbLoad) {
+        const data = await sbLoad('worksData', null);
+        if (data && (data.film || data.book)) return fixWorksData(data);
+      }
+    } catch(e) {}
+    return loadWorksData();
   }
 
   /* ===== RENDER GRID ===== */
@@ -702,8 +699,12 @@
     const ratioClass = tab === 'film' ? 'ratio-film' : 'ratio-book';
     const icon = tab === 'film' ? '🎬' : '📚';
 
-    // Remove old layout classes, set new one
-    grid.className = 'card-grid ' + getLayoutClass(items.length);
+    // CSS grid columns from admin config
+    const colsKey = tab === 'film' ? 'worksColsFilm' : 'worksColsBook';
+    const cols = parseInt(localStorage.getItem(colsKey) || '4');
+    grid.className = 'card-grid';
+    grid.style.setProperty('--grid-cols', cols);
+    grid.style.setProperty('--card-w', `calc((100% - ${(cols - 1) * 10}px) / ${cols})`);
 
     grid.innerHTML = items.map(item => `
       <div class="work-card ${selectedId === item.id ? 'active' : ''}"
@@ -714,10 +715,22 @@
             ? `<img src="${item.thumb}" alt="${item.title}">`
             : `<span class="card-thumb-icon">${icon}</span>`
           }
-          ${item.badge ? `<span class="card-badge">${item.badge}</span>` : ''}
+          ${item.badge ? `<span class="card-badge">${item.badge}</span>` : (tab === 'book' ? `<span class="card-badge">📖 ${item.year}</span>` : '')}
         </div>
       </div>
     `).join('');
+  }
+
+  /* ===== UPDATE MESSAGE BOX FROM LOCALSTORAGE ===== */
+  function updateWorksMsg(tab) {
+    const key = tab === 'film' ? 'pageMsgWorksFilm' : 'pageMsgWorksBook';
+    try {
+      const cfg = JSON.parse(localStorage.getItem(key) || '{}');
+      const textEl = document.querySelector('.works-msg .message-box-text');
+      const subEl  = document.querySelector('.works-msg .message-box-sub');
+      if (textEl && cfg.mainMsg)  textEl.innerHTML  = cfg.mainMsg.replace(/\n/g,'<br>');
+      if (subEl  && cfg.subtitle) subEl.innerHTML   = cfg.subtitle.replace(/\n/g,'<br>');
+    } catch(e) {}
   }
 
   /* ===== SWITCH TAB ===== */
@@ -729,6 +742,7 @@
     });
     const zoomLayer = document.getElementById('worksZoomLayer');
     if (zoomLayer) zoomLayer.classList.remove('active');
+    updateWorksMsg(tab);
     renderGrid(tab);
     showPanelEmpty();
   }
@@ -740,12 +754,25 @@
     const item = (data[tab] || []).find(i => i.id === id);
     if (!item) return;
 
-    // 1) 줌 레이어 활성화 (강의 패턴 그대로)
+    // 1) 줌 레이어 활성화 (이미지 존재 여부 사전 확인)
     const zoomLayer = document.getElementById('worksZoomLayer');
     const zoomImg = document.getElementById('worksZoomImg');
-    if (zoomLayer && zoomImg && item.thumb) {
-      zoomImg.style.backgroundImage = 'url("' + item.thumb + '")';
-      zoomLayer.classList.add('active');
+    if (zoomLayer && zoomImg) {
+      if (item.thumb) {
+        const testImg = new Image();
+        testImg.onload = () => {
+          zoomImg.style.backgroundImage = 'url("' + item.thumb + '")';
+          zoomLayer.classList.add('active');
+        };
+        testImg.onerror = () => {
+          zoomImg.style.backgroundImage = '';
+          zoomLayer.classList.remove('active');
+        };
+        testImg.src = item.thumb;
+      } else {
+        zoomImg.style.backgroundImage = '';
+        zoomLayer.classList.remove('active');
+      }
     }
 
     // 2) 선택된 카드 X로 교체 (강의 패턴 그대로)
@@ -835,13 +862,14 @@
     document.getElementById('panelDetail').style.display = 'none';
   }
 
-  function initWorksPage() {
+  async function initWorksPage() {
+    _cachedWorks = await loadWorksDataCloud();
     currentTab = 'film';
     selectedId = null;
+    updateWorksMsg('film');
     renderGrid('film');
     showPanelEmpty();
   }
 
-  // initWorksPage is called by main.js after injection; fallback for direct load
   if (document.getElementById('cardGrid')) initWorksPage();
 </script>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원관리 | 관리자 패널</title>
+  <link rel="stylesheet" href="../assets/css/fonts.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    /* ── 통계 카드 ── */
+    .stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px; }
+    .stat-card {
+      background:var(--bg2); border:1px solid var(--border);
+      border-radius:14px; padding:18px 20px;
+    }
+    .stat-label { font-size:12px; color:var(--sub); margin-bottom:6px; }
+    .stat-num   { font-size:30px; font-weight:700; line-height:1; }
+    .stat-num.gold { color:var(--gold); }
+
+    /* ── 테이블 ── */
+    .members-table { width:100%; border-collapse:collapse; table-layout:fixed; }
+    .members-table th {
+      text-align:left; padding:10px 12px;
+      font-size:13px; font-weight:500; color:var(--sub);
+      border-bottom:2px solid var(--border);
+      white-space:nowrap; overflow:hidden;
+    }
+    .members-table td {
+      padding:12px 12px; font-size:14px;
+      border-bottom:1px solid var(--border);
+      vertical-align:middle;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .members-table tr:last-child td { border-bottom:none; }
+    .members-table tr:hover td { background:rgba(0,0,0,0.02); }
+    /* 컬럼 너비 고정 */
+    .members-table .col-id   { width:120px; font-weight:600; font-family:monospace; font-size:14px; }
+    .members-table .col-name { width:100px; }
+    .members-table .col-email{ width:200px; }
+    .members-table .col-phone{ width:130px; }
+    .members-table .col-role { width:100px; }
+    .members-table .col-date { width:110px; font-size:13px; color:var(--sub); }
+    .members-table .col-act  { width:auto; text-align:right; white-space:nowrap; }
+
+    /* ── 모달 공통 ── */
+    #memberModal .modal-box { max-width:500px; }
+    #resetLinkModal .modal-box { max-width:460px; }
+
+    /* ── 링크 박스 ── */
+    .link-box {
+      background:var(--bg); border:1px solid var(--border); border-radius:10px;
+      padding:12px 14px; font-size:12px; font-family:monospace;
+      word-break:break-all; color:var(--text); line-height:1.6; margin:12px 0;
+    }
+    .pw-wrap { position:relative; }
+    .pw-wrap input { padding-right:42px; }
+    .pw-eye {
+      position:absolute; right:12px; top:50%; transform:translateY(-50%);
+      background:none; border:none; cursor:pointer; font-size:15px; color:var(--sub);
+    }
+    /* 비밀번호 수정 시 선택적 표시 */
+    .pw-hint { font-size:11px; color:var(--sub); margin-top:4px; }
+
+    /* ── 검색 ── */
+    .search-row {
+      display:flex; gap:10px; align-items:center; margin-bottom:16px;
+    }
+    .search-row input {
+      flex:1; background:var(--bg2); border:1px solid var(--border); border-radius:8px;
+      color:var(--text); font-family:inherit; font-size:13px;
+      padding:8px 14px; outline:none; transition:border-color .2s;
+    }
+    .search-row input:focus { border-color:rgba(201,169,110,0.5); }
+  </style>
+</head>
+<body>
+
+<header class="admin-header">
+  <div class="admin-logo">유형재 <span>관리자 패널</span></div>
+  <div class="header-right">
+    <a href="../index.html" target="_blank" class="header-preview-btn">홈페이지 보기 →</a>
+  </div>
+</header>
+
+<div class="admin-body">
+  <nav class="sidebar">
+    <a href="home.html"       class="sidebar-item">관리자페이지</a>
+    <a href="landing.html"    class="sidebar-item">Landing</a>
+    <a href="instructor.html" class="sidebar-item">강사</a>
+    <a href="lectures.html"   class="sidebar-item">강의 관리</a>
+    <a href="works.html"      class="sidebar-item">작업들</a>
+    <a href="works.html"      class="sidebar-item sidebar-item-sub">AI영화</a>
+    <a href="works.html"      class="sidebar-item sidebar-item-sub">도서</a>
+    <a href="mv.html"         class="sidebar-item">M/V</a>
+    <a href="contact.html"    class="sidebar-item">Contact</a>
+    <div style="flex:1;"></div>
+    <a href="members.html"    class="sidebar-item active">회원관리</a>
+  </nav>
+
+  <main class="admin-main">
+
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">회원 관리</div>
+        <div class="panel-subtitle">회원 계정을 추가·수정·삭제하고 권한을 관리합니다</div>
+      </div>
+      <button class="btn btn-gold" onclick="openMemberModal('add')">+ 회원 등록</button>
+    </div>
+
+    <!-- 통계 -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">전체 회원</div>
+        <div class="stat-num" id="statTotal">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">슈퍼 관리자</div>
+        <div class="stat-num gold" id="statSuper">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">일반 회원</div>
+        <div class="stat-num" id="statUser">0</div>
+      </div>
+    </div>
+
+    <!-- 회원 목록 -->
+    <div class="card">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+        <div class="card-title" style="margin-bottom:0;">👥 회원 목록</div>
+        <div class="search-row" style="margin-bottom:0; width:260px;">
+          <input type="text" id="searchInput" placeholder="아이디·이름·이메일 검색"
+            autocomplete="off" readonly
+            onfocus="this.removeAttribute('readonly')"
+            oninput="renderMembers()">
+        </div>
+      </div>
+      <table class="members-table" id="membersTable">
+        <thead>
+          <tr>
+            <th class="col-id">로그인 ID</th>
+            <th class="col-name">이름</th>
+            <th class="col-email">이메일</th>
+            <th class="col-phone">연락처</th>
+            <th class="col-role">권한</th>
+            <th class="col-date">가입일</th>
+            <th class="col-act">관리</th>
+          </tr>
+        </thead>
+        <tbody id="membersTbody"></tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ 회원 추가/수정 모달 ══ -->
+<div class="modal-overlay" id="memberModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="memberModalTitle">회원 등록</div>
+      <button class="modal-close-btn" onclick="closeMemberModal()">✕</button>
+    </div>
+
+    <!-- 1줄: 로그인 ID | 이름 -->
+    <div class="form-grid">
+      <div class="form-row" style="margin-bottom:0;">
+        <label>로그인 ID *</label>
+        <input id="mLoginId" type="text" placeholder="영문·숫자 조합">
+      </div>
+      <div class="form-row" style="margin-bottom:0;">
+        <label>이름 *</label>
+        <input id="mName" type="text" placeholder="이름">
+      </div>
+    </div>
+    <!-- 2줄: 비밀번호 | 비밀번호 확인 -->
+    <div class="form-grid" id="mPwRow">
+      <div class="form-row" style="margin-bottom:0;">
+        <label id="mPwLabel">비밀번호 *</label>
+        <div class="pw-wrap">
+          <input id="mPassword" type="password" placeholder="8자 이상">
+          <button type="button" class="pw-eye" onclick="toggleModalPw('mPassword')">👁</button>
+        </div>
+        <div class="pw-hint" id="mPwHint" style="display:none;">비워두면 변경하지 않습니다</div>
+      </div>
+      <div class="form-row" style="margin-bottom:0;">
+        <label>비밀번호 확인</label>
+        <div class="pw-wrap">
+          <input id="mPasswordConfirm" type="password" placeholder="비밀번호 재입력">
+          <button type="button" class="pw-eye" onclick="toggleModalPw('mPasswordConfirm')">👁</button>
+        </div>
+      </div>
+    </div>
+    <!-- 3줄: 이메일 | 연락처 -->
+    <div class="form-grid">
+      <div class="form-row" style="margin-bottom:0;">
+        <label>이메일</label>
+        <input id="mEmail" type="email" placeholder="이메일 주소">
+      </div>
+      <div class="form-row" style="margin-bottom:0;">
+        <label>연락처</label>
+        <input id="mPhone" type="tel" placeholder="010-0000-0000">
+      </div>
+    </div>
+    <!-- 권한 -->
+    <div class="form-row" style="margin-top:12px;">
+      <label>권한</label>
+      <select id="mRole">
+        <option value="user">일반 회원</option>
+        <option value="admin">관리자</option>
+        <option value="super">슈퍼 관리자</option>
+      </select>
+    </div>
+
+    <div class="msg err" id="memberErr" style="background:rgba(211,47,47,.08); border:1px solid rgba(211,47,47,.25); border-radius:8px; color:var(--red); font-size:13px; padding:10px 14px; margin-top:14px; display:none;"></div>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeMemberModal()">취소</button>
+      <button class="btn btn-gold" onclick="saveMember()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 재설정 링크 모달 ══ -->
+<div class="modal-overlay" id="resetLinkModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">비밀번호 재설정 링크</div>
+      <button class="modal-close-btn" onclick="closeResetModal()">✕</button>
+    </div>
+    <p style="font-size:13px; color:var(--sub); line-height:1.6;">
+      아래 링크를 해당 회원에게 전달해주세요.<br>
+      링크는 <strong>30분간</strong> 유효하며, 이 브라우저에서만 사용 가능합니다.
+    </p>
+    <div class="link-box" id="resetLinkBox"></div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-gold" style="flex:1;" onclick="copyResetLink()">🔗 링크 복사</button>
+      <a id="resetMailto" href="#" class="btn btn-outline" style="flex:1; text-align:center; text-decoration:none;">📧 이메일로 보내기</a>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeResetModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="admin-data.js"></script>
+<script src="admin-auth.js?v=2"></script>
+<script>
+let editUserId = null;
+
+/* ── 통계 업데이트 ── */
+function updateStats() {
+  const users = getUsers();
+  document.getElementById('statTotal').textContent = users.length;
+  document.getElementById('statSuper').textContent = users.filter(u => u.role === 'super' || u.role === 'admin').length;
+  document.getElementById('statUser').textContent  = users.filter(u => u.role === 'user').length;
+}
+
+/* ── 목록 렌더 ── */
+function renderMembers() {
+  const q     = (document.getElementById('searchInput').value || '').toLowerCase();
+  const users = getUsers().filter(u =>
+    !q || u.loginId.toLowerCase().includes(q) ||
+          u.name.toLowerCase().includes(q) ||
+          (u.email || '').toLowerCase().includes(q)
+  );
+  const tbody = document.getElementById('membersTbody');
+
+  if (!users.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--sub);font-size:13px;">
+      ${q ? '검색 결과가 없습니다.' : '등록된 회원이 없습니다.'}</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = users.map(u => `
+    <tr>
+      <td class="col-id">${escHtml(u.loginId)}</td>
+      <td class="col-name">${escHtml(u.name)}</td>
+      <td class="col-email">${escHtml(u.email || '—')}</td>
+      <td class="col-phone">${escHtml(u.phone || '—')}</td>
+      <td class="col-role"><span class="badge ${roleBadgeClass(u.role)}">${roleLabel(u.role)}</span></td>
+      <td class="col-date">${u.createdAt ? u.createdAt.slice(0,10) : '—'}</td>
+      <td class="col-act">
+        <button class="btn btn-outline btn-sm" onclick="openMemberModal('edit','${u.id}')">수정</button>
+        <button class="btn btn-outline btn-sm" onclick="openResetModal('${u.id}')" title="비밀번호 재설정 링크">🔑</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteMember('${u.id}')">삭제</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+/* ── 모달 열기/닫기 ── */
+function openMemberModal(mode, userId) {
+  editUserId = null;
+  document.getElementById('memberErr').style.display = 'none';
+  document.getElementById('mPwHint').style.display = 'none';
+
+  if (mode === 'add') {
+    document.getElementById('memberModalTitle').textContent = '회원 등록';
+    document.getElementById('mLoginId').value         = '';
+    document.getElementById('mName').value            = '';
+    document.getElementById('mPassword').value        = '';
+    document.getElementById('mPasswordConfirm').value = '';
+    document.getElementById('mEmail').value           = '';
+    document.getElementById('mPhone').value           = '';
+    document.getElementById('mRole').value            = 'user';
+    document.getElementById('mLoginId').disabled      = false;
+    document.getElementById('mPwLabel').textContent   = '비밀번호 *';
+  } else {
+    const user = getUsers().find(u => u.id === userId);
+    if (!user) return;
+    editUserId = userId;
+    document.getElementById('memberModalTitle').textContent = '회원 수정';
+    document.getElementById('mLoginId').value         = user.loginId;
+    document.getElementById('mName').value            = user.name;
+    document.getElementById('mPassword').value        = '';
+    document.getElementById('mPasswordConfirm').value = '';
+    document.getElementById('mEmail').value           = user.email || '';
+    document.getElementById('mPhone').value           = user.phone || '';
+    document.getElementById('mRole').value            = user.role  || 'user';
+    document.getElementById('mLoginId').disabled      = false;
+    document.getElementById('mPwLabel').textContent   = '비밀번호';
+    document.getElementById('mPwHint').style.display  = 'block';
+  }
+
+  document.getElementById('memberModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMemberModal() {
+  document.getElementById('memberModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ── 저장 ── */
+function saveMember() {
+  const loginId  = document.getElementById('mLoginId').value.trim();
+  const name     = document.getElementById('mName').value.trim();
+  const password = document.getElementById('mPassword').value;
+  const email    = document.getElementById('mEmail').value.trim();
+  const phone    = document.getElementById('mPhone').value.trim();
+  const role     = document.getElementById('mRole').value;
+  const errEl    = document.getElementById('memberErr');
+
+  const showErr = (msg) => { errEl.textContent = msg; errEl.style.display = 'block'; };
+  errEl.style.display = 'none';
+
+  const passwordConfirm = document.getElementById('mPasswordConfirm').value;
+
+  if (!loginId) { showErr('로그인 ID를 입력해주세요.'); return; }
+  if (!name)    { showErr('이름을 입력해주세요.'); return; }
+
+  let result;
+  if (!editUserId) {
+    // 추가
+    if (!password) { showErr('비밀번호를 입력해주세요.'); return; }
+    if (password.length < 8) { showErr('비밀번호는 8자 이상이어야 합니다.'); return; }
+    if (password !== passwordConfirm) { showErr('비밀번호가 일치하지 않습니다.'); return; }
+    result = addUser({ loginId, name, password, email, phone, role });
+  } else {
+    // 수정
+    if (password && password.length < 8) { showErr('비밀번호는 8자 이상이어야 합니다.'); return; }
+    if (password && password !== passwordConfirm) { showErr('비밀번호가 일치하지 않습니다.'); return; }
+    const data = { loginId, name, email, phone, role };
+    if (password) data.password = password;
+    result = updateUser(editUserId, data);
+  }
+
+  if (!result.ok) { showErr(result.msg); return; }
+
+  closeMemberModal();
+  document.getElementById('searchInput').value = ''; // 검색 초기화 → 새 회원 바로 노출
+  updateStats();
+  renderMembers();
+  toast(editUserId ? '회원 정보가 수정되었습니다' : '회원이 추가되었습니다');
+}
+
+/* ── 삭제 ── */
+function deleteMember(id) {
+  const users = getUsers();
+  const user  = users.find(u => u.id === id);
+  if (!user) return;
+  if (users.filter(u => u.role === 'super').length <= 1 && user.role === 'super') {
+    toast('슈퍼 관리자는 최소 1명 이상 유지해야 합니다.', true); return;
+  }
+  if (!confirm(`"${user.name}" 회원을 삭제하시겠습니까?`)) return;
+  deleteUser(id);
+  document.getElementById('searchInput').value = '';
+  updateStats();
+  renderMembers();
+  toast('삭제되었습니다');
+}
+
+/* ── 비밀번호 재설정 링크 ── */
+function openResetModal(userId) {
+  const result = generateResetTokenById(userId);
+  if (!result) { toast('사용자를 찾을 수 없습니다.', true); return; }
+
+  const url = location.origin + location.pathname.replace('members.html','') + 'reset.html?token=' + result.token;
+  document.getElementById('resetLinkBox').textContent = url;
+
+  const subject = encodeURIComponent('[관리자 패널] 비밀번호 재설정');
+  const body    = encodeURIComponent(`안녕하세요 ${result.user.name}님,\n\n비밀번호 재설정 링크입니다 (30분 유효):\n\n${url}`);
+  const mailto  = result.user.email ? `mailto:${result.user.email}?subject=${subject}&body=${body}` : '#';
+  document.getElementById('resetMailto').href = mailto;
+  if (!result.user.email) document.getElementById('resetMailto').style.opacity = '0.4';
+  else document.getElementById('resetMailto').style.opacity = '1';
+
+  document.getElementById('resetLinkModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeResetModal() {
+  document.getElementById('resetLinkModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function copyResetLink() {
+  const txt = document.getElementById('resetLinkBox').textContent;
+  navigator.clipboard.writeText(txt).then(() => toast('링크가 복사되었습니다'));
+}
+
+/* ── 비밀번호 토글 ── */
+function toggleModalPw(id) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+/* ── INIT ── */
+initUsers();
+document.getElementById('searchInput').value = ''; // 브라우저 자동완성 복원 방지
+updateStats();
+renderMembers();
+</script>
+</body>
+</html>

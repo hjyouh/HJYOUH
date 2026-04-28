@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>비밀번호 재설정 | 관리자 패널</title>
+  <link rel="stylesheet" href="../assets/css/fonts.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f4f5f7; --bg2: #fff; --border: #e0e0e0;
+      --text: #222; --sub: #777; --gold: #b89355;
+      --gold2: rgba(184,147,85,0.12); --green: #2e7d32; --red: #d32f2f;
+    }
+    body {
+      font-family: 'Poppins','SUITE',sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .wrap { width: 100%; max-width: 420px; }
+
+    .logo { text-align:center; margin-bottom:28px; }
+    .logo-mark {
+      display:inline-flex; align-items:center; justify-content:center;
+      width:48px; height:48px; border-radius:14px;
+      background:var(--gold); color:#fff; font-size:22px;
+      margin-bottom:12px; box-shadow:0 4px 16px rgba(184,147,85,0.3);
+    }
+    .logo-text { font-size:17px; font-weight:700; color:var(--text); }
+    .logo-sub  { font-size:12px; color:var(--sub); margin-top:3px; }
+
+    .card {
+      background:var(--bg2); border:1px solid var(--border);
+      border-radius:20px; padding:32px 28px 28px;
+      box-shadow:0 8px 40px rgba(0,0,0,0.07);
+    }
+    .card h2 { font-size:17px; font-weight:600; margin-bottom:6px; }
+    .card .desc { font-size:13px; color:var(--sub); margin-bottom:24px; line-height:1.6; }
+
+    .field { margin-bottom:16px; }
+    .field label { display:block; font-size:12px; font-weight:500; color:var(--sub); margin-bottom:7px; }
+    .field-inner { position:relative; }
+    .field-icon  { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:15px; pointer-events:none; }
+    .field input  {
+      width:100%; background:var(--bg); border:1.5px solid var(--border);
+      border-radius:10px; color:var(--text); font-family:inherit; font-size:14px;
+      padding:11px 14px 11px 42px; outline:none; transition:border-color .2s, box-shadow .2s;
+    }
+    .field input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(184,147,85,.12); background:var(--bg2); }
+    .field input::placeholder { color:#bbb; }
+    .pw-toggle {
+      position:absolute; right:14px; top:50%; transform:translateY(-50%);
+      background:none; border:none; cursor:pointer; font-size:15px; color:var(--sub);
+    }
+
+    .btn-main {
+      width:100%; padding:12px; background:var(--gold); color:#fff;
+      border:none; border-radius:10px; font-family:inherit; font-size:14px;
+      font-weight:600; cursor:pointer; transition:background .2s, box-shadow .2s;
+      box-shadow:0 4px 14px rgba(184,147,85,.3);
+    }
+    .btn-main:hover { background:#a6844b; }
+
+    .msg {
+      border-radius:10px; padding:12px 16px; font-size:13px; margin-bottom:16px; display:none;
+      line-height:1.6;
+    }
+    .msg.err   { background:rgba(211,47,47,.08); border:1px solid rgba(211,47,47,.25); color:var(--red); }
+    .msg.ok    { background:rgba(46,125,50,.08);  border:1px solid rgba(46,125,50,.25);  color:var(--green); }
+    .msg.show  { display:block; }
+
+    /* 재설정 링크 박스 */
+    .link-box {
+      background:var(--bg); border:1px solid var(--border); border-radius:10px;
+      padding:12px 14px; font-size:12px; font-family:monospace;
+      word-break:break-all; color:var(--text); line-height:1.5;
+      margin: 12px 0; display:none;
+    }
+    .link-box.show { display:block; }
+
+    .btn-row { display:flex; gap:8px; margin-top:10px; }
+    .btn-copy {
+      flex:1; padding:10px; background:var(--gold2); border:1px solid rgba(184,147,85,.3);
+      border-radius:8px; color:var(--gold); font-family:inherit; font-size:13px;
+      font-weight:500; cursor:pointer; transition:background .2s; text-align:center;
+    }
+    .btn-copy:hover { background:rgba(184,147,85,.2); }
+    a.btn-mail {
+      flex:1; padding:10px; background:var(--bg); border:1px solid var(--border);
+      border-radius:8px; color:var(--sub); font-family:inherit; font-size:13px;
+      cursor:pointer; transition:all .2s; text-align:center; text-decoration:none;
+      display:inline-flex; align-items:center; justify-content:center;
+    }
+    a.btn-mail:hover { border-color:var(--gold); color:var(--gold); }
+
+    .back-link { text-align:center; margin-top:20px; font-size:13px; color:var(--sub); }
+    .back-link a { color:var(--gold); text-decoration:none; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">
+    <div class="logo-mark">🔑</div>
+    <div class="logo-text">비밀번호 재설정</div>
+    <div class="logo-sub">유형재 관리자 패널</div>
+  </div>
+
+  <!-- ① 이메일 입력 단계 -->
+  <div class="card" id="stepEmail">
+    <h2>이메일로 재설정 링크 받기</h2>
+    <p class="desc">가입 시 등록한 이메일 주소를 입력하시면 재설정 링크를 생성해 드립니다.</p>
+
+    <div class="msg err" id="emailErr"></div>
+
+    <div class="field">
+      <label>이메일 주소</label>
+      <div class="field-inner">
+        <span class="field-icon">✉️</span>
+        <input type="email" id="resetEmail" placeholder="등록된 이메일 주소">
+      </div>
+    </div>
+    <button class="btn-main" onclick="requestReset()">재설정 링크 생성</button>
+
+    <!-- 생성된 링크 -->
+    <div class="msg ok" id="linkMsg">재설정 링크가 생성되었습니다. 아래 링크를 복사해 사용하거나, 이메일로 전달하세요. (유효 시간: 30분)</div>
+    <div class="link-box" id="linkBox"></div>
+    <div class="btn-row" id="linkBtns" style="display:none;">
+      <button class="btn-copy" onclick="copyLink()">🔗 링크 복사</button>
+      <a class="btn-mail" id="mailtoBtn" href="#">📧 이메일로 보내기</a>
+    </div>
+  </div>
+
+  <!-- ② 토큰 + 새 비밀번호 입력 단계 -->
+  <div class="card" id="stepReset" style="display:none;">
+    <h2>새 비밀번호 설정</h2>
+    <p class="desc">재설정 코드와 새 비밀번호를 입력해주세요.</p>
+
+    <div class="msg err" id="resetErr"></div>
+    <div class="msg ok"  id="resetOk"></div>
+
+    <div class="field">
+      <label>재설정 코드</label>
+      <div class="field-inner">
+        <span class="field-icon">🔑</span>
+        <input type="text" id="resetToken" placeholder="8자리 코드" maxlength="8"
+          style="text-transform:uppercase; letter-spacing:3px; font-size:16px; font-weight:600;">
+      </div>
+    </div>
+    <div class="field">
+      <label>새 비밀번호</label>
+      <div class="field-inner">
+        <span class="field-icon">🔒</span>
+        <input type="password" id="newPw" placeholder="8자 이상">
+        <button type="button" class="pw-toggle" onclick="togglePw('newPw',this)">👁</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>새 비밀번호 확인</label>
+      <div class="field-inner">
+        <span class="field-icon">🔒</span>
+        <input type="password" id="newPw2" placeholder="비밀번호 재입력">
+        <button type="button" class="pw-toggle" onclick="togglePw('newPw2',this)">👁</button>
+      </div>
+    </div>
+    <button class="btn-main" onclick="doReset()">비밀번호 변경</button>
+  </div>
+
+  <div class="back-link">
+    <a href="login.html">← 로그인으로 돌아가기</a>
+  </div>
+</div>
+
+<script src="admin-auth.js?v=2"></script>
+<script>
+  // URL에 token 파라미터가 있으면 바로 ② 단계
+  const urlToken = new URLSearchParams(location.search).get('token');
+  if (urlToken) {
+    document.getElementById('stepEmail').style.display = 'none';
+    document.getElementById('stepReset').style.display = 'block';
+    document.getElementById('resetToken').value = urlToken.toUpperCase();
+  }
+
+  function requestReset() {
+    const email = document.getElementById('resetEmail').value.trim();
+    const err   = document.getElementById('emailErr');
+    const linkMsg = document.getElementById('linkMsg');
+    const linkBox = document.getElementById('linkBox');
+    const btns  = document.getElementById('linkBtns');
+
+    if (!email) { showErr(err, '이메일 주소를 입력해주세요.'); return; }
+    err.classList.remove('show');
+
+    const result = generateResetToken(email);
+    if (!result) {
+      showErr(err, '등록된 이메일 주소를 찾을 수 없습니다.'); return;
+    }
+
+    const resetUrl = location.origin + location.pathname.replace('reset.html','') + 'reset.html?token=' + result.token;
+    linkMsg.classList.add('show');
+    linkBox.textContent = resetUrl;
+    linkBox.classList.add('show');
+    btns.style.display = 'flex';
+
+    // mailto 링크
+    const subject = encodeURIComponent('[유형재 관리자 패널] 비밀번호 재설정');
+    const body    = encodeURIComponent(`안녕하세요 ${result.user.name}님,\n\n비밀번호 재설정 링크입니다 (30분 유효):\n\n${resetUrl}\n\n이 요청을 하지 않았다면 무시하셔도 됩니다.`);
+    document.getElementById('mailtoBtn').href = `mailto:${result.user.email}?subject=${subject}&body=${body}`;
+  }
+
+  function copyLink() {
+    const txt = document.getElementById('linkBox').textContent;
+    navigator.clipboard.writeText(txt).then(() => alert('링크가 복사되었습니다!'));
+  }
+
+  function doReset() {
+    const token = document.getElementById('resetToken').value.trim().toUpperCase();
+    const pw    = document.getElementById('newPw').value;
+    const pw2   = document.getElementById('newPw2').value;
+    const err   = document.getElementById('resetErr');
+    const ok    = document.getElementById('resetOk');
+
+    err.classList.remove('show'); ok.classList.remove('show');
+
+    if (!token)       { showErr(err, '재설정 코드를 입력해주세요.'); return; }
+    if (!verifyResetToken(token)) { showErr(err, '코드가 유효하지 않거나 만료되었습니다.'); return; }
+    if (pw.length < 8) { showErr(err, '비밀번호는 8자 이상이어야 합니다.'); return; }
+    if (pw !== pw2)    { showErr(err, '비밀번호가 일치하지 않습니다.'); return; }
+
+    const done = resetPasswordByToken(token, pw);
+    if (!done) { showErr(err, '재설정에 실패했습니다. 다시 시도해주세요.'); return; }
+
+    ok.textContent = '비밀번호가 변경되었습니다! 3초 후 로그인 페이지로 이동합니다.';
+    ok.classList.add('show');
+    setTimeout(() => window.location.href = 'login.html', 3000);
+  }
+
+  function showErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
+
+  function togglePw(id, btn) {
+    const inp = document.getElementById(id);
+    if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+    else { inp.type = 'password'; btn.textContent = '👁'; }
+  }
+</script>
+</body>
+</html>

@@ -101,13 +101,14 @@
 
   .con-msg {
     position: absolute;
-    bottom: 28px;
-    left: 28px;
+    bottom: 20px;
+    left: 32px;
     background: rgba(0, 0, 0, 0.55);
     backdrop-filter: blur(12px);
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 16px 20px;
+    padding: 16px 24px;
+    width: 500px;
     z-index: 20;
   }
 
@@ -148,7 +149,7 @@
   }
 
   .con-header h1 {
-    font-size: clamp(32px, 4vw, 44px);
+    font-size: 20px;
     font-weight: 700;
     font-family: 'Poppins', sans-serif;
     font-style: normal;
@@ -242,7 +243,7 @@
   /* ===== PANEL FOOTER (강의 페이지와 동일 구조) ===== */
   .con-panel-footer {
     flex-shrink: 0;
-    padding: 12px 24px 14px;
+    padding: 8px 20px;
     border-top: 1px solid var(--border-color);
     display: flex;
     align-items: center;
@@ -254,7 +255,8 @@
   .con-footer-left {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
+    align-items: center;
   }
 
   .con-footer-row {
@@ -269,7 +271,7 @@
   }
 
   .con-footer-item {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--text-secondary);
     text-decoration: none;
     white-space: nowrap;
@@ -442,7 +444,6 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script>
   (function() {
     emailjs.init('dY4Rp3auQyGaDLiNF');
@@ -480,11 +481,18 @@
       }
       errorEl.style.display = 'none';
 
+      const name    = document.getElementById('con-name').value.trim();
+      const email   = document.getElementById('con-email').value.trim();
+      const message = document.getElementById('con-message').value.trim();
+
+      // Supabase에 문의 저장 (EmailJS와 병렬)
+      if (window.sbSubmitContact) sbSubmitContact(name, email, phone, message);
+
       emailjs.send('service_5conamd', 'template_o93omhl', {
-        from_name:  document.getElementById('con-name').value.trim(),
-        from_email: document.getElementById('con-email').value.trim(),
+        from_name:  name,
+        from_email: email,
         from_phone: phone,
-        message:    document.getElementById('con-message').value.trim(),
+        message:    message,
       })
       .then(() => {
         closeConPopup();

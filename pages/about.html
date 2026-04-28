@@ -249,7 +249,7 @@
   .bio-name-block { margin-bottom: 8px; }
 
   .bio-name {
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 3px;
@@ -257,7 +257,7 @@
   }
 
   .bio-role {
-    font-size: 12px;
+    font-size: 14px;
     color: var(--accent-gold);
     line-height: 1.5;
     margin: 0;
@@ -297,7 +297,7 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--text-primary);
     line-height: 1.5;
   }
@@ -305,7 +305,7 @@
   .bio-item-text { color: var(--text-primary); }
 
   .bio-item-year {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-secondary);
     white-space: nowrap;
     margin-left: 8px;
@@ -314,7 +314,7 @@
   .bio-list--plain li {
     justify-content: flex-start;
     color: var(--text-secondary);
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .bio-list--plain li::before {
@@ -327,7 +327,7 @@
   .bio-list--awards li {
     justify-content: flex-start;
     color: var(--text-primary);
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.5;
   }
 
@@ -424,6 +424,33 @@
     white-space: nowrap;
   }
 
+  /* ===== MESSAGE BOX (Bottom Left) ===== */
+  .message-box {
+    position: absolute;
+    bottom: 20px;
+    left: 32px;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 16px 24px;
+    width: 500px;
+    z-index: 20;
+  }
+  .message-box .message-box-text {
+    font-size: 20px;
+    line-height: 1.65;
+    color: #fff;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+  }
+  .message-box .message-box-sub {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 8px;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    line-height: 1.55;
+  }
+
   /* ===== RESPONSIVE ===== */
   @media (max-width: 1024px) {
     .panel-section { padding: 16px 24px; }
@@ -440,6 +467,7 @@
     .contact-row { flex-direction: column; gap: 8px; align-items: flex-start; }
     .bio-stats { gap: 16px; }
     .stat-number { font-size: 16px; }
+    .message-box { left: 16px; right: 16px; bottom: 16px; width: auto; }
   }
 </style>
 

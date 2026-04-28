@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home | 관리자 패널</title>
+  <link rel="stylesheet" href="../assets/css/fonts.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<header class="admin-header">
+  <div class="admin-logo">유형재 <span>관리자 패널</span></div>
+  <div class="header-right">
+    <a href="../index.html" target="_blank" class="header-preview-btn">홈페이지 보기 →</a>
+  </div>
+</header>
+
+<div class="admin-body">
+  <nav class="sidebar">
+    <a href="home.html"       class="sidebar-item active">관리자페이지</a>
+    <a href="landing.html"    class="sidebar-item">Landing</a>
+    <a href="instructor.html" class="sidebar-item">강사</a>
+    <a href="lectures.html"   class="sidebar-item">강의 관리</a>
+    <a href="works.html"      class="sidebar-item">작업들</a>
+    <a href="works.html"      class="sidebar-item sidebar-item-sub">AI영화</a>
+    <a href="works.html"      class="sidebar-item sidebar-item-sub">도서</a>
+    <a href="mv.html"         class="sidebar-item">M/V</a>
+    <a href="contact.html"    class="sidebar-item">Contact</a>
+    <div style="flex:1;"></div>
+    <a href="members.html"    class="sidebar-item">회원관리</a>
+  </nav>
+
+  <main class="admin-main">
+
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">관리자 대시보드</div>
+        <div class="panel-subtitle">메뉴를 선택해 각 섹션을 관리합니다</div>
+      </div>
+      <a href="../index.html" target="_blank" class="btn btn-outline">랜딩페이지 →</a>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+      <a href="landing.html" style="text-decoration:none;">
+        <div class="card" style="cursor:pointer; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div class="card-title">🖼️ Landing 페이지</div>
+          <p style="font-size:13px; color:var(--sub);">메인 슬라이드·홈 메시지 설정</p>
+        </div>
+      </a>
+      <a href="instructor.html" style="text-decoration:none;">
+        <div class="card" style="cursor:pointer; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div class="card-title">👤 강사 프로필</div>
+          <p style="font-size:13px; color:var(--sub);">이름, 경력, 수상, SNS 정보 수정</p>
+        </div>
+      </a>
+      <a href="lectures.html" style="text-decoration:none;">
+        <div class="card" style="cursor:pointer; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div class="card-title">📋 강의 관리</div>
+          <p style="font-size:13px; color:var(--sub);">강의 프로그램 추가·수정·삭제</p>
+        </div>
+      </a>
+      <a href="works.html" style="text-decoration:none;">
+        <div class="card" style="cursor:pointer; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div class="card-title">🎬 작품 관리</div>
+          <p style="font-size:13px; color:var(--sub);">AI 영화·도서 작품 추가·수정</p>
+        </div>
+      </a>
+      <a href="contact.html" style="text-decoration:none;">
+        <div class="card" style="cursor:pointer; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div class="card-title">📩 Contact</div>
+          <p style="font-size:13px; color:var(--sub);">문의 접수 내역 확인</p>
+        </div>
+      </a>
+      <a href="members.html" style="text-decoration:none;">
+        <div class="card" style="cursor:pointer; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div class="card-title">👥 회원관리</div>
+          <p style="font-size:13px; color:var(--sub);">회원 목록 및 권한 관리</p>
+        </div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="admin-data.js"></script>
+</body>
+</html>
