@@ -485,7 +485,17 @@
     let snsList = null;
     try {
       const data = window.sbLoad ? await sbLoad('instructorData', null) : JSON.parse(localStorage.getItem('instructorData') || 'null');
-      if (data?.sns) snsList = Array.isArray(data.sns) ? data.sns : null;
+      if (data?.sns) {
+        if (Array.isArray(data.sns)) {
+          snsList = data.sns;
+        } else {
+          // 구 형식 {yt1, yt2, ig} → 배열 변환
+          snsList = [];
+          if (data.sns.yt1) snsList.push({ label: 'YouTube 채널 1',        url: data.sns.yt1 });
+          if (data.sns.yt2) snsList.push({ label: 'YouTube 채널 2 (음악)', url: data.sns.yt2 });
+          if (data.sns.ig)  snsList.push({ label: 'Instagram',              url: data.sns.ig  });
+        }
+      }
     } catch(e) {}
     renderSns(snsList);
 

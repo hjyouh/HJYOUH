@@ -26,8 +26,9 @@ window.sbSave = async function(key, val) {
   try {
     const { error } = await _sb.from('settings')
       .upsert({ key, value: val, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-    return !error;
-  } catch(e) { return false; }
+    if (error) { console.error('[Supabase] save error:', key, error.message); return false; }
+    return true;
+  } catch(e) { console.error('[Supabase] save exception:', key, e); return false; }
 };
 
 // 문의 접수 저장
