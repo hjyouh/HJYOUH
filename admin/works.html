@@ -535,7 +535,7 @@ function awardEmojiOpts(selected) {
 function saveWorksCols() {
   const sel = document.getElementById('worksColsSel');
   const key = currentWorksTab === 'film' ? 'worksColsFilm' : 'worksColsBook';
-  localStorage.setItem(key, sel.value);
+  saveData(key, parseInt(sel.value));
   toast('저장되었습니다');
 }
 

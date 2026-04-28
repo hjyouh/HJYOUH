@@ -671,6 +671,7 @@
   }
 
   let _cachedWorks = null;
+  let _cachedCols  = {};
 
   function loadWorksData() {
     if (_cachedWorks) return _cachedWorks;
@@ -701,7 +702,7 @@
 
     // CSS grid columns from admin config
     const colsKey = tab === 'film' ? 'worksColsFilm' : 'worksColsBook';
-    const cols = parseInt(localStorage.getItem(colsKey) || '4');
+    const cols = parseInt(_cachedCols[colsKey] ?? localStorage.getItem(colsKey) ?? '4');
     grid.className = 'card-grid';
     grid.style.setProperty('--grid-cols', cols);
     grid.style.setProperty('--card-w', `calc((100% - ${(cols - 1) * 10}px) / ${cols})`);
@@ -863,7 +864,11 @@
   }
 
   async function initWorksPage() {
-    _cachedWorks = await loadWorksDataCloud();
+    [_cachedWorks, _cachedCols['worksColsFilm'], _cachedCols['worksColsBook']] = await Promise.all([
+      loadWorksDataCloud(),
+      window.sbLoad ? sbLoad('worksColsFilm', 4) : Promise.resolve(parseInt(localStorage.getItem('worksColsFilm') || '4')),
+      window.sbLoad ? sbLoad('worksColsBook', 4)  : Promise.resolve(parseInt(localStorage.getItem('worksColsBook')  || '4')),
+    ]);
     currentTab = 'film';
     selectedId = null;
     updateWorksMsg('film');
