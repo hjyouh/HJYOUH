@@ -481,24 +481,104 @@
   }
 
   async function initAboutPage() {
-    // SNS 데이터 로드
-    let snsList = null;
+    let data = null;
+
+    // 1) 즉시 localStorage에서 읽기 (동기 — 빠름)
     try {
-      const data = window.sbLoad ? await sbLoad('instructorData', null) : JSON.parse(localStorage.getItem('instructorData') || 'null');
-      if (data?.sns) {
-        if (Array.isArray(data.sns)) {
-          snsList = data.sns;
-        } else {
-          // 구 형식 {yt1, yt2, ig} → 배열 변환
-          snsList = [];
-          if (data.sns.yt1) snsList.push({ label: 'YouTube 채널 1',        url: data.sns.yt1 });
-          if (data.sns.yt2) snsList.push({ label: 'YouTube 채널 2 (음악)', url: data.sns.yt2 });
-          if (data.sns.ig)  snsList.push({ label: 'Instagram',              url: data.sns.ig  });
-        }
+      const s = localStorage.getItem('instructorData');
+      if (s) data = JSON.parse(s);
+    } catch(e) {}
+
+    // 2) 클라우드에서 최신 데이터 시도 (있으면 덮어씀)
+    try {
+      if (window.sbLoad) {
+        const cloudData = await sbLoad('instructorData', null);
+        if (cloudData) data = cloudData;
       }
     } catch(e) {}
+
+    // SNS
+    let snsList = null;
+    if (data?.sns) {
+      if (Array.isArray(data.sns)) {
+        snsList = data.sns;
+      } else {
+        snsList = [];
+        if (data.sns.yt1) snsList.push({ label: 'YouTube 채널 1',        url: data.sns.yt1 });
+        if (data.sns.yt2) snsList.push({ label: 'YouTube 채널 2 (음악)', url: data.sns.yt2 });
+        if (data.sns.ig)  snsList.push({ label: 'Instagram',              url: data.sns.ig  });
+      }
+    }
     renderSns(snsList);
 
+    if (data) {
+      // 이름
+      const nameEl = document.querySelector('.bio-name');
+      if (nameEl && data.name) nameEl.textContent = data.name;
+
+      // 직위 (줄바꿈 지원)
+      const roleEl = document.querySelector('.bio-role');
+      if (roleEl && data.role) roleEl.innerHTML = data.role.replace(/\n/g, '<br>');
+
+      // 소개 문구
+      const quoteEl = document.querySelector('.bio-quote');
+      if (quoteEl && data.quote) quoteEl.innerHTML = '"' + data.quote.replace(/\n/g, '<br>') + '"';
+
+      // 사진
+      if (data.photo) {
+        const photoEl = document.querySelector('.about-photo img');
+        if (photoEl) photoEl.src = data.photo.replace(/^\.\.\//, '');
+      }
+
+      // 주요 경력
+      if (data.careers && data.careers.length) {
+        const careerList = document.querySelector('.bio-list:not(.bio-list--plain):not(.bio-list--awards)');
+        if (careerList) {
+          careerList.innerHTML = data.careers.map(c => `
+            <li>
+              <span class="bio-item-text">${c.text}</span>
+              <span class="bio-item-year">${c.year}</span>
+            </li>`).join('');
+        }
+      }
+
+      // 자격증 & 저서
+      if (data.certs && data.certs.length) {
+        const certList = document.querySelector('.bio-list--plain');
+        if (certList) {
+          certList.innerHTML = data.certs.map(c => `<li>${c}</li>`).join('');
+        }
+      }
+
+      // 통계
+      if (data.stats && data.stats.length) {
+        const statItems = document.querySelectorAll('.stat-item');
+        data.stats.forEach((s, i) => {
+          if (statItems[i]) {
+            const numEl = statItems[i].querySelector('.stat-number');
+            const lblEl = statItems[i].querySelector('.stat-label');
+            if (numEl) numEl.textContent = s.value;
+            if (lblEl) lblEl.textContent = s.label;
+          }
+        });
+      }
+
+      // 수상 경력
+      if (data.awards && data.awards.length) {
+        const awardList = document.querySelector('.bio-list--awards');
+        if (awardList) {
+          awardList.innerHTML = data.awards.map(a => `<li>${a}</li>`).join('');
+        }
+      }
+
+      // 메시지 박스
+      const msgTextEl = document.querySelector('.about-section .message-box-text');
+      const msgSubEl  = document.querySelector('.about-section .message-box-sub');
+      if (msgTextEl && data.message?.text) msgTextEl.innerHTML = data.message.text.replace(/\n/g, '<br>');
+      if (msgSubEl  && data.message?.sub)  msgSubEl.innerHTML  = data.message.sub.replace(/\n/g, '<br>');
+    }
+
+    // 애니메이션
     const items = document.querySelectorAll('.bio-list li, .contact-item, .sns-link, .stat-item');
     items.forEach((el, i) => {
       el.style.opacity = '0';

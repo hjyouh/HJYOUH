@@ -134,6 +134,21 @@
       position: relative;
       margin-bottom: 6px;
       cursor: pointer;
+      transition: transform 0.18s ease;
+      transform-origin: center;
+    }
+
+    .work-card-wrap:active {
+      transform: scale(1.04);
+    }
+
+    /* 금색 테두리 달리기 애니메이션 */
+    @keyframes run-gold-border {
+      to { stroke-dashoffset: -1300; }
+    }
+
+    .work-card-wrap svg .gold-border-path {
+      animation: run-gold-border 3s linear infinite;
     }
     .work-card-wrap svg {
       width: 100%;
@@ -615,6 +630,10 @@ function buildFilmCard(film) {
         <polygon points="206,10 306,10 306,28 238,28" fill="#000000"/>
         <path d="M 14 366 Q 14 380 26 380 L 294 380 Q 306 380 306 366 L 306 40 Q 306 28 294 28 L 238 28 Q 226 28 222 19 Q 218 10 206 10 L 26 10 Q 14 10 14 22 Z"
           fill="none" stroke="rgba(150,150,150,0.5)" stroke-width="1"/>
+        <path class="gold-border-path"
+          d="M 14 366 Q 14 380 26 380 L 294 380 Q 306 380 306 366 L 306 40 Q 306 28 294 28 L 238 28 Q 226 28 222 19 Q 218 10 206 10 L 26 10 Q 14 10 14 22 Z"
+          fill="none" stroke="#c9a96e" stroke-width="2.5"
+          pathLength="1300" stroke-dasharray="90 1210" stroke-dashoffset="0"/>
       </svg>
       <span class="work-badge">${film.badge}</span>
       <button class="work-detail-btn" onclick="event.stopPropagation(); showDetail('${film.id}')">내용보기</button>
