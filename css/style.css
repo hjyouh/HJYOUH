@@ -1,3 +1,6 @@
+/* ===== FONTS (must be first per CSS spec) ===== */
+@import url('../assets/css/fonts.css');
+
 /**
  * Hyungjae Youh Portfolio - Common Styles
  * Design: Dark & Minimal (Gusto Template Inspired)
@@ -44,10 +47,6 @@
   --transition-smooth: 0.3s ease;
   --transition-slow: 0.5s ease;
 }
-
-/* ===== FONTS ===== */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-@import url('../assets/css/fonts.css');
 
 /* ===== RESET & BASE ===== */
 * {
