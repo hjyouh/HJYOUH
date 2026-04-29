@@ -930,7 +930,31 @@ function saveWorksMsg(tab) {
 })();
 
 // ── INIT ──
-switchWorksTab('film'); // loadWorksMsg는 switchWorksTab 내부에서 호출됨
+(async function initAdmin() {
+  try {
+    // localStorage fallback 없이 Supabase 직접 확인
+    const { data } = await _sb.from('settings').select('value').eq('key','worksData').maybeSingle();
+    const cloud = data?.value;
+    if (cloud && (cloud.film || cloud.book)) {
+      const localFilm = (worksData.film || []).length;
+      const cloudFilm = (cloud.film || []).length;
+      const localBook = (worksData.book || []).length;
+      const cloudBook = (cloud.book || []).length;
+      if (cloudFilm > localFilm || cloudBook > localBook) {
+        // 클라우드가 더 많으면 클라우드 우선
+        worksData = cloud;
+        try { localStorage.setItem('worksData', JSON.stringify(cloud)); } catch(e) {}
+      } else if (localFilm > cloudFilm || localBook > cloudBook) {
+        // 로컬이 더 많으면 클라우드에 밀어넣기
+        saveData('worksData', worksData);
+      }
+    } else {
+      // Supabase에 데이터 없음 → 로컬 데이터를 Supabase에 저장
+      saveData('worksData', worksData);
+    }
+  } catch(e) {}
+  switchWorksTab('film');
+})();
 </script>
 </body>
 </html>
