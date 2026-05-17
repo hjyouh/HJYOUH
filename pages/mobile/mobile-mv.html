@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M/V - aimt</title>
+  <link rel="stylesheet" href="../../assets/css/tab-card.css?v=3">
+  <link rel="stylesheet" href="../../assets/css/fonts.css?v=3">
+  <link rel="stylesheet" href="../../assets/css/mobile-frame.css?v=3">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #000;
+      font-family: 'Noto Sans KR', 'SUITE', 'Poppins', sans-serif;
+      color: #fff;
+      overflow-y: scroll;
+      padding-bottom: 110px;
+      max-width: 430px;
+      margin: 0 auto;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    .top-fixed-wrapper { position: sticky; top: 0; z-index: 110; }
+    .header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 20px; height: 44px; background: #000;
+      border-bottom: 1px solid #3a3a3a;
+    }
+    .header-back {
+      font-size: 22px; color: rgba(255,255,255,0.6);
+      cursor: pointer; background: none; border: none; line-height: 1; padding: 4px 0;
+    }
+    .header-title {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      font-size: 16px; font-weight: 700; color: #fff; white-space: nowrap;
+    }
+    .hamburger {
+      font-size: 18px; color: rgba(255,255,255,0.45);
+      cursor: pointer; background: none; border: none;
+    }
+    .sticky-top-area {
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px); padding: 8px 0 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .sticky-msg {
+      text-align: center; padding: 2px 16px 4px;
+      font-size: 16px; font-weight: 700; color: #fff;
+    }
+
+    /* ===== CARD LIST ===== */
+    .card-list { padding: 8px 12px 0; }
+
+    .mv-card-wrap {
+      position: relative; margin-bottom: 0;
+      cursor: pointer; transition: transform 0.18s ease; transform-origin: center;
+    }
+    .mv-card-wrap:active { transform: scale(1.02); }
+
+    @keyframes run-mv-gold { to { stroke-dashoffset: -1300; } }
+    .mv-card-wrap svg .mv-gold-path {
+      animation: run-mv-gold 3s linear infinite;
+    }
+    .mv-card-wrap svg { width: 100%; height: auto; display: block; }
+
+    /* 작업들과 동일한 금색 테두리 달리기 */
+    @keyframes run-gold-border { to { stroke-dashoffset: -1300; } }
+    .mv-card-wrap svg .gold-border-path {
+      animation: run-gold-border 3s linear infinite;
+    }
+
+    .mv-genre-badge {
+      position: absolute; top: 10px; left: 14px;
+      background: rgba(0,0,0,0.65); backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px); color: #fff; font-size: 11px;
+      padding: 3px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.2);
+      pointer-events: none; max-width: 220px; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+    }
+    .mv-detail-btn {
+      position: absolute; top: 6px; right: 16px; background: none;
+      color: rgba(255,255,255,0.88); font-size: 12px; font-weight: 400;
+      padding: 4px 4px; border: none; cursor: pointer;
+    }
+    .mv-card-info { margin: 5px 4px 14px; }
+    .mv-card-title {
+      font-size: 15px; color: #fff; font-weight: 700; margin-bottom: 2px;
+      font-family: 'Poppins', sans-serif;
+    }
+    .mv-card-subtitle { font-size: 12px; color: rgba(255,255,255,0.5); }
+
+    /* ===== IMAGE OVERLAY ===== */
+    #img-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+      z-index: 1000; display: none; align-items: center; justify-content: center;
+    }
+    #img-overlay.visible { display: flex; }
+    #overlay-img { max-width: 90%; max-height: 90vh; object-fit: contain; border-radius: 8px; }
+    #overlay-close {
+      position: absolute; top: 20px; right: 20px; background: none;
+      color: rgba(255,255,255,0.7); border: none; font-size: 22px; line-height: 1; cursor: pointer;
+    }
+
+    /* ===== DETAIL VIEW ===== */
+    #view-detail { display: none; }
+    .content-wrap { padding: 0 16px; }
+    .section-card { background: #111; border-radius: 16px; padding: 16px; margin-top: 8px; }
+    .detail-meta-line { font-size: 11px; color: #888; margin-bottom: 8px; }
+    .detail-mv-title {
+      font-size: 20px; font-weight: 700; color: #fff; margin: 0 0 4px;
+      font-family: 'Poppins', sans-serif;
+    }
+    .detail-mv-subtitle { font-size: 13px; color: #c9a96e; margin: 0 0 14px; }
+    .detail-intro { font-size: 13px; color: #aaa; line-height: 1.75; margin-bottom: 12px; }
+    .detail-info-row {
+      display: flex; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.7);
+      padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .detail-info-row:last-child { border-bottom: none; }
+    .detail-info-label {
+      font-size: 11px; color: #c9a96e; font-weight: 700; min-width: 46px; flex-shrink: 0;
+    }
+    .detail-img-wrap {
+      width: 100%; aspect-ratio: 4/3; border-radius: 12px; overflow: hidden; margin-bottom: 14px;
+    }
+    .detail-img-wrap img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+    .link-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .link-btn {
+      border: 1px solid rgba(201,169,110,0.5); border-radius: 999px; padding: 8px 18px;
+      font-size: 13px; color: #c9a96e; background: transparent; cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif; text-decoration: none; display: inline-block;
+      transition: all 0.2s;
+    }
+    .link-btn:hover { background: #c9a96e; color: #0d0d0d; }
+  </style>
+</head>
+<body>
+
+<!-- IMAGE OVERLAY -->
+<div id="img-overlay" onclick="closeOverlay()">
+  <img id="overlay-img" src="" alt="이미지">
+  <button id="overlay-close" onclick="event.stopPropagation(); closeOverlay()">✕</button>
+</div>
+
+<!-- ============ SCREEN 1: 목록 ============ -->
+<div id="view-list">
+
+  <div class="top-fixed-wrapper">
+    <div class="header">
+      <button class="header-back" onclick="location.href='mobile-page.html'">
+        <img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;">
+      </button>
+      <span class="header-title">M/V</span>
+      <button class="hamburger" onclick="openDrawer()">
+        <img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;">
+      </button>
+    </div>
+    <div class="sticky-top-area">
+      <div class="sticky-msg" id="mvTopMsg">Maison d'Étoile</div>
+    </div>
+  </div>
+
+  <div class="card-list" id="mv-card-list"></div>
+
+  <footer class="mobile-footer">
+    <div class="footer-row1">
+      <a href="tel:010-3558-6960">📞 010-3558-6960</a>
+      <a href="mailto:hjyouh@naver.com">✉️ hjyouh@naver.com</a>
+    </div>
+    <div class="footer-row2">
+      <a href="https://aitalker.co.kr/hjyouh" target="_blank">🌐 aitalker.co.kr/hjyouh</a>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ============ SCREEN 2: 상세 ============ -->
+<div id="view-detail">
+
+  <div class="header">
+    <button class="header-back" onclick="showList()">
+      <img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;">
+    </button>
+    <span class="header-title" id="detail-header-title"></span>
+    <button class="hamburger" onclick="openDrawer()">
+      <img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;">
+    </button>
+  </div>
+
+  <div class="content-wrap">
+    <div class="section-card" id="detail-body"></div>
+  </div>
+
+  <footer class="mobile-footer">
+    <div class="footer-row1">
+      <a href="tel:010-3558-6960">📞 010-3558-6960</a>
+      <a href="mailto:hjyouh@naver.com">✉️ hjyouh@naver.com</a>
+    </div>
+    <div class="footer-row2">
+      <a href="https://aitalker.co.kr/hjyouh" target="_blank">🌐 aitalker.co.kr/hjyouh</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+let MV_DATA = [
+  {
+    id: 'mv-1',
+    tag: '🎭 클래식 명화 · BGM채널',
+    title: 'Korisian',
+    sub: '명화에 음악을 입히다',
+    imgPath: 'assets/images/mv/@Korisian.png',
+    channelUrl: 'https://www.youtube.com/@Korisian',
+    genre: '클래식 명화 BGM · 시네마틱 아트',
+    concept: '명화 + 감성 음악의 시각적 콜라보',
+    affiliation: "Maison d'Étoile",
+    synopsis: '"그림은 말이 없지만, 음악이 더해지면 이야기가 된다."\n\nKorisian은 인상주의, 낭만주의 시대의 명화들에 감성적인 BGM을 입혀 새로운 감상 경험을 선사하는 시네마틱 아트 채널입니다. 모네의 수련, 르누아르의 오후, 드가의 발레리나 — 캔버스 위에 잠들어 있던 빛과 색이 음악과 함께 살아 숨쉬기 시작합니다.\n\n바쁜 일상 속 잠깐의 멈춤. Korisian이 만드는 공간은 미술관도, 음악홀도 아닌, 그 사이 어딘가의 조용한 방입니다.'
+  },
+  {
+    id: 'mv-2',
+    tag: '🎙️ French Chanson · 클래식 샹송',
+    title: 'Isabelle Lumière',
+    sub: '빛의 목소리',
+    imgPath: 'assets/images/mv/Isabelle Lumière.png',
+    channelUrl: 'https://www.youtube.com/@IsabelleLumiere',
+    genre: 'French Chanson · 드라마틱 소프라노',
+    concept: '에디트 피아프 스타일 · 1950s 파리 카바레',
+    affiliation: "Maison d'Étoile",
+    synopsis: '"파리의 밤은 노래로 기억된다."\n\nIsabelle Lumière(이자벨 뤼미에르)는 에디트 피아프의 영혼을 계승한 드라마틱 소프라노 샹송 아티스트입니다. 아코디언의 선율, 현악의 물결, 그리고 속삭임에서 폭발적인 고음으로 이어지는 다이나믹한 감정선.\n\n1950년대 파리 카바레의 향기를 담은 그녀의 음악은 시간을 초월해 듣는 이의 가슴 깊은 곳을 건드립니다.'
+  },
+  {
+    id: 'mv-3',
+    tag: '🌙 French Jazz · Cabaret Noir',
+    title: 'Margot Ombre',
+    sub: '그림자 속의 목소리',
+    imgPath: 'assets/images/mv/Margot Ombre.png',
+    channelUrl: 'https://www.youtube.com/@MargotOmbre',
+    genre: 'French Jazz · Cabaret Noir',
+    concept: '누아르 · 서정적 · 파리 강변의 밤',
+    affiliation: "Maison d'Étoile",
+    synopsis: '"빛이 있는 곳엔 반드시 그림자가 있다."\n\nMargot Ombre(마르고 옴브르)는 파리 센강변의 밤을 닮은 아티스트입니다. Barbara와 Juliette Gréco의 계보를 잇는 누아르 재즈 샹송. 차갑고 서정적인 목소리로 파리의 골목, 빗속의 카페, 그리고 혼자인 밤을 노래합니다.\n\nIsabelle Lumière가 \'빛\'이라면, Margot Ombre는 그 빛이 만들어내는 \'그림자\' — 둘이 함께 비로소 하나의 완전한 세계가 됩니다.'
+  },
+  {
+    id: 'mv-4',
+    tag: '🌸 French K-POP · 프렌치 팝',
+    title: 'Hana Chérie',
+    sub: '파리에서 온 봄',
+    imgPath: 'assets/images/mv/Hana Chérie.png',
+    channelUrl: 'https://www.youtube.com/@HanaCherieOfficial',
+    genre: 'French K-POP · French Pop',
+    concept: '한국 감성 · 프랑스어 · 따뜻한 설렘',
+    affiliation: "Maison d'Étoile",
+    synopsis: '"프랑스어로 노래하는 한국의 감성."\n\nHana Chérie(하나 쉐리)는 Maison d\'Étoile의 가장 현대적인 얼굴입니다. 한국의 감성과 K-POP의 세련된 사운드를 프랑스어로 담아낸 독보적인 아티스트.\n\n파리 유학 중 프랑스어와 사랑에 빠진 한국 소녀의 이야기가 그녀의 음악 속에 흐릅니다. Isabelle의 드라마틱함도, Margot의 누아르도 아닌 — Hana만의 봄날 같은 설렘이 당신을 기다립니다.'
+  }
+];
+
+function normalizeImgPath(p) {
+  if (!p) return '';
+  if (p.startsWith('http')) return p;
+  p = p.replace(/^\.\.\//, '');
+  return p.startsWith('assets/') ? '../../' + p : p;
+}
+
+function buildMvCard(item, idx) {
+  const duration = (2.8 + idx * 0.4).toFixed(1);
+  const delay    = -(idx * 0.9).toFixed(1);
+  const clipId   = 'mv-clip-' + item.id;
+  const imgSrc   = normalizeImgPath(item.imgPath);
+  const imgEsc   = imgSrc.replace(/'/g, "\\'");
+  /* 4:3 비율(320×240) + 작업들과 동일한 우상단 노치 클립 패턴 */
+  const notchPath = 'M 14 226 Q 14 240 26 240 L 294 240 Q 306 240 306 226 L 306 40 Q 306 28 294 28 L 238 28 Q 226 28 222 19 Q 218 10 206 10 L 26 10 Q 14 10 14 22 Z';
+  return `
+    <div class="mv-card-wrap" onclick="openMvImage('${imgEsc}')">
+      <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="${clipId}">
+            <path d="${notchPath}"/>
+          </clipPath>
+        </defs>
+        <rect width="320" height="240" fill="#111" clip-path="url(#${clipId})"/>
+        <image href="${imgSrc}" x="0" y="0" width="320" height="240"
+          clip-path="url(#${clipId})" preserveAspectRatio="xMidYMid slice"/>
+        <polygon points="206,10 306,10 306,28 238,28" fill="#000"/>
+        <path d="${notchPath}" fill="none" stroke="rgba(150,150,150,0.5)" stroke-width="1"/>
+        <path class="gold-border-path" d="${notchPath}"
+          fill="none" stroke="#c9a96e" stroke-width="2.5"
+          pathLength="1300" stroke-dasharray="90 1210" stroke-dashoffset="0"
+          style="animation-duration:${duration}s; animation-delay:${delay}s"/>
+      </svg>
+      <span class="mv-genre-badge">${item.tag}</span>
+      <button class="mv-detail-btn" onclick="event.stopPropagation(); showMvDetail('${item.id}')">내용보기</button>
+    </div>
+    <div class="mv-card-info">
+      <div class="mv-card-title">${item.title}</div>
+      <div class="mv-card-subtitle">${item.sub || ''}</div>
+    </div>`;
+}
+
+function renderMvList() {
+  const el = document.getElementById('mv-card-list');
+  if (el) el.innerHTML = MV_DATA.map((item, i) => buildMvCard(item, i)).join('');
+}
+
+function openMvImage(src) {
+  document.getElementById('overlay-img').src = src;
+  document.getElementById('img-overlay').classList.add('visible');
+}
+function closeOverlay() {
+  document.getElementById('img-overlay').classList.remove('visible');
+  document.getElementById('overlay-img').src = '';
+}
+
+function showMvDetail(id) {
+  const item = MV_DATA.find(d => d.id === id);
+  if (!item) return;
+  document.getElementById('detail-header-title').textContent = item.title;
+  const imgSrc = normalizeImgPath(item.imgPath);
+  const synopsisHtml = (item.synopsis || '').split('\n\n')
+    .filter(Boolean).map(p => `<p class="detail-intro">${p.replace(/\n/g,'<br>')}</p>`).join('');
+  const infoHtml = [
+    item.genre       ? `<div class="detail-info-row"><span class="detail-info-label">장르</span>${item.genre}</div>` : '',
+    item.concept     ? `<div class="detail-info-row"><span class="detail-info-label">컨셉</span>${item.concept}</div>` : '',
+    item.affiliation ? `<div class="detail-info-row"><span class="detail-info-label">소속</span>${item.affiliation}</div>` : ''
+  ].filter(Boolean).join('');
+  const channelBtn = item.channelUrl
+    ? `<a class="link-btn" href="${item.channelUrl}" target="_blank" rel="noopener">▶ YouTube 채널 바로가기</a>` : '';
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-img-wrap">
+      <img src="${imgSrc}" alt="${item.title}" onclick="openMvImage('${imgSrc.replace(/'/g,"\\'")}')">
+    </div>
+    <p class="detail-meta-line">${item.tag}</p>
+    <p class="detail-mv-title">${item.title}</p>
+    <p class="detail-mv-subtitle">${item.sub || ''}</p>
+    ${synopsisHtml}
+    ${infoHtml ? `<div style="margin-top:12px;border-top:1px solid #222;padding-top:12px;">${infoHtml}</div>` : ''}
+    ${channelBtn ? `<div class="link-row">${channelBtn}</div>` : ''}
+  `;
+  document.getElementById('view-list').style.display = 'none';
+  document.getElementById('view-detail').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function showList() {
+  document.getElementById('view-detail').style.display = 'none';
+  document.getElementById('view-list').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+async function initMvMobile() {
+  try {
+    let raw = null;
+    if (window.sbLoad) raw = await window.sbLoad('mvData', null);
+    if (!raw) { const s = localStorage.getItem('mvData'); if (s) raw = JSON.parse(s); }
+    if (raw && Array.isArray(raw) && raw.length) MV_DATA = raw.map(i => ({ ...i }));
+  } catch(e) {}
+  renderMvList();
+}
+
+/* supabase 로드 완료 후 init */
+window.addEventListener('load', initMvMobile);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../../js/supabase-client.js"></script>
+<script src="../../assets/js/mobile-nav.js"></script>
+</body>
+</html>

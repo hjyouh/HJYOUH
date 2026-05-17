@@ -3,10 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>M/V | 관리자 패널</title>
+  <title>M/V 관리 | 관리자 패널</title>
   <link rel="stylesheet" href="../assets/css/fonts.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="admin.css">
+  <style>
+    .mv-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+    }
+    .mv-row label {
+      font-size: 12px; color: var(--sub); white-space: nowrap;
+      flex-shrink: 0; width: 52px; text-align: right;
+    }
+    .mv-row input, .mv-row select {
+      flex: 1; background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-family: inherit;
+      font-size: 13px; padding: 8px 12px; outline: none; transition: border-color 0.2s;
+    }
+    .mv-row input:focus, .mv-row select:focus { border-color: rgba(201,169,110,0.5); }
+
+    .mv-section {
+      font-size: 11px; font-weight: 600; color: var(--gold); letter-spacing: 0.5px;
+      text-transform: uppercase; margin: 14px 0 8px; padding-bottom: 5px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mv-textarea {
+      width: 100%; background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-family: inherit; font-size: 13px;
+      padding: 9px 12px; outline: none; resize: vertical; line-height: 1.6;
+      transition: border-color 0.2s;
+    }
+    .mv-textarea:focus { border-color: rgba(201,169,110,0.5); }
+
+    #mvModal .modal-box { max-width: 640px; }
+
+    #mvThumbBox {
+      position: relative; width: 100%; aspect-ratio: 4/3;
+      border-radius: 8px; border: 1px solid var(--border);
+      overflow: hidden; background: var(--bg);
+    }
+    #mvThumbImg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:none; }
+    #mvThumbHint {
+      position: absolute; inset:0; display:flex; align-items:center;
+      justify-content:center; font-size:11px; color:var(--sub); text-align:center; line-height:1.5;
+    }
+    .thumb-plus-btn {
+      position: absolute; bottom:6px; right:6px; width:26px; height:26px;
+      border-radius: 50%; background: rgba(0,0,0,0.55); border: 1.5px solid rgba(255,255,255,0.35);
+      color:#fff; font-size:18px; line-height:1; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; z-index:2; transition:background 0.2s;
+    }
+    .thumb-plus-btn:hover { background: rgba(185,147,85,0.8); }
+    .thumb-confirm-btn {
+      flex: none; padding: 7px 10px; border: 1px solid var(--border);
+      border-radius: 8px; background: transparent; color: var(--sub); font-size: 12px;
+      font-family: inherit; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .thumb-confirm-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    .drag-handle {
+      cursor: grab; color: var(--sub); font-size: 16px; padding: 0 8px 0 0;
+      user-select: none; flex-shrink: 0; line-height: 1;
+    }
+    .drag-handle:active { cursor: grabbing; }
+    .item-row.drag-over { border: 1px solid var(--gold) !important; background: rgba(201,169,110,0.06); border-radius: 10px; }
+
+    .mv-thumb-preview {
+      width: 56px; height: 42px; border-radius: 6px; object-fit: cover;
+      background: var(--bg2); flex-shrink: 0; border: 1px solid var(--border);
+    }
+  </style>
 </head>
 <body>
 
@@ -26,6 +92,10 @@
     <a href="works.html"      class="sidebar-item">작업들</a>
     <a href="works.html"      class="sidebar-item sidebar-item-sub">AI영화</a>
     <a href="works.html"      class="sidebar-item sidebar-item-sub">도서</a>
+    <a href="prompts.html"    class="sidebar-item">프롬프트</a>
+    <a href="prompts.html?tab=image" class="sidebar-item sidebar-item-sub">이미지</a>
+    <a href="prompts.html?tab=video" class="sidebar-item sidebar-item-sub">영상</a>
+    <a href="prompts.html?tab=etc"   class="sidebar-item sidebar-item-sub">기타</a>
     <a href="mv.html"         class="sidebar-item active">M/V</a>
     <a href="contact.html"    class="sidebar-item">Contact</a>
     <div style="flex:1;"></div>
@@ -33,19 +103,357 @@
   </nav>
 
   <main class="admin-main">
+
     <div class="panel-header">
       <div>
         <div class="panel-title">M/V 관리</div>
-        <div class="panel-subtitle">뮤직비디오 콘텐츠를 관리합니다</div>
+        <div class="panel-subtitle">뮤직비디오 아티스트 채널을 추가·수정·삭제합니다</div>
+      </div>
+      <button class="btn btn-gold" onclick="openMvModal()">+ 아티스트 추가</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎵 M/V 아티스트 목록</div>
+      <div class="item-list" id="mvList"></div>
+    </div>
+
+    <!-- 페이지 메시지 카드 -->
+    <div class="card">
+      <div class="card-title">💬 페이지 메시지</div>
+      <div style="display:flex; gap:10px; align-items:flex-end;">
+        <div style="flex:1;">
+          <label style="font-size:12px; color:var(--sub); display:block; margin-bottom:6px;">상단 메시지 (모바일/데스크탑 공통)</label>
+          <input id="mvPageMsg" type="text" placeholder="Maison d'Étoile"
+            style="width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:8px;
+                   color:var(--text); font-family:inherit; font-size:14px; padding:9px 12px; outline:none; transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(201,169,110,0.5)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <button class="btn btn-gold btn-sm" onclick="saveMvMsg()" style="height:38px; flex-shrink:0;">저장</button>
       </div>
     </div>
-    <div class="card">
-      <div class="empty-state">M/V 관리 화면이 추후 개발될 예정입니다.</div>
-    </div>
+
   </main>
 </div>
 
+<!-- ══ M/V 아티스트 모달 ══ -->
+<div class="modal-overlay" id="mvModal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <div class="modal-title" id="mvModalTitle">아티스트 추가</div>
+      <button class="modal-close-btn" onclick="closeMvModal()">✕</button>
+    </div>
+
+    <input type="hidden" id="mvEditId" value="">
+
+    <!-- 좌/우 2열: 입력 | 이미지 미리보기 -->
+    <div style="display:flex; gap:14px; align-items:stretch; margin-bottom:4px;">
+
+      <!-- 좌: 입력 필드 -->
+      <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:0;">
+        <div class="mv-section" style="margin-top:0;">기본 정보</div>
+        <div class="mv-row">
+          <label>아티스트명 *</label>
+          <input id="mvTitle" type="text" placeholder="Korisian">
+        </div>
+        <div class="mv-row">
+          <label>태그</label>
+          <input id="mvTag" type="text" placeholder="🎭 클래식 명화 · BGM채널">
+        </div>
+        <div class="mv-row">
+          <label>부제목</label>
+          <input id="mvSub" type="text" placeholder="명화에 음악을 입히다">
+        </div>
+        <div class="mv-row">
+          <label>이미지 경로</label>
+          <input id="mvImgPath" type="text" placeholder="assets/images/mv/filename.png"
+                 style="flex:1; font-size:12px; padding:7px 10px;">
+          <button class="thumb-confirm-btn" onclick="updateMvThumbPreview()">확인</button>
+        </div>
+
+        <div class="mv-section">채널 · 장르</div>
+        <div class="mv-row">
+          <label>YouTube</label>
+          <input id="mvChannelUrl" type="text" placeholder="https://www.youtube.com/@channel">
+        </div>
+        <div class="mv-row">
+          <label>장르</label>
+          <input id="mvGenre" type="text" placeholder="French Chanson · 드라마틱 소프라노">
+        </div>
+        <div class="mv-row">
+          <label>컨셉</label>
+          <input id="mvConcept" type="text" placeholder="에디트 피아프 스타일 · 1950s 파리 카바레">
+        </div>
+        <div class="mv-row">
+          <label>소속</label>
+          <input id="mvAffiliation" type="text" placeholder="Maison d'Étoile">
+        </div>
+      </div>
+
+      <!-- 우: 이미지 미리보기 (4:3 landscape) -->
+      <div style="width:220px; flex-shrink:0; display:flex; flex-direction:column;">
+        <div id="mvThumbBox">
+          <img id="mvThumbImg">
+          <span id="mvThumbHint">미리보기<br><span style="font-size:10px; opacity:.6;">+ 버튼으로<br>파일 선택</span></span>
+          <button class="thumb-plus-btn" onclick="document.getElementById('mvFilePicker').click()" title="파일 선택">+</button>
+        </div>
+        <input type="file" id="mvFilePicker" accept="image/*" style="display:none;" onchange="onMvFilePicked(this)">
+      </div>
+
+    </div>
+
+    <!-- 시놉시스 -->
+    <div class="mv-section">시놉시스</div>
+    <div style="font-size:12px; color:var(--sub); margin-bottom:5px;">아티스트 소개 <span style="font-weight:400;">(단락 구분: 빈 줄)</span></div>
+    <textarea id="mvSynopsis" class="mv-textarea" rows="5" placeholder="첫 번째 단락...&#10;&#10;두 번째 단락..."></textarea>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeMvModal()">취소</button>
+      <button class="btn btn-gold" onclick="saveMvItem()">저장</button>
+    </div>
+
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../js/supabase-client.js"></script>
 <script src="admin-data.js"></script>
+<script>
+
+/* ===== 기본 데이터 ===== */
+const DEFAULT_MV = [
+  {
+    id: 'mv-1',
+    tag: '🎭 클래식 명화 · BGM채널',
+    title: 'Korisian', sub: '명화에 음악을 입히다',
+    imgPath: 'assets/images/mv/@Korisian.png',
+    channelUrl: 'https://www.youtube.com/@Korisian',
+    genre: '클래식 명화 BGM · 시네마틱 아트',
+    concept: '명화 + 감성 음악의 시각적 콜라보',
+    affiliation: "Maison d'Étoile",
+    synopsis: '"그림은 말이 없지만, 음악이 더해지면 이야기가 된다."\n\nKorisian은 인상주의, 낭만주의 시대의 명화들에 감성적인 BGM을 입혀 새로운 감상 경험을 선사하는 시네마틱 아트 채널입니다. 모네의 수련, 르누아르의 오후, 드가의 발레리나 — 캔버스 위에 잠들어 있던 빛과 색이 음악과 함께 살아 숨쉬기 시작합니다.\n\n바쁜 일상 속 잠깐의 멈춤. Korisian이 만드는 공간은 미술관도, 음악홀도 아닌, 그 사이 어딘가의 조용한 방입니다.'
+  },
+  {
+    id: 'mv-2',
+    tag: '🎙️ French Chanson · 클래식 샹송',
+    title: 'Isabelle Lumière', sub: '빛의 목소리',
+    imgPath: 'assets/images/mv/Isabelle Lumière.png',
+    channelUrl: 'https://www.youtube.com/@IsabelleLumiere',
+    genre: 'French Chanson · 드라마틱 소프라노',
+    concept: '에디트 피아프 스타일 · 1950s 파리 카바레',
+    affiliation: "Maison d'Étoile",
+    synopsis: '"파리의 밤은 노래로 기억된다."\n\nIsabelle Lumière(이자벨 뤼미에르)는 에디트 피아프의 영혼을 계승한 드라마틱 소프라노 샹송 아티스트입니다. 아코디언의 선율, 현악의 물결, 그리고 속삭임에서 폭발적인 고음으로 이어지는 다이나믹한 감정선.\n\n1950년대 파리 카바레의 향기를 담은 그녀의 음악은 시간을 초월해 듣는 이의 가슴 깊은 곳을 건드립니다.'
+  },
+  {
+    id: 'mv-3',
+    tag: '🌙 French Jazz · Cabaret Noir',
+    title: 'Margot Ombre', sub: '그림자 속의 목소리',
+    imgPath: 'assets/images/mv/Margot Ombre.png',
+    channelUrl: 'https://www.youtube.com/@MargotOmbre',
+    genre: 'French Jazz · Cabaret Noir',
+    concept: '누아르 · 서정적 · 파리 강변의 밤',
+    affiliation: "Maison d'Étoile",
+    synopsis: '"빛이 있는 곳엔 반드시 그림자가 있다."\n\nMargot Ombre(마르고 옴브르)는 파리 센강변의 밤을 닮은 아티스트입니다. Barbara와 Juliette Gréco의 계보를 잇는 누아르 재즈 샹송. 차갑고 서정적인 목소리로 파리의 골목, 빗속의 카페, 그리고 혼자인 밤을 노래합니다.\n\nIsabelle Lumière가 \'빛\'이라면, Margot Ombre는 그 빛이 만들어내는 \'그림자\' — 둘이 함께 비로소 하나의 완전한 세계가 됩니다.'
+  },
+  {
+    id: 'mv-4',
+    tag: '🌸 French K-POP · 프렌치 팝',
+    title: 'Hana Chérie', sub: '파리에서 온 봄',
+    imgPath: 'assets/images/mv/Hana Chérie.png',
+    channelUrl: 'https://www.youtube.com/@HanaCherieOfficial',
+    genre: 'French K-POP · French Pop',
+    concept: '한국 감성 · 프랑스어 · 따뜻한 설렘',
+    affiliation: "Maison d'Étoile",
+    synopsis: '"프랑스어로 노래하는 한국의 감성."\n\nHana Chérie(하나 쉐리)는 Maison d\'Étoile의 가장 현대적인 얼굴입니다. 한국의 감성과 K-POP의 세련된 사운드를 프랑스어로 담아낸 독보적인 아티스트.\n\n파리 유학 중 프랑스어와 사랑에 빠진 한국 소녀의 이야기가 그녀의 음악 속에 흐릅니다. Isabelle의 드라마틱함도, Margot의 누아르도 아닌 — Hana만의 봄날 같은 설렘이 당신을 기다립니다.'
+  }
+];
+
+let mvItems = loadData('mvData', DEFAULT_MV);
+
+/* ===== 목록 렌더 ===== */
+function renderMvList() {
+  const list = document.getElementById('mvList');
+  if (!mvItems.length) {
+    list.innerHTML = '<div class="empty-state">등록된 아티스트가 없습니다</div>';
+    return;
+  }
+  list.innerHTML = mvItems.map((item, idx) => `
+    <div class="item-row" draggable="true" data-idx="${idx}"
+         ondragstart="dragStart(event,${idx})" ondragover="dragOver(event)" ondrop="dropItem(event,${idx})" ondragleave="dragLeave(event)">
+      <span class="drag-handle" title="드래그로 순서 변경">⠿</span>
+      <img class="mv-thumb-preview" src="../${item.imgPath || ''}" alt=""
+           onerror="this.style.visibility='hidden'">
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:14px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+          ${escHtml(item.title)}
+        </div>
+        <div style="font-size:11px; color:var(--sub); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+          ${escHtml(item.tag || '')} ${item.channelUrl ? '· <a href="' + escHtml(item.channelUrl) + '" target="_blank" style="color:var(--gold); text-decoration:none;">YouTube ↗</a>' : ''}
+        </div>
+      </div>
+      <div style="display:flex; gap:6px; flex-shrink:0;">
+        <button class="btn btn-sm btn-outline" onclick="editMvItem(${idx})">수정</button>
+        <button class="btn btn-sm" style="background:var(--red); color:#fff; border:none; border-radius:8px; padding:4px 12px; font-size:12px; cursor:pointer;"
+                onclick="deleteMvItem(${idx})">삭제</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ===== 드래그 순서 변경 ===== */
+let dragSrcIdx = null;
+function dragStart(e, idx) { dragSrcIdx = idx; e.dataTransfer.effectAllowed = 'move'; }
+function dragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function dropItem(e, targetIdx) {
+  e.currentTarget.classList.remove('drag-over');
+  if (dragSrcIdx === null || dragSrcIdx === targetIdx) return;
+  const [moved] = mvItems.splice(dragSrcIdx, 1);
+  mvItems.splice(targetIdx, 0, moved);
+  saveMvData();
+  renderMvList();
+  dragSrcIdx = null;
+}
+
+/* ===== 모달 ===== */
+function openMvModal(item) {
+  document.getElementById('mvEditId').value    = item ? item.id : '';
+  document.getElementById('mvModalTitle').textContent = item ? '아티스트 수정' : '아티스트 추가';
+  document.getElementById('mvTitle').value       = item ? (item.title || '') : '';
+  document.getElementById('mvTag').value         = item ? (item.tag || '') : '';
+  document.getElementById('mvSub').value         = item ? (item.sub || '') : '';
+  document.getElementById('mvImgPath').value     = item ? (item.imgPath || '') : '';
+  document.getElementById('mvChannelUrl').value  = item ? (item.channelUrl || '') : '';
+  document.getElementById('mvGenre').value       = item ? (item.genre || '') : '';
+  document.getElementById('mvConcept').value     = item ? (item.concept || '') : '';
+  document.getElementById('mvAffiliation').value = item ? (item.affiliation || '') : '';
+  document.getElementById('mvSynopsis').value    = item ? (item.synopsis || '') : '';
+
+  const thumbImg  = document.getElementById('mvThumbImg');
+  const thumbHint = document.getElementById('mvThumbHint');
+  if (item && item.imgPath) {
+    thumbImg.src     = '../' + item.imgPath;
+    thumbImg.style.display = 'block';
+    thumbHint.style.display = 'none';
+  } else {
+    thumbImg.style.display = 'none';
+    thumbHint.style.display = 'flex';
+  }
+
+  document.getElementById('mvModal').classList.add('open');
+}
+
+function closeMvModal() {
+  document.getElementById('mvModal').classList.remove('open');
+}
+
+function editMvItem(idx) {
+  openMvModal(mvItems[idx]);
+}
+
+function deleteMvItem(idx) {
+  if (!confirm(`"${mvItems[idx].title}" 아티스트를 삭제하시겠습니까?`)) return;
+  mvItems.splice(idx, 1);
+  saveMvData();
+  renderMvList();
+  toast('삭제되었습니다');
+}
+
+/* ===== 저장 ===== */
+function saveMvItem() {
+  const title = document.getElementById('mvTitle').value.trim();
+  if (!title) { toast('아티스트명을 입력해주세요', true); return; }
+
+  const editId = document.getElementById('mvEditId').value;
+  const item = {
+    id:          editId || ('mv-' + Date.now()),
+    title,
+    tag:         document.getElementById('mvTag').value.trim(),
+    sub:         document.getElementById('mvSub').value.trim(),
+    imgPath:     document.getElementById('mvImgPath').value.trim(),
+    channelUrl:  document.getElementById('mvChannelUrl').value.trim(),
+    genre:       document.getElementById('mvGenre').value.trim(),
+    concept:     document.getElementById('mvConcept').value.trim(),
+    affiliation: document.getElementById('mvAffiliation').value.trim(),
+    synopsis:    document.getElementById('mvSynopsis').value.trim()
+  };
+
+  if (editId) {
+    const idx = mvItems.findIndex(i => i.id === editId);
+    if (idx >= 0) mvItems[idx] = item;
+    else mvItems.push(item);
+  } else {
+    mvItems.push(item);
+  }
+
+  saveMvData();
+  renderMvList();
+  closeMvModal();
+  toast(editId ? '수정되었습니다' : '추가되었습니다');
+}
+
+function saveMvData() {
+  saveData('mvData', mvItems);
+}
+
+/* ===== 썸네일 미리보기 ===== */
+function updateMvThumbPreview() {
+  const path = document.getElementById('mvImgPath').value.trim();
+  if (!path) return;
+  const thumbImg  = document.getElementById('mvThumbImg');
+  const thumbHint = document.getElementById('mvThumbHint');
+  thumbImg.src = '../' + path;
+  thumbImg.style.display = 'block';
+  thumbHint.style.display = 'none';
+  thumbImg.onerror = () => {
+    thumbImg.style.display = 'none';
+    thumbHint.style.display = 'flex';
+    toast('이미지를 불러올 수 없습니다', true);
+  };
+}
+
+function onMvFilePicked(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = e => {
+    const thumbImg  = document.getElementById('mvThumbImg');
+    const thumbHint = document.getElementById('mvThumbHint');
+    thumbImg.src = e.target.result;
+    thumbImg.style.display = 'block';
+    thumbHint.style.display = 'none';
+    /* 경로 힌트 자동 채우기 */
+    const pathInp = document.getElementById('mvImgPath');
+    if (!pathInp.value) pathInp.value = 'assets/images/mv/' + file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ===== 페이지 메시지 ===== */
+function saveMvMsg() {
+  const msg = document.getElementById('mvPageMsg').value.trim();
+  saveData('mvPageMsg', msg || "Maison d'Étoile");
+  toast('메시지가 저장되었습니다');
+}
+
+function loadMvMsg() {
+  const saved = loadData('mvPageMsg', null);
+  if (saved) document.getElementById('mvPageMsg').value = saved;
+}
+
+/* ===== 초기화 ===== */
+async function init() {
+  try {
+    const raw = await loadDataCloud('mvData', null);
+    if (raw && Array.isArray(raw) && raw.length) mvItems = raw;
+  } catch(e) {}
+  renderMvList();
+  loadMvMsg();
+}
+
+init();
+</script>
 </body>
 </html>

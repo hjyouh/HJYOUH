@@ -38,7 +38,7 @@
   <!-- Right: Detail Panel -->
   <div class="works-panel" id="worksPanel">
     <div class="panel-empty" id="panelEmpty">
-      <p>왼쪽 카드를 클릭하면 자세한 정보을 보실 수 있습니다</p>
+      <p>왼쪽 카드를 클릭하면<br>자세한 정보를 보실 수 있습니다</p>
     </div>
     <div class="panel-detail" id="panelDetail" style="display:none">
       <div class="detail-tag" id="detailTag"></div>
@@ -385,6 +385,18 @@
     width: 500px;
   }
 
+  .works-msg .message-box-text {
+    font-size: 20px;
+    line-height: 1.65;
+    color: #fff;
+  }
+
+  .works-msg .message-box-sub {
+    font-size: 13px;
+    opacity: 0.75;
+    margin-top: 4px;
+  }
+
   /* ===== RIGHT PANEL ===== */
   .works-panel {
     width: var(--panel-width);
@@ -486,10 +498,10 @@
   .panel-empty {
     flex: 1;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 80px 24px 24px;
+    padding: 24px;
   }
 
   .panel-empty p { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.7; }
@@ -521,6 +533,7 @@
 </style>
 
 <script>
+(function () {
   /* ===== DATA ===== */
   var DEFAULT_WORKS = {
     film: [
@@ -778,16 +791,35 @@
     `).join('');
   }
 
-  /* ===== UPDATE MESSAGE BOX FROM LOCALSTORAGE ===== */
-  function updateWorksMsg(tab) {
+  /* ===== UPDATE MESSAGE BOX (Supabase → localStorage → 기본값) ===== */
+  const WORKS_MSG_DEF = {
+    film: {
+      mainMsg:  'AI 영화감독 유형재의<br><strong>국제 수상 작품들</strong>',
+      subtitle: '칸·라스베이거스·헐리우드까지,<br>AI로 만든 영화가 세계 무대에 섰습니다'
+    },
+    book: {
+      mainMsg:  '출간 도서',
+      subtitle: 'AI 교육과 실무 노하우를 담은<br>도서들을 소개합니다'
+    }
+  };
+
+  async function updateWorksMsg(tab) {
     const key = tab === 'film' ? 'pageMsgWorksFilm' : 'pageMsgWorksBook';
+    const def = WORKS_MSG_DEF[tab] || {};
     try {
-      const cfg = JSON.parse(localStorage.getItem(key) || '{}');
+      const cfg = window.sbLoad
+        ? await sbLoad(key, {})
+        : JSON.parse(localStorage.getItem(key) || '{}');
       const textEl = document.querySelector('.works-msg .message-box-text');
       const subEl  = document.querySelector('.works-msg .message-box-sub');
-      if (textEl && cfg.mainMsg)  textEl.innerHTML  = cfg.mainMsg.replace(/\n/g,'<br>');
-      if (subEl  && cfg.subtitle) subEl.innerHTML   = cfg.subtitle.replace(/\n/g,'<br>');
-    } catch(e) {}
+      if (textEl) textEl.innerHTML = cfg.mainMsg  ? cfg.mainMsg.replace(/\n/g,'<br>')  : (def.mainMsg  || '');
+      if (subEl)  subEl.innerHTML  = cfg.subtitle ? cfg.subtitle.replace(/\n/g,'<br>') : (def.subtitle || '');
+    } catch(e) {
+      const textEl = document.querySelector('.works-msg .message-box-text');
+      const subEl  = document.querySelector('.works-msg .message-box-sub');
+      if (textEl) textEl.innerHTML = def.mainMsg  || '';
+      if (subEl)  subEl.innerHTML  = def.subtitle || '';
+    }
   }
 
   /* ===== SWITCH TAB ===== */
@@ -927,10 +959,17 @@
     ]);
     currentTab = 'film';
     selectedId = null;
-    updateWorksMsg('film');
+    await updateWorksMsg('film');
     renderGrid('film');
     showPanelEmpty();
   }
 
+  /* ===== window exports (HTML onclick 연결) ===== */
+  window.switchTab       = switchTab;
+  window.selectWork      = selectWork;
+  window.closeWorksZoom  = closeWorksZoom;
+  window.initWorksPage   = initWorksPage;
+
   if (document.getElementById('cardGrid')) initWorksPage();
+})();
 </script>

@@ -248,6 +248,12 @@
     color: #fff;
   }
 
+  .lec-msg .message-box-sub {
+    font-size: 13px;
+    opacity: 0.75;
+    margin-top: 4px;
+  }
+
   /* ===== CARD GRID ===== */
   .lec-grid {
     display: grid;
@@ -885,17 +891,18 @@
     }).join('');
   }
 
-  // 페이지 메시지 로드 (localStorage → .lec-msg)
-  function loadLecPageMsg() {
+  // 페이지 메시지 로드 (Supabase → localStorage → 기본값)
+  async function loadLecPageMsg() {
     try {
-      const cfg = JSON.parse(localStorage.getItem('pageMsgLectures') || '{}');
+      const cfg = window.sbLoad
+        ? await sbLoad('pageMsgLectures', {})
+        : JSON.parse(localStorage.getItem('pageMsgLectures') || '{}');
       const textEl = document.querySelector('.lec-msg .message-box-text');
       const subEl  = document.querySelector('.lec-msg .message-box-sub');
       if (textEl && cfg.mainMsg)  textEl.innerHTML  = cfg.mainMsg.replace(/\n/g,'<br>');
       if (subEl  && cfg.subtitle) subEl.innerHTML   = cfg.subtitle.replace(/\n/g,'<br>');
     } catch(e) {}
   }
-  loadLecPageMsg();
 
   // Tab switching logic
   window.switchLecTab = function(tabId) {
@@ -1057,6 +1064,7 @@
 
   async function initLecturesPage() {
     _cachedLectures = await loadLecturesDataCloud();
+    await loadLecPageMsg();
     renderLecGrid();
     showLecPanelEmpty();
   }

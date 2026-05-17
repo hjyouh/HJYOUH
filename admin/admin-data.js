@@ -425,6 +425,111 @@ const DEFAULT_SIDE_PANELS = [
   { label: '문의',   nav: 'contact',  path: '../assets/images/lectures/main3.png' }
 ];
 
+const DEFAULT_PROMPTS = {
+  image: [
+    {
+      id: 'img-1', cat: 'image', ratio: 'portrait',
+      title: '정 (情) 영화 포스터', tool: 'Midjourney v6.1',
+      imgPath: '../assets/images/posters/Jeong Poster.png',
+      prompt: 'Jeong (情) - Korean connection movie poster, elderly woman in quiet contemplation by a window, warm earthy amber tones, soft directional golden light, film grain, poetic minimalism, Cannes Film Award aesthetic, cultural depth, shot on 35mm film --ar 2:3 --style raw --v 6.1'
+    },
+    {
+      id: 'img-2', cat: 'image', ratio: 'portrait',
+      title: '누구의 속삭임 포스터', tool: 'Midjourney v6.1',
+      imgPath: "../assets/images/posters/who's Poster.png",
+      prompt: "Who's Whisper (누구의 속삭임) - mysterious film poster, close-up of lips in absolute darkness, ethereal light catching subtle skin texture, extreme shallow depth of field, award-winning portrait photography, Cannes selection quality, Korean New Wave cinema --ar 2:3 --style raw --v 6.1"
+    },
+    {
+      id: 'img-3', cat: 'image', ratio: 'landscape',
+      title: 'AI 강의 현장', tool: 'Gemini Imagen 3',
+      imgPath: '../assets/images/lectures/main5.png',
+      prompt: 'Professional AI education classroom in Korea, engaged professionals learning hands-on AI tools on laptops, modern bright educational environment, collaborative atmosphere, authentic documentary photography style, natural lighting, shallow depth of field, 35mm film look'
+    },
+    {
+      id: 'img-4', cat: 'image', ratio: 'portrait',
+      title: '디지털 에고 포스터', tool: 'Midjourney v6.1',
+      imgPath: '../assets/images/posters/Digital Ego poster.png',
+      prompt: 'Digital Ego - conceptual movie poster, human face fragmenting into digital data streams and circuit patterns, identity vs technology theme, cool blue and white color palette, minimalist modern poster design, international film festival submission quality --ar 2:3 --v 6.1'
+    },
+    {
+      id: 'img-5', cat: 'image', ratio: 'portrait',
+      title: '추억의 잔광 포스터', tool: 'Midjourney v6.1',
+      imgPath: '../assets/images/posters/추억의 잔광(殘光)-포스터.png',
+      prompt: 'Movie poster "Lingering Afterglow of Memories (추억의 잔광)", elderly person silhouetted against warm amber sunset, nostalgic sepia film grain, dust particles floating in light, award-winning Korean art house cinema, Cannes-quality cinematography --ar 2:3 --style raw --v 6.1'
+    },
+    {
+      id: 'img-6', cat: 'image', ratio: 'portrait',
+      title: '스포츠카 광고 포스터', tool: 'Midjourney v6.1',
+      imgPath: '../assets/images/posters/Sportage Poster.png',
+      prompt: 'Cinematic car advertisement poster, Kia Sportage on a misty mountain road at golden hour, dramatic crepuscular rays, Korean countryside backdrop, photorealistic CGI, 8K, shot by award-winning commercial photographer --ar 2:3 --v 6.1'
+    },
+    {
+      id: 'img-7', cat: 'image', ratio: 'landscape',
+      title: '미래 도시 컨셉아트', tool: 'DALL-E 3',
+      imgPath: '../assets/images/lectures/main4.png',
+      prompt: 'Futuristic Korean city in 2070, mixed traditional hanok and modern skyscraper architecture, cherry blossoms floating through neon-lit streets, aerial drone view, golden hour lighting, 8K photorealistic, cinema anamorphic lens, award-winning architectural photography'
+    },
+    {
+      id: 'img-8', cat: 'image', ratio: 'landscape',
+      title: '액체 유리 UI 디자인', tool: 'Midjourney v6.1',
+      imgPath: '../assets/images/lectures/main2.png',
+      prompt: 'liquid glass morphism UI design, floating interface panels with translucent glass effect, colorful gradient lights underneath, Apple Vision Pro aesthetic, product design showcase, dark background, ultra-detailed --ar 4:3 --style raw --v 6.1'
+    }
+  ],
+  video: [
+    {
+      id: 'vid-1', cat: 'video', ratio: 'landscape',
+      title: 'AI 신경망 시각화', tool: 'Sora (OpenAI)',
+      imgPath: '../assets/images/lectures/main1.png',
+      prompt: 'Cinematic visualization of AI neural network in motion, abstract glowing data streams flowing through luminous nodes, deep space background, blue and gold color palette, first-person camera journey through a digital brain structure, 10-second seamless loop, 4K HDR, Sora'
+    },
+    {
+      id: 'vid-2', cat: 'video', ratio: 'landscape',
+      title: 'AI 교육자 인트로 영상', tool: 'Kling AI 1.6',
+      imgPath: '../assets/images/instructor1.png',
+      prompt: 'Professional intro video for AI educator, slow elegant zoom on portrait, soft light particles drifting around subject, dark studio background with subtle lens flare bokeh, text overlay "AI Creator" in gold, smooth 8-second seamless loop, broadcast quality'
+    },
+    {
+      id: 'vid-3', cat: 'video', ratio: 'landscape',
+      title: '도시 영상 전환', tool: 'Pika Labs 2.0',
+      imgPath: '../assets/images/lectures/main3.png',
+      prompt: 'Seamless video morphing transition: traditional Korean market stalls smoothly transform into a futuristic city street, temporal blend effect, warm market tones shifting to cool neon palette, 4K 60fps, cinematic depth of field, Pika Labs 2.0 generation'
+    },
+    {
+      id: 'vid-4', cat: 'video', ratio: 'landscape',
+      title: '강의실 타임랩스', tool: 'Runway Gen-3 Alpha',
+      imgPath: '../assets/images/lectures/main6.png',
+      prompt: 'Time-lapse video of a modern Korean AI classroom, students engaging with laptops and tablets, ambient window lighting shifting from morning blue to warm afternoon, smooth cinematic camera movement, educational documentary style, 4K, Runway Gen-3 Alpha'
+    }
+  ],
+  etc: [
+    {
+      id: 'oth-1', cat: 'etc', ratio: 'portrait',
+      title: 'AI 업무생산성 기초 표지', tool: 'DALL-E 3',
+      imgPath: '../assets/images/books/Book1-업무생산성 높이는 생성형 AI 기초 전략.png',
+      prompt: 'Book cover "Basic Generative AI Strategies for Work Productivity (업무생산성 높이는 생성형 AI)", clean corporate design, rocket launch with ascending productivity graph metaphor, professional navy and white with gold accent, Korean business book market standard'
+    },
+    {
+      id: 'oth-2', cat: 'etc', ratio: 'portrait',
+      title: 'AI 마케팅 고급 전략 표지', tool: 'Midjourney v6.1',
+      imgPath: '../assets/images/books/Book2-디지털 마케팅의 판도를 바꾸는 생성형 AI 고급 전략.png',
+      prompt: 'Business book cover "Advanced Generative AI Strategies for Digital Marketing", dynamic upward trajectory graphic, corporate navy blue and gold color palette, data visualization elements, confident authoritative design, Korean business market --ar 2:3 --v 6.1'
+    },
+    {
+      id: 'oth-3', cat: 'etc', ratio: 'portrait',
+      title: '프롬프트 엔지니어링 표지', tool: 'Stable Diffusion XL',
+      imgPath: '../assets/images/books/book3 AI와 소통하는 법- 프롬프트 엔지니어링 기초편.png',
+      prompt: 'Book cover "Communicating with AI: Prompt Engineering Basics (AI와 소통하는 법)", clean minimalist tech design, geometric neural network motif in soft blue gradient, professional typography with Korean and English, educational publisher-ready quality'
+    },
+    {
+      id: 'oth-4', cat: 'etc', ratio: 'portrait',
+      title: 'AI 성찰 에세이 표지', tool: 'Adobe Firefly 3',
+      imgPath: '../assets/images/books/book4-정체된 나의 삶 속에서, AI와 춤추다.png',
+      prompt: 'Book cover "Dancing with AI in My Stagnant Life (정체된 나의 삶 속에서 AI와 춤추다)", human silhouette dancing with abstract luminous AI entity, warm sunset gradient background, watercolor texture overlay, literary essay aesthetic, Korean publishing market standard'
+    }
+  ]
+};
+
 const DEFAULT_PAGE_MSGS = {
   instructor: {
     mobile: 'AI를 가장 쉽게 가르치는 사람'

@@ -163,7 +163,7 @@
           </clipPath>
         </defs>
         <rect width="360" height="240" fill="#000000"/>
-        <image href="../../assets/images/instructor1.png"
+        <image id="cardImg2" href="../../assets/images/instructor1.png"
           x="0" y="0" width="360" height="240"
           clip-path="url(#cardClip2)"
           preserveAspectRatio="xMidYMid slice"/>
@@ -184,7 +184,7 @@
           </clipPath>
         </defs>
         <rect width="360" height="240" fill="#000000"/>
-        <image href="../../assets/images/lectures/main6.png"
+        <image id="cardImg3" href="../../assets/images/lectures/main6.png"
           x="0" y="0" width="360" height="240"
           clip-path="url(#cardClip3)"
           preserveAspectRatio="xMidYMid slice"/>
@@ -206,13 +206,59 @@
             </clipPath>
           </defs>
           <rect width="360" height="240" fill="#000000"/>
-          <image href="../../assets/images/posters/Jeong Poster.png"
+          <image id="cardImg4" href="../../assets/images/posters/Jeong Poster.png"
             x="0" y="0" width="360" height="240"
             clip-path="url(#cardClip4)"
             preserveAspectRatio="xMidYMid slice"/>
           <text x="46" y="20" font-size="17" fill="#ffffff" font-family="'SUITE', 'Poppins', sans-serif" font-weight="500" text-anchor="middle">작업들</text>
           <circle cx="318" cy="120" r="18" fill="rgba(0,0,0,0.45)"/>
           <text x="318" y="127" font-size="36" fill="#ffffff" font-family="sans-serif" text-anchor="middle" dominant-baseline="auto">›</text>
+        </svg>
+      </div>
+    </a>
+
+    <!-- 카드5: 프롬프트 -->
+    <a href="#" onclick="showMobileWip();return false;" style="text-decoration:none;">
+      <div class="tab-card-wrap">
+        <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="cardClip5">
+              <path d="M 14 226 Q 14 238 26 238 L 334 238 Q 346 238 346 226
+                L 346 20 Q 346 10 334 10 L 100 10 Q 88 10 84 19
+                Q 80 28 68 28 L 26 28 Q 14 28 14 40 Z"/>
+            </clipPath>
+          </defs>
+          <rect width="360" height="240" fill="#000000"/>
+          <image id="cardImg5" href="../../assets/images/prompt.png"
+            x="0" y="0" width="360" height="240"
+            clip-path="url(#cardClip5)"
+            preserveAspectRatio="xMidYMid slice"/>
+          <text x="54" y="20" font-size="17" fill="#ffffff" font-family="'SUITE', 'Poppins', sans-serif" font-weight="500" text-anchor="middle">프롬프트</text>
+          <rect x="110" y="104" width="140" height="32" rx="16" fill="rgba(10,10,10,0.75)"/>
+          <text x="180" y="125" font-size="13" fill="#c9a96e" font-family="'Poppins','SUITE',sans-serif" font-weight="600" text-anchor="middle">🚧 작업중</text>
+        </svg>
+      </div>
+    </a>
+
+    <!-- 카드6: M/V -->
+    <a href="#" onclick="showMobileWip();return false;" style="text-decoration:none;">
+      <div class="tab-card-wrap">
+        <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="cardClip6">
+              <path d="M 14 226 Q 14 238 26 238 L 334 238 Q 346 238 346 226
+                L 346 20 Q 346 10 334 10 L 100 10 Q 88 10 84 19
+                Q 80 28 68 28 L 26 28 Q 14 28 14 40 Z"/>
+            </clipPath>
+          </defs>
+          <rect width="360" height="240" fill="#000000"/>
+          <image id="cardImg6" href="../../assets/images/mv/@Korisian.png"
+            x="0" y="0" width="360" height="240"
+            clip-path="url(#cardClip6)"
+            preserveAspectRatio="xMidYMid slice"/>
+          <text x="38" y="20" font-size="17" fill="#ffffff" font-family="'Poppins', 'SUITE', sans-serif" font-weight="600" text-anchor="middle">M/V</text>
+          <rect x="110" y="104" width="140" height="32" rx="16" fill="rgba(10,10,10,0.75)"/>
+          <text x="180" y="125" font-size="13" fill="#c9a96e" font-family="'Poppins','SUITE',sans-serif" font-weight="600" text-anchor="middle">🚧 작업중</text>
         </svg>
       </div>
     </a>
@@ -241,6 +287,24 @@
   </footer>
 
   <script>
+    // ===== 작업중 토스트 =====
+    function showMobileWip() {
+      const ex = document.getElementById('mobile-wip-toast');
+      if (ex) ex.remove();
+      const el = document.createElement('div');
+      el.id = 'mobile-wip-toast';
+      el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);'
+        + 'background:rgba(10,10,10,0.88);backdrop-filter:blur(16px);'
+        + 'border:1px solid rgba(201,169,110,0.55);border-radius:18px;'
+        + 'padding:24px 36px;text-align:center;z-index:9999;pointer-events:none;'
+        + "font-family:'Poppins','SUITE',sans-serif;";
+      el.innerHTML = '<div style="font-size:28px;margin-bottom:8px">🚧</div>'
+        + '<div style="font-size:16px;font-weight:700;color:#c9a96e">작업 중입니다</div>'
+        + '<div style="font-size:12px;color:rgba(255,255,255,0.45);margin-top:5px">준비 중인 페이지입니다</div>';
+      document.body.appendChild(el);
+      setTimeout(() => { el.style.transition='opacity 0.4s'; el.style.opacity='0'; setTimeout(()=>el.remove(),420); }, 2200);
+    }
+
     // ===== 홈 Mobile Message 연동 =====
     (function() {
       try {
@@ -248,6 +312,39 @@
         const el = document.getElementById('homeTopMsg');
         if (el && cfg.mobile) el.textContent = cfg.mobile;
       } catch(e) {}
+    })();
+
+    // ===== 랜딩 카드 이미지 admin 연동 =====
+    // nav → cardImg id 매핑
+    const NAV_TO_CARD = { about: 'cardImg2', lectures: 'cardImg3', works: 'cardImg4', prompts: 'cardImg5', mv: 'cardImg6' };
+    function applyPanelImages(panels) {
+      if (!Array.isArray(panels)) return;
+      panels.forEach(function(p) {
+        const imgId = NAV_TO_CARD[p.nav];
+        if (!imgId || !p.path) return;
+        const el = document.getElementById(imgId);
+        if (!el) return;
+        // path가 assets/... 형태면 ../../ 접두어 붙임
+        const href = p.path.startsWith('http') ? p.path
+          : '../../' + p.path.replace(/^(\.\.\/)*/, '');
+        el.setAttribute('href', href);
+      });
+    }
+    (function() {
+      try {
+        const raw = localStorage.getItem('landingSidePanels');
+        if (raw) applyPanelImages(JSON.parse(raw));
+      } catch(e) {}
+      // Supabase 연동 (로드 후 시도)
+      window.addEventListener('load', function() {
+        try {
+          if (window.sbLoad) {
+            window.sbLoad('landingSidePanels', null).then(function(data) {
+              if (data) applyPanelImages(data);
+            }).catch(function(){});
+          }
+        } catch(e) {}
+      });
     })();
 
     // ===== 슬라이드 (rAF + SVG transform attribute — SVG 유저 유닛 기준) =====

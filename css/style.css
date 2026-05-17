@@ -176,10 +176,10 @@ nav.desktop-nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(16px, 2.5vw, 36px);
+  gap: clamp(10px, 1.4vw, 22px);
   height: 100%;
   width: var(--panel-width);
-  padding: 0;
+  padding: 0 20px;
   background: #0d0d0d;
   border-radius: 0 0 0 0;
   pointer-events: all;
@@ -629,7 +629,8 @@ footer {
   }
 
   nav.desktop-nav {
-    gap: var(--spacing-xl);
+    gap: clamp(10px, 1.4vw, 22px);
+    padding: 0 20px;
   }
 
   nav.desktop-nav a {

@@ -1,0 +1,938 @@
+<section class="prompts-section">
+
+  <!-- Left: Grid Area -->
+  <div class="prompts-main">
+
+    <!-- Tab Bar -->
+    <div class="prompts-tabs">
+      <div class="tab-segmented">
+        <button class="tab-btn active" data-tab="image" onclick="switchPromptTab('image')">이미지</button>
+        <button class="tab-btn" data-tab="video" onclick="switchPromptTab('video')">영상</button>
+        <button class="tab-btn" data-tab="etc" onclick="switchPromptTab('etc')">기타</button>
+      </div>
+    </div>
+
+    <!-- Masonry Grid -->
+    <div class="prompts-grid-wrap" id="promptsGridWrap">
+      <div class="prompts-masonry" id="promptsMasonry"></div>
+    </div>
+
+    <!-- Bottom-Left Message (like works/lectures) -->
+    <div class="message-box prompts-msg" id="promptsTopMsg">
+      <div class="message-box-text" id="promptsMsgText">AI 생성 프롬프트 모음</div>
+      <div class="message-box-sub"  id="promptsMsgSub" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- Mobile Modal Overlay (≤900px) -->
+  <div class="prompts-modal-overlay" id="promptsModalOverlay">
+    <div class="prompts-modal">
+      <div class="prompts-modal-header">
+        <button class="prompts-modal-close" onclick="closePromptModal()">✕</button>
+        <span class="modal-title-text" id="modalTitleText"></span>
+        <span class="modal-tool-badge" id="modalToolBadge"></span>
+      </div>
+      <div class="prompts-modal-body">
+        <div class="modal-img-wrap" id="modalImgWrap"></div>
+        <div class="modal-prompt-area">
+          <div class="prompt-copy-header">
+            <span class="prompt-label">프롬프트</span>
+            <button class="prompt-copy-btn" id="modalCopyBtn" onclick="copyModalPrompt()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="9" y="9" width="13" height="13" rx="2"/>
+                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+              </svg>
+              복사
+            </button>
+          </div>
+          <textarea class="prompt-textarea" id="modalPromptTextarea" readonly></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Detail Panel -->
+  <div class="prompts-panel" id="promptsPanel">
+    <div class="panel-empty" id="promptPanelEmpty">
+      <div class="panel-empty-inner">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+        <p>이미지를 클릭하면<br>프롬프트를 볼 수 있습니다</p>
+      </div>
+    </div>
+    <div class="panel-detail" id="promptPanelDetail" style="display:none">
+      <div class="detail-media-wrap" id="promptDetailMedia"></div>
+      <div class="detail-meta-row" id="promptDetailMeta"></div>
+      <div class="prompt-copy-section">
+        <div class="prompt-copy-header">
+          <span class="prompt-label">프롬프트</span>
+          <button class="prompt-copy-btn" onclick="copyPrompt()" id="promptCopyBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+            </svg>
+            복사
+          </button>
+        </div>
+        <textarea class="prompt-textarea" id="promptTextarea" readonly placeholder="프롬프트를 선택하세요"></textarea>
+      </div>
+    </div>
+    <!-- Panel Footer -->
+    <div class="prompts-panel-footer">
+      <div class="wpf-row">
+        <a href="tel:01035586960" class="wpf-item">📞 010-3558-6960</a>
+        <span class="wpf-sep">·</span>
+        <a href="mailto:hjyouh@naver.com" class="wpf-item">✉️ hjyouh@naver.com</a>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<style>
+  /* ===== LAYOUT ===== */
+  .prompts-section {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    overflow: hidden;
+    background: #0d0d0d;
+  }
+
+  /* ===== LEFT: MAIN GRID AREA ===== */
+  .prompts-main {
+    flex: 1 1 0;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #0d0d0d;
+  }
+
+  /* ===== TABS ===== */
+  .prompts-tabs {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: center;
+    padding: 56px 0 16px;
+    flex-shrink: 0;
+    background: linear-gradient(to bottom, rgba(13,13,13,0.95) 70%, transparent 100%);
+  }
+
+  .prompts-tabs .tab-segmented {
+    display: flex;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 999px;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 28px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .tab-btn + .tab-btn { border-left: 1px solid rgba(255,255,255,0.18); }
+  .tab-btn:hover { color: rgba(255,255,255,0.75); }
+  .tab-btn.active { color: #c9a96e; font-weight: 700; background: rgba(255,255,255,0.08); }
+
+  /* ===== GRID WRAP ===== */
+  .prompts-grid-wrap {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 14px 80px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
+  }
+
+  /* ===== MASONRY GRID ===== */
+  .prompts-masonry {
+    columns: 4;
+    column-gap: 10px;
+  }
+
+  /* ===== PROMPT CARD ===== */
+  .prompt-card {
+    break-inside: avoid;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    border: 1.5px solid transparent;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    display: block;
+  }
+
+  .prompt-card img {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+  }
+
+  .prompt-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+    border-color: rgba(201,169,110,0.4);
+  }
+
+  .prompt-card.active {
+    border-color: #c9a96e;
+    box-shadow: 0 0 0 1px #c9a96e;
+  }
+
+  .prompt-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.65) 100%);
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .prompt-card:hover .prompt-card-overlay { opacity: 1; }
+  .prompt-card.active .prompt-card-overlay { opacity: 1; }
+
+  .prompt-card-label {
+    position: absolute;
+    bottom: 8px;
+    left: 10px;
+    right: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.9);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .prompt-card:hover .prompt-card-label,
+  .prompt-card.active .prompt-card-label { opacity: 1; }
+
+  .prompt-card-tool {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(6px);
+    border-radius: 6px;
+    padding: 2px 7px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.7);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .prompt-card:hover .prompt-card-tool,
+  .prompt-card.active .prompt-card-tool { opacity: 1; }
+
+  /* ===== BOTTOM-LEFT MESSAGE ===== */
+  .prompts-msg {
+    position: absolute;
+    bottom: 20px;
+    left: 32px;
+    z-index: 20;
+    background: rgba(0,0,0,0.55) !important;
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    width: 500px;
+  }
+  .prompts-msg .message-box-text { font-size: 20px; line-height: 1.65; color: #fff; }
+  .prompts-msg .message-box-sub  { font-size: 13px; opacity: 0.75; margin-top: 4px; }
+
+  /* ===== RIGHT: DETAIL PANEL ===== */
+  .prompts-panel {
+    width: min(440px, 38vw);
+    flex-shrink: 0;
+    border-left: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #111;
+    position: relative;
+  }
+
+  /* ===== PANEL EMPTY ===== */
+  .panel-empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .panel-empty-inner {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .panel-empty-inner p {
+    color: rgba(255,255,255,0.25);
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* ===== PANEL DETAIL ===== */
+  .panel-detail {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+    display: flex;
+    flex-direction: column;
+    padding: 60px 0 0;
+  }
+
+  /* ===== DETAIL MEDIA ===== */
+  .detail-media-wrap {
+    padding: 0 20px;
+    margin-bottom: 14px;
+    flex-shrink: 0;
+  }
+
+  .detail-media-wrap img {
+    width: 100%;
+    display: block;
+    border-radius: 12px;
+    max-height: 50vh;
+    object-fit: cover;
+  }
+
+  .detail-media-wrap video {
+    width: 100%;
+    display: block;
+    border-radius: 12px;
+    max-height: 50vh;
+    object-fit: cover;
+    background: #000;
+  }
+
+  /* ===== DETAIL META ===== */
+  .detail-meta-row {
+    padding: 0 20px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .detail-title-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .detail-tool-badge {
+    background: rgba(201,169,110,0.15);
+    border: 1px solid rgba(201,169,110,0.35);
+    color: #c9a96e;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ===== PROMPT COPY SECTION ===== */
+  .prompt-copy-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px 20px;
+    min-height: 0;
+  }
+
+  .prompt-copy-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .prompt-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .prompt-copy-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(201,169,110,0.12);
+    border: 1px solid rgba(201,169,110,0.3);
+    color: #c9a96e;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .prompt-copy-btn:hover {
+    background: rgba(201,169,110,0.25);
+    border-color: #c9a96e;
+  }
+
+  .prompt-copy-btn.copied {
+    background: rgba(100,200,100,0.15);
+    border-color: rgba(100,200,100,0.5);
+    color: #6cc;
+  }
+
+  .prompt-textarea {
+    flex: 1;
+    width: 100%;
+    min-height: 160px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    color: rgba(255,255,255,0.82);
+    font-family: 'Poppins', 'SUITE', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    padding: 14px;
+    resize: none;
+    outline: none;
+    cursor: text;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+  }
+
+  .prompt-textarea:focus {
+    border-color: rgba(201,169,110,0.3);
+  }
+
+  /* ===== PANEL FOOTER ===== */
+  .prompts-panel-footer {
+    padding: 14px 20px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    flex-shrink: 0;
+  }
+
+  .wpf-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .wpf-item {
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 12px;
+    transition: color 0.2s ease;
+  }
+
+  .wpf-item:hover { color: rgba(255,255,255,0.7); }
+  .wpf-sep { color: rgba(255,255,255,0.2); font-size: 12px; }
+
+  /* ===== FADE IN ANIMATION ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .prompt-card {
+    animation: fadeUp 0.45s ease both;
+  }
+
+  /* ===== MOBILE MODAL ===== */
+  .prompts-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 500;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .prompts-modal-overlay.open {
+    display: flex;
+  }
+
+  .prompts-modal {
+    background: #161616;
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUpModal 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes slideUpModal {
+    from { transform: translateY(100%); opacity: 0.6; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+
+  .prompts-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0;
+  }
+
+  .prompts-modal-close {
+    background: rgba(255,255,255,0.08);
+    border: none;
+    color: rgba(255,255,255,0.65);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+  }
+  .prompts-modal-close:hover { background: rgba(255,255,255,0.15); }
+
+  .modal-title-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .modal-tool-badge {
+    background: rgba(201,169,110,0.15);
+    border: 1px solid rgba(201,169,110,0.35);
+    color: #c9a96e;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .prompts-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+  }
+
+  .modal-img-wrap img {
+    width: 100%;
+    display: block;
+    border-radius: 12px;
+    max-height: 50vh;
+    object-fit: cover;
+  }
+
+  .modal-prompt-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1100px) {
+    .prompts-masonry { columns: 3; }
+    .prompts-panel { width: min(380px, 36vw); }
+  }
+
+  @media (max-width: 900px) {
+    .prompts-panel { display: none; }
+    .prompts-masonry { columns: 2; }
+  }
+</style>
+
+<script>
+(function () {
+  let PROMPT_DATA = {
+    image: [
+      {
+        id: 'img-8',
+        title: '액체 유리 UI 디자인',
+        tool: 'Midjourney v6.1',
+        thumb: 'assets/images/lectures/main2.png',
+        prompt: 'liquid glass morphism UI design, floating interface panels with translucent glass effect, colorful gradient lights underneath, Apple Vision Pro aesthetic, product design showcase, dark background, ultra-detailed --ar 4:3 --style raw --v 6.1'
+      },
+      {
+        id: 'img-7',
+        title: '미래 도시 컨셉아트',
+        tool: 'DALL-E 3',
+        thumb: 'assets/images/lectures/main4.png',
+        prompt: 'Futuristic Korean city in 2070, mixed traditional hanok and modern skyscraper architecture, cherry blossoms floating through neon-lit streets, aerial drone view, golden hour lighting, 8K photorealistic, cinema anamorphic lens, award-winning architectural photography'
+      },
+      {
+        id: 'img-6',
+        title: '스포츠카 광고 포스터',
+        tool: 'Midjourney v6.1',
+        thumb: 'assets/images/posters/Sportage Poster.png',
+        prompt: 'Cinematic car advertisement poster, Kia Sportage on a misty mountain road at golden hour, dramatic crepuscular rays, Korean countryside backdrop, photorealistic CGI, 8K, shot by award-winning commercial photographer --ar 2:3 --v 6.1'
+      },
+      {
+        id: 'img-5',
+        title: '추억의 잔광 포스터',
+        tool: 'Midjourney v6.1',
+        thumb: 'assets/images/posters/추억의 잔광(殘光)-포스터.png',
+        prompt: 'Movie poster "Lingering Afterglow of Memories (추억의 잔광)", elderly person silhouetted against warm amber sunset, nostalgic sepia film grain, dust particles floating in light, award-winning Korean art house cinema, Cannes-quality cinematography --ar 2:3 --style raw --v 6.1'
+      },
+      {
+        id: 'img-4',
+        title: '디지털 에고 포스터',
+        tool: 'Midjourney v6.1',
+        thumb: 'assets/images/posters/Digital Ego poster.png',
+        prompt: 'Digital Ego - conceptual movie poster, human face fragmenting into digital data streams and circuit patterns, identity vs technology theme, cool blue and white color palette, minimalist modern poster design, international film festival submission quality --ar 2:3 --v 6.1'
+      },
+      {
+        id: 'img-3',
+        title: 'AI 강의 현장',
+        tool: 'Gemini Imagen 3',
+        thumb: 'assets/images/lectures/main5.png',
+        prompt: 'Professional AI education classroom in Korea, engaged professionals learning hands-on AI tools on laptops, modern bright educational environment, collaborative atmosphere, authentic documentary photography style, natural lighting, shallow depth of field, 35mm film look'
+      },
+      {
+        id: 'img-2',
+        title: '누구의 속삭임 포스터',
+        tool: 'Midjourney v6.1',
+        thumb: 'assets/images/posters/who\'s Poster.png',
+        prompt: 'Who\'s Whisper (누구의 속삭임) - mysterious film poster, close-up of lips in absolute darkness, ethereal light catching subtle skin texture, extreme shallow depth of field, award-winning portrait photography, Cannes selection quality, Korean New Wave cinema --ar 2:3 --style raw --v 6.1'
+      },
+      {
+        id: 'img-1',
+        title: '정 (情) 영화 포스터',
+        tool: 'Midjourney v6.1',
+        thumb: 'assets/images/posters/Jeong Poster.png',
+        prompt: 'Jeong (情) - Korean connection movie poster, elderly woman in quiet contemplation by a window, warm earthy amber tones, soft directional golden light, film grain, poetic minimalism, Cannes Film Award aesthetic, cultural depth, shot on 35mm film --ar 2:3 --style raw --v 6.1'
+      }
+    ],
+    video: [
+      {
+        id: 'vid-4',
+        title: '강의실 타임랩스',
+        tool: 'Runway Gen-3 Alpha',
+        thumb: 'assets/images/lectures/main6.png',
+        prompt: 'Time-lapse video of a modern Korean AI classroom, students engaging with laptops and tablets, ambient window lighting shifting from morning blue to warm afternoon, smooth cinematic camera movement, educational documentary style, 4K, Runway Gen-3 Alpha'
+      },
+      {
+        id: 'vid-3',
+        title: '도시 영상 전환',
+        tool: 'Pika Labs 2.0',
+        thumb: 'assets/images/lectures/main3.png',
+        prompt: 'Seamless video morphing transition: traditional Korean market stalls smoothly transform into a futuristic city street, temporal blend effect, warm market tones shifting to cool neon palette, 4K 60fps, cinematic depth of field, Pika Labs 2.0 generation'
+      },
+      {
+        id: 'vid-2',
+        title: 'AI 교육자 인트로 영상',
+        tool: 'Kling AI 1.6',
+        thumb: 'assets/images/instructor1.png',
+        prompt: 'Professional intro video for AI educator, slow elegant zoom on portrait, soft light particles drifting around subject, dark studio background with subtle lens flare bokeh, text overlay "AI Creator" in gold, smooth 8-second seamless loop, broadcast quality'
+      },
+      {
+        id: 'vid-1',
+        title: 'AI 신경망 시각화',
+        tool: 'Sora (OpenAI)',
+        thumb: 'assets/images/lectures/main1.png',
+        prompt: 'Cinematic visualization of AI neural network in motion, abstract glowing data streams flowing through luminous nodes, deep space background, blue and gold color palette, first-person camera journey through a digital brain structure, 10-second seamless loop, 4K HDR, Sora'
+      }
+    ],
+    etc: [
+      {
+        id: 'oth-4',
+        title: 'AI 성찰 에세이 표지',
+        tool: 'Adobe Firefly 3',
+        thumb: 'assets/images/books/book4-정체된 나의 삶 속에서, AI와 춤추다.png',
+        prompt: 'Book cover "Dancing with AI in My Stagnant Life (정체된 나의 삶 속에서 AI와 춤추다)", human silhouette dancing with abstract luminous AI entity, warm sunset gradient background, watercolor texture overlay, literary essay aesthetic, Korean publishing market standard'
+      },
+      {
+        id: 'oth-3',
+        title: '프롬프트 엔지니어링 표지',
+        tool: 'Stable Diffusion XL',
+        thumb: 'assets/images/books/book3 AI와 소통하는 법- 프롬프트 엔지니어링 기초편.png',
+        prompt: 'Book cover "Communicating with AI: Prompt Engineering Basics (AI와 소통하는 법)", clean minimalist tech design, geometric neural network motif in soft blue gradient, professional typography with Korean and English, educational publisher-ready quality'
+      },
+      {
+        id: 'oth-2',
+        title: 'AI 마케팅 고급 전략 표지',
+        tool: 'Midjourney v6.1',
+        thumb: 'assets/images/books/Book2-디지털 마케팅의 판도를 바꾸는 생성형 AI 고급 전략.png',
+        prompt: 'Business book cover "Advanced Generative AI Strategies for Digital Marketing", dynamic upward trajectory graphic, corporate navy blue and gold color palette, data visualization elements, confident authoritative design, Korean business market --ar 2:3 --v 6.1'
+      },
+      {
+        id: 'oth-1',
+        title: 'AI 업무생산성 기초 표지',
+        tool: 'DALL-E 3',
+        thumb: 'assets/images/books/Book1-업무생산성 높이는 생성형 AI 기초 전략.png',
+        prompt: 'Book cover "Basic Generative AI Strategies for Work Productivity (업무생산성 높이는 생성형 AI)", clean corporate design, rocket launch with ascending productivity graph metaphor, professional navy and white with gold accent, Korean business book market standard'
+      }
+    ]
+  };
+
+  let currentPromptTab = 'image';
+  let selectedPromptId = null;
+
+  function switchPromptTab(tab) {
+    currentPromptTab = tab;
+    selectedPromptId = null;
+    document.querySelectorAll('.prompts-tabs .tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+    showPanelEmpty();
+    renderPrompts(tab);
+  }
+
+  function renderPrompts(tab) {
+    const masonry = document.getElementById('promptsMasonry');
+    if (!masonry) return;
+    const items = (PROMPT_DATA[tab] || []).slice().reverse();
+    masonry.innerHTML = '';
+    items.forEach((item, i) => {
+      const card = document.createElement('div');
+      card.className = 'prompt-card';
+      card.dataset.id = item.id;
+      card.style.animationDelay = (i * 0.06) + 's';
+      card.innerHTML = `
+        <img src="${item.thumb}" alt="${item.title}" loading="lazy" onerror="this.style.display='none'">
+        <div class="prompt-card-overlay"></div>
+        <span class="prompt-card-tool">${item.tool}</span>
+        <span class="prompt-card-label">${item.title}</span>
+      `;
+      card.addEventListener('click', () => selectPrompt(item.id, tab));
+      masonry.appendChild(card);
+    });
+  }
+
+  const COPY_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`;
+  const CHECK_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+  function isMobileView() {
+    return window.innerWidth <= 900;
+  }
+
+  function selectPrompt(id, tab) {
+    const items = PROMPT_DATA[tab] || [];
+    const item = items.find(x => x.id === id);
+    if (!item) return;
+
+    selectedPromptId = id;
+
+    document.querySelectorAll('.prompt-card').forEach(c => {
+      c.classList.toggle('active', c.dataset.id === id);
+    });
+
+    if (isMobileView()) {
+      openPromptModal(item);
+    } else {
+      showPanelDetail(item);
+    }
+  }
+
+  function showPanelEmpty() {
+    const empty = document.getElementById('promptPanelEmpty');
+    const detail = document.getElementById('promptPanelDetail');
+    if (empty) empty.style.display = 'flex';
+    if (detail) detail.style.display = 'none';
+  }
+
+  function showPanelDetail(item) {
+    const empty = document.getElementById('promptPanelEmpty');
+    const detail = document.getElementById('promptPanelDetail');
+    if (!detail) return;
+
+    if (empty) empty.style.display = 'none';
+    detail.style.display = 'flex';
+
+    const mediaWrap = document.getElementById('promptDetailMedia');
+    if (mediaWrap) {
+      mediaWrap.innerHTML = `<img src="${item.thumb}" alt="${item.title}" onerror="this.style.display='none'">`;
+    }
+
+    const metaRow = document.getElementById('promptDetailMeta');
+    if (metaRow) {
+      metaRow.innerHTML = `
+        <span class="detail-title-text">${item.title}</span>
+        <span class="detail-tool-badge">${item.tool}</span>
+      `;
+    }
+
+    const textarea = document.getElementById('promptTextarea');
+    if (textarea) textarea.value = item.prompt;
+
+    const copyBtn = document.getElementById('promptCopyBtn');
+    if (copyBtn) {
+      copyBtn.classList.remove('copied');
+      copyBtn.innerHTML = COPY_SVG + ' 복사';
+    }
+
+    detail.scrollTop = 0;
+  }
+
+  /* ===== MOBILE MODAL ===== */
+  function openPromptModal(item) {
+    document.getElementById('modalTitleText').textContent = item.title;
+    document.getElementById('modalToolBadge').textContent = item.tool;
+    document.getElementById('modalImgWrap').innerHTML =
+      `<img src="${item.thumb}" alt="${item.title}" onerror="this.style.display='none'">`;
+    document.getElementById('modalPromptTextarea').value = item.prompt;
+
+    const btn = document.getElementById('modalCopyBtn');
+    if (btn) { btn.classList.remove('copied'); btn.innerHTML = COPY_SVG + ' 복사'; }
+
+    const overlay = document.getElementById('promptsModalOverlay');
+    overlay.classList.add('open');
+    overlay.querySelector('.prompts-modal-body').scrollTop = 0;
+  }
+
+  function closePromptModal() {
+    document.getElementById('promptsModalOverlay').classList.remove('open');
+    document.querySelectorAll('.prompt-card').forEach(c => c.classList.remove('active'));
+    selectedPromptId = null;
+  }
+
+  function copyModalPrompt() {
+    const textarea = document.getElementById('modalPromptTextarea');
+    const btn = document.getElementById('modalCopyBtn');
+    if (!textarea || !textarea.value) return;
+    _doCopy(textarea.value, btn);
+  }
+
+  /* ===== DESKTOP COPY ===== */
+  function copyPrompt() {
+    const textarea = document.getElementById('promptTextarea');
+    const btn = document.getElementById('promptCopyBtn');
+    if (!textarea || !textarea.value) return;
+    _doCopy(textarea.value, btn);
+  }
+
+  function _doCopy(text, btn) {
+    const doFeedback = () => {
+      if (!btn) return;
+      btn.classList.add('copied');
+      btn.innerHTML = CHECK_SVG + ' 복사됨!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = COPY_SVG + ' 복사';
+      }, 2000);
+    };
+    navigator.clipboard.writeText(text).then(doFeedback).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      doFeedback();
+    });
+  }
+
+  /* ===== CLOSE MODAL ON BACKDROP CLICK ===== */
+  document.addEventListener('click', e => {
+    const overlay = document.getElementById('promptsModalOverlay');
+    if (overlay && e.target === overlay) closePromptModal();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closePromptModal();
+  });
+
+  async function loadPromptPageMsg() {
+    try {
+      const cfg = window.sbLoad
+        ? await sbLoad('pageMsgPrompts', {})
+        : JSON.parse(localStorage.getItem('pageMsgPrompts') || '{}');
+      const textEl = document.getElementById('promptsMsgText');
+      const subEl  = document.getElementById('promptsMsgSub');
+      if (textEl && cfg.mainMsg)  textEl.innerHTML = cfg.mainMsg.replace(/\n/g,'<br>');
+      if (subEl  && cfg.subtitle) {
+        subEl.innerHTML = cfg.subtitle.replace(/\n/g,'<br>');
+        subEl.style.display = '';
+      }
+    } catch(e) {}
+  }
+
+  function normPromptPath(p) {
+    if (!p) return '';
+    // admin stores '../assets/...' — strip leading '../' for root-relative usage
+    return p.replace(/^(\.\.\/)+/, '');
+  }
+
+  async function loadPromptsFromAdmin() {
+    try {
+      let raw = null;
+      if (window.sbLoad) raw = await window.sbLoad('promptsData', null);
+      if (!raw) { const s = localStorage.getItem('promptsData'); if (s) raw = JSON.parse(s); }
+      if (!raw) return;
+      const total = ['image','video','etc'].reduce((n,c) => n + (raw[c]||[]).length, 0);
+      if (!total) return;
+      const convert = (arr) => (arr||[]).map(item => ({
+        id:     item.id,
+        title:  item.title || '',
+        tool:   item.tool  || '',
+        thumb:  normPromptPath(item.imgPath || item.imgDataUrl || ''),
+        prompt: item.prompt || ''
+      }));
+      PROMPT_DATA = { image: convert(raw.image), video: convert(raw.video), etc: convert(raw.etc) };
+    } catch(e) {}
+  }
+
+  async function initPromptsPage() {
+    await loadPromptsFromAdmin();
+    await loadPromptPageMsg();
+    renderPrompts('image');
+  }
+
+  window.initPromptsPage = initPromptsPage;
+  window.switchPromptTab = switchPromptTab;
+  window.copyPrompt = copyPrompt;
+  window.copyModalPrompt = copyModalPrompt;
+  window.closePromptModal = closePromptModal;
+})();
+</script>

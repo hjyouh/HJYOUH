@@ -6,11 +6,13 @@
 (function () {
   /* ========== 메뉴 목록 (여기만 수정하면 전체 반영) ========== */
   const NAV_ITEMS = [
-    { href: 'mobile-page.html',   label: 'Home'   },
-    { href: 'mobile-강사.html',   label: '강사'   },
-    { href: 'mobile-강의.html',   label: '강의'   },
-    { href: 'mobile-작업들.html', label: '작업들' },
-    { href: 'mobile-문의.html',   label: '문의'   },
+    { href: 'mobile-page.html',    label: 'Home'   },
+    { href: 'mobile-강사.html',    label: '강사'   },
+    { href: 'mobile-강의.html',    label: '강의'   },
+    { href: 'mobile-작업들.html',  label: '작업들' },
+    { href: 'mobile-프롬프트.html',label: '프롬프트'},
+    { href: 'mobile-mv.html',      label: 'M/V'    },
+    { href: 'mobile-문의.html',    label: '문의'   },
   ];
   /* ========================================================== */
 
@@ -87,9 +89,34 @@
     closeBtn.addEventListener('click', closeDrawer);
     drawer.appendChild(closeBtn);
 
+    const WIP_HREFS = ['mobile-프롬프트.html', 'mobile-mv.html'];
     NAV_ITEMS.forEach(function (item) {
       const a = document.createElement('a');
-      a.href = item.href;
+      if (WIP_HREFS.includes(item.href)) {
+        a.href = '#';
+        a.style.color = 'rgba(201,169,110,0.45)';
+        a.addEventListener('click', function(e) {
+          e.preventDefault();
+          closeDrawer();
+          // 토스트 표시
+          const ex = document.getElementById('mobile-wip-toast');
+          if (ex) ex.remove();
+          const el = document.createElement('div');
+          el.id = 'mobile-wip-toast';
+          el.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);'
+            + 'background:rgba(10,10,10,0.88);backdrop-filter:blur(16px);'
+            + 'border:1px solid rgba(201,169,110,0.55);border-radius:18px;'
+            + 'padding:24px 36px;text-align:center;z-index:9999;pointer-events:none;'
+            + "font-family:'Poppins','SUITE',sans-serif;";
+          el.innerHTML = '<div style="font-size:28px;margin-bottom:8px">🚧</div>'
+            + '<div style="font-size:16px;font-weight:700;color:#c9a96e">작업 중입니다</div>'
+            + '<div style="font-size:12px;color:rgba(255,255,255,0.45);margin-top:5px">준비 중인 페이지입니다</div>';
+          document.body.appendChild(el);
+          setTimeout(function() { el.style.transition='opacity 0.4s'; el.style.opacity='0'; setTimeout(function(){el.remove();},420); }, 2200);
+        });
+      } else {
+        a.href = item.href;
+      }
       a.textContent = item.label;
       if (item.href === currentPage) a.classList.add('nav-active');
       drawer.appendChild(a);

@@ -9,6 +9,8 @@ const PAGES = {
   about: { path: 'pages/about.html', title: '강사' },
   lectures: { path: 'pages/lectures.html', title: 'Lectures' },
   works: { path: 'pages/works.html', title: 'Works' },
+  prompts: { path: 'pages/prompts.html', title: '프롬프트' },
+  mv:      { path: 'pages/mv.html',      title: 'M/V'     },
   contact: { path: 'pages/contact.html', title: 'Contact' }
 };
 
@@ -133,10 +135,42 @@ function setupEventListeners() {
 
 // ===== NAVIGATION & ROUTING =====
 
+/* ── 작업 중인 페이지 (차단 목록) ── */
+const UNDER_CONSTRUCTION = ['prompts', 'mv'];
+
+function showConstructionMsg() {
+  const existing = document.getElementById('construction-toast');
+  if (existing) { existing.remove(); }
+  const el = document.createElement('div');
+  el.id = 'construction-toast';
+  el.style.cssText = [
+    'position:fixed','top:50%','left:50%','transform:translate(-50%,-50%)',
+    'background:rgba(12,12,12,0.93)','backdrop-filter:blur(18px)',
+    '-webkit-backdrop-filter:blur(18px)',
+    'border:1px solid rgba(201,169,110,0.55)','border-radius:18px',
+    'padding:28px 40px','text-align:center','z-index:9999',
+    'color:#fff',"font-family:'Poppins','SUITE',sans-serif",
+    'box-shadow:0 10px 48px rgba(0,0,0,0.7)','pointer-events:none'
+  ].join(';');
+  el.innerHTML = '<div style="font-size:30px;margin-bottom:10px">🚧</div>'
+    + '<div style="font-size:17px;font-weight:700;color:#c9a96e">작업 중입니다</div>'
+    + '<div style="font-size:13px;color:rgba(255,255,255,0.45);margin-top:6px">준비 중인 페이지입니다</div>';
+  document.body.appendChild(el);
+  setTimeout(() => {
+    el.style.transition = 'opacity 0.4s';
+    el.style.opacity = '0';
+    setTimeout(() => el.remove(), 420);
+  }, 2400);
+}
+
 /**
  * Navigate to a page
  */
 function navigateTo(pageName) {
+  if (UNDER_CONSTRUCTION.includes(pageName)) {
+    showConstructionMsg();
+    return;
+  }
   if (!PAGES[pageName]) {
     console.error(`Page not found: ${pageName}`);
     return;

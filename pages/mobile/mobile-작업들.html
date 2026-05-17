@@ -52,7 +52,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
       color: #fff;
       white-space: nowrap;
@@ -174,7 +174,7 @@
       top: 3px;
       right: 20px;
       background: none;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255,255,255,0.88);
       font-size: 12px;
       font-weight: 400;
       padding: 4px 4px;
@@ -612,7 +612,9 @@ let BOOKS = [
 ];
 
 /* ===== SVG3 카드 생성 ===== */
-function buildFilmCard(film) {
+function buildFilmCard(film, idx = 0) {
+  const duration = (2.8 + idx * 0.4).toFixed(1);   // 카드마다 속도 살짝 다르게: 2.8s, 3.2s, 3.6s, 4.0s…
+  const delay    = -(idx * 0.9).toFixed(1);          // 음수 delay로 위상 분산: 0s, -0.9s, -1.8s, -2.7s…
   const clipId = 'film-clip-' + film.id;
   const imgEsc = film.image.replace(/'/g, "\\'");
   return `
@@ -633,7 +635,8 @@ function buildFilmCard(film) {
         <path class="gold-border-path"
           d="M 14 366 Q 14 380 26 380 L 294 380 Q 306 380 306 366 L 306 40 Q 306 28 294 28 L 238 28 Q 226 28 222 19 Q 218 10 206 10 L 26 10 Q 14 10 14 22 Z"
           fill="none" stroke="#c9a96e" stroke-width="2.5"
-          pathLength="1300" stroke-dasharray="90 1210" stroke-dashoffset="0"/>
+          pathLength="1300" stroke-dasharray="90 1210" stroke-dashoffset="0"
+          style="animation-duration:${duration}s; animation-delay:${delay}s"/>
       </svg>
       <span class="work-badge">${film.badge}</span>
       <button class="work-detail-btn" onclick="event.stopPropagation(); showDetail('${film.id}')">내용보기</button>
@@ -680,7 +683,7 @@ function showBookDetail(id) {
 /* ===== 렌더링 ===== */
 function renderFilms() {
   const el = document.getElementById('section-film');
-  el.innerHTML = FILMS.map(buildFilmCard).join('');
+  el.innerHTML = FILMS.map((film, i) => buildFilmCard(film, i)).join('');
 }
 
 function renderBooks() {
@@ -688,49 +691,50 @@ function renderBooks() {
   el.innerHTML = BOOKS.map(buildBookCard).join('');
 }
 
-function initData() {
-  try {
-    const saved = localStorage.getItem('worksData');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      const fixPath = (items) => (items || []).map(item => {
-        if (item.image && item.image.startsWith('../assets/')) {
-          item.image = item.image.replace('../assets/', '../../assets/');
-        }
-        // Admin 포맷 호환 매핑
-        if (item.synopsisFull && !item.intro) item.intro = item.synopsisFull;
-        if (item.descFull && !item.desc) item.desc = item.descFull;
-        if (item.info && !item.meta) {
-            item.meta = item.info.map(val => ({ label: '정보', value: val }));
-        }
-        
-        // 기존 로직 유지
-        if (item.thumb && item.thumb.startsWith('../assets/')) {
-          item.image = item.thumb.replace('../assets/', '../../assets/');
-        } else if (item.thumb && item.thumb.startsWith('assets/')) {
-          item.image = '../../' + item.thumb;
-        } else if (item.thumb) {
-          item.image = item.thumb;
-        }
-
-        if (item.synopsisFull && !item.intro) item.intro = item.synopsisFull;
-        if (item.descFull && !item.desc) item.desc = item.descFull;
-        if (item.info && !item.meta) {
-          item.meta = item.info.map(line => {
-            const parts = line.split(' : ');
-            if (parts.length >= 2) return { label: parts[0].trim(), value: parts.slice(1).join(' : ').trim() };
-            return { label: '', value: line };
-          });
-        }
-        if (item.type === 'book' && item.info && item.info.length > 0 && !item.author) {
-          item.author = item.info[0];
-        }
-        return item;
+function fixPath(items) {
+  return (items || []).map(item => {
+    if (item.thumb && item.thumb.startsWith('../assets/')) {
+      item.image = item.thumb.replace('../assets/', '../../assets/');
+    } else if (item.thumb && item.thumb.startsWith('assets/')) {
+      item.image = '../../' + item.thumb;
+    } else if (item.thumb) {
+      item.image = item.thumb;
+    }
+    if (item.image && item.image.startsWith('../assets/')) {
+      item.image = item.image.replace('../assets/', '../../assets/');
+    }
+    if (item.synopsisFull && !item.intro) item.intro = item.synopsisFull;
+    if (item.descFull && !item.desc) item.desc = item.descFull;
+    if (item.info && !item.meta) {
+      item.meta = item.info.map(line => {
+        const parts = line.split(' : ');
+        if (parts.length >= 2) return { label: parts[0].trim(), value: parts.slice(1).join(' : ').trim() };
+        return { label: '', value: line };
       });
+    }
+    if (item.type === 'book' && item.info && item.info.length > 0 && !item.author) {
+      item.author = item.info[0];
+    }
+    return item;
+  });
+}
+
+async function initData() {
+  try {
+    // Supabase 우선, 없으면 localStorage 폴백
+    let parsed = null;
+    if (window.sbLoad) {
+      parsed = await sbLoad('worksData', null);
+    }
+    if (!parsed) {
+      const saved = localStorage.getItem('worksData');
+      if (saved) parsed = JSON.parse(saved);
+    }
+    if (parsed) {
       if (parsed.film && parsed.film.length) FILMS = fixPath(parsed.film);
       if (parsed.book && parsed.book.length) BOOKS = fixPath(parsed.book);
     }
-  } catch(e) {}
+  } catch(e) { console.warn('initData error', e); }
 }
 
 /* ===== 탭 전환 ===== */
@@ -829,12 +833,16 @@ document.addEventListener('scroll', function () {
 });
 
 /* ===== 초기 렌더링 ===== */
-initData();
-renderFilms();
-renderBooks();
-updateWorksTopMsg('film'); // 초기 탭(film) 메시지 로드
+(async () => {
+  await initData();
+  renderFilms();
+  renderBooks();
+  updateWorksTopMsg('film');
+})();
 </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../../js/supabase-client.js"></script>
   <script src="../../assets/js/mobile-nav.js?v=2"></script>
 </body>
 </html>

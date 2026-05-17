@@ -21,12 +21,6 @@
 
   <!-- 우측 사이드 패널 (Gusto 스타일) -->
   <div class="desktop-side-panel">
-    <div class="side-click-hint" aria-hidden="true">
-      <svg class="hint-hand" width="11" height="14" viewBox="0 0 22 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 0C8.9 0 8 .9 8 2v10.3A5 5 0 0 0 1 17.2V18c0 5.5 4.5 10 10 10h1.4A9 9 0 0 0 22 19v-2c0-1.1-.9-2-2-2s-2 .9-2 2v-2c0-1.1-.9-2-2-2s-2 .9-2 2v-1c0-1.1-.9-2-2-2s-2 .9-2 2V2C10 .9 9.1 0 8 0h2z" fill="rgba(255,255,255,0.92)"/>
-      </svg>
-      <span>사진 클릭 → 상세보기</span>
-    </div>
     <!-- side cards injected by JS -->
   </div>
 
@@ -48,7 +42,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
+    right: 50px;   /* 우측 50px 축소 */
     bottom: 0;
     overflow: hidden;
     z-index: 1;
@@ -160,24 +154,30 @@
     top: var(--header-height);
     width: var(--panel-width);
     bottom: 0;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
     padding: 8px;
     background: #0d0d0d;
     z-index: 200;
     overflow: hidden;
+    box-sizing: border-box;
   }
 
-  /* Gusto 스타일 카드 - 이미지 배경 + 텍스트 오버레이 */
+  /* 카드 — 높이는 grid 1fr이 결정 */
   .side-card {
     position: relative;
-    flex: 1 1 0;
+    width: 100%;
     min-height: 0;
-    border-radius: 15px;
+    border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
     transition: all 0.3s ease;
+  }
+
+  /* 첫 번째 카드(강사) 전체 너비 */
+  .side-card:first-child {
+    grid-column: 1 / -1;
   }
 
   .side-card:hover {
@@ -216,6 +216,25 @@
     );
   }
 
+  /* 작업중 배지 */
+  .side-card-wip {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(10,10,10,0.78);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(201,169,110,0.6);
+    color: #c9a96e;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Poppins', 'SUITE', sans-serif;
+    padding: 6px 14px;
+    border-radius: 999px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
   /* 텍스트 레이블 - 좌하단 */
   .side-card-label {
     position: absolute;
@@ -232,46 +251,60 @@
   }
 
   /* ===== 랜딩 클릭 힌트 (데스크탑) ===== */
-  .side-click-hint {
+  .side-hint-overlay {
     position: absolute;
-    top: 10px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     background: rgba(10,10,10,0.82);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(201,169,110,0.55);
     border-radius: 20px;
-    padding: 6px 14px 6px 11px;
+    padding: 7px 15px 7px 12px;
     display: flex;
     align-items: center;
     gap: 7px;
     font-size: 11px;
     font-family: 'Poppins', 'SUITE', sans-serif;
-    color: rgba(255,255,255,0.88);
+    color: rgba(255,255,255,0.92);
     white-space: nowrap;
     pointer-events: none;
     z-index: 300;
-    /* 시작 상태: 투명 */
     opacity: 0;
-    animation: sideHintAnim 4s ease forwards;
-    animation-delay: 1s;
+    animation: hintFadeIn 0.4s ease 0.6s forwards;
   }
 
-  .hint-hand {
+  .side-hint-overlay.blinking {
+    animation: hintFadeIn 0.4s ease 0.6s forwards, hintBlink 0.7s ease-in-out 1s infinite;
+  }
+
+  .side-hint-overlay.hiding {
+    animation: hintFadeOut 0.35s ease forwards !important;
+  }
+
+  .hint-hand-icon {
     flex-shrink: 0;
-    animation: hintTap 0.75s ease-in-out infinite;
+    animation: hintTap 0.8s ease-in-out infinite;
   }
 
-  @keyframes sideHintAnim {
-    0%   { opacity: 0; transform: translateX(-50%) translateY(7px); }
-    12%  { opacity: 1; transform: translateX(-50%) translateY(0);   }
-    78%  { opacity: 1; transform: translateX(-50%) translateY(0);   }
-    100% { opacity: 0; transform: translateX(-50%) translateY(-5px);}
+  @keyframes hintFadeIn {
+    from { opacity: 0; transform: translate(-50%, -46%); }
+    to   { opacity: 1; transform: translate(-50%, -50%); }
+  }
+
+  @keyframes hintFadeOut {
+    from { opacity: 1; transform: translate(-50%, -50%); }
+    to   { opacity: 0; transform: translate(-50%, -54%); }
+  }
+
+  @keyframes hintBlink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.15; }
   }
 
   @keyframes hintTap {
-    0%, 100% { transform: translateY(0) rotate(0deg);  }
+    0%, 100% { transform: translateY(0) rotate(0deg);   }
     40%       { transform: translateY(-3px) rotate(-6deg); }
   }
 
@@ -296,7 +329,8 @@
       { label: '강사',   nav: 'about',    path: 'assets/images/instructor1.png' },
       { label: '강의',   nav: 'lectures', path: 'assets/images/lectures/main6.png' },
       { label: '작업들', nav: 'works',    path: 'assets/images/posters/Jeong Poster.png' },
-      { label: '문의',   nav: 'contact',  path: 'assets/images/lectures/main3.png' }
+      { label: '프롬프트', nav: 'prompts',  path: 'assets/images/prompt.png' },
+      { label: 'M/V',   nav: 'mv',       path: 'assets/images/mv/@Korisian.png' }
     ];
 
     function toWebPath(p) { return p ? p.replace(/^\.\.\//, '') : p; }
@@ -379,15 +413,43 @@
     const sidePanel = document.querySelector('.desktop-side-panel');
     if (sidePanel) {
       sidePanel.querySelectorAll('.side-card').forEach(c => c.remove());
-      panels.forEach(panel => {
+      const rowCount = 1 + Math.ceil((panels.length - 1) / 2);
+      sidePanel.style.gridTemplateRows = `repeat(${rowCount}, 1fr)`;
+      panels.forEach((panel, idx) => {
         const card = document.createElement('div');
         card.className = 'side-card';
-        card.onclick = () => navigateTo(panel.nav);
+        card.onclick = () => {
+          /* 힌트 즉시 숨기고 다시 안 보이게 */
+          const h = card.querySelector('.side-hint-overlay');
+          if (h) { h.classList.add('hiding'); setTimeout(() => h.remove(), 350); }
+          sessionStorage.setItem('sideHintDone', '1');
+          navigateTo(panel.nav);
+        };
+        const isWip = ['prompts','mv'].includes(panel.nav);
         card.innerHTML = `
-          <img src="${panel.path}" alt="${panel.label}">
+          <img src="${panel.path}" alt="${panel.label}" onerror="this.style.display='none'">
           <div class="side-card-overlay"></div>
           <span class="side-card-label">${panel.label}</span>
+          ${isWip ? '<span class="side-card-wip">🚧 작업중</span>' : ''}
         `;
+        /* 첫 번째 카드에만 힌트 표시 (세션 중 한 번만) */
+        if (idx === 0 && !sessionStorage.getItem('sideHintDone')) {
+          const hint = document.createElement('div');
+          hint.className = 'side-hint-overlay blinking';
+          hint.innerHTML = `
+            <svg class="hint-hand-icon" width="11" height="14" viewBox="0 0 22 28" fill="none">
+              <path d="M10 0C8.9 0 8 .9 8 2v10.3A5 5 0 0 0 1 17.2V18c0 5.5 4.5 10 10 10h1.4A9 9 0 0 0 22 19v-2c0-1.1-.9-2-2-2s-2 .9-2 2v-2c0-1.1-.9-2-2-2s-2 .9-2 2v-1c0-1.1-.9-2-2-2s-2 .9-2 2V2C10 .9 9.1 0 8 0h2z" fill="rgba(255,255,255,0.92)"/>
+            </svg>
+            <span>사진 클릭 → 상세보기</span>
+          `;
+          card.appendChild(hint);
+          /* 3초 후 자동 사라짐 */
+          setTimeout(() => {
+            hint.classList.add('hiding');
+            sessionStorage.setItem('sideHintDone', '1');
+            setTimeout(() => hint.remove(), 350);
+          }, 3600);
+        }
         sidePanel.appendChild(card);
       });
     }

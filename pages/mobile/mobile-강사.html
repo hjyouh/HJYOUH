@@ -48,7 +48,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
       color: #fff;
     }
@@ -272,7 +272,7 @@
         </defs>
         <rect width="360" height="240" fill="#000"/>
         <g clip-path="url(#heroClip)">
-          <image href="../../assets/images/instructor1.png"
+          <image id="instrHeroImg" href="../../assets/images/instructor1.png"
             x="0" y="0" width="360" height="240"
             preserveAspectRatio="xMidYMid slice"/>
           <rect x="0" y="155" width="360" height="85" fill="url(#bottomFade)"/>
@@ -292,15 +292,15 @@
     <!-- SNS -->
     <div class="section-card">
       <div class="sns-row">
-        <a href="https://www.youtube.com/@hjyouh" target="_blank" class="sns-link">
+        <a id="instrSnsYt1" href="https://www.youtube.com/@hjyouh" target="_blank" class="sns-link">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
           Youtube 채널
         </a>
-        <a href="https://www.youtube.com/@Korisian" target="_blank" class="sns-link">
+        <a id="instrSnsYt2" href="https://www.youtube.com/@Korisian" target="_blank" class="sns-link">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
           음악채널
         </a>
-        <a href="https://www.instagram.com/hjyouhinsta/" target="_blank" class="sns-link">
+        <a id="instrSnsIg" href="https://www.instagram.com/hjyouhinsta/" target="_blank" class="sns-link">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
           Instagram
         </a>
@@ -310,16 +310,16 @@
     <!-- 강사 소개 -->
     <div class="section-card">
       <p class="section-label">강사 소개</p>
-      <p class="bio-name">유형재</p>
-      <p class="bio-role">(주)포인트넥스트 대표<br>디지털융합교육원 지도교수</p>
-      <p class="bio-quote">프랑스 IBM 기술이사부터 생성형 AI 강사, AI 영화감독까지,
+      <p id="instrBioName" class="bio-name">유형재</p>
+      <p id="instrBioRole" class="bio-role">(주)포인트넥스트 대표<br>디지털융합교육원 지도교수</p>
+      <p id="instrBioQuote" class="bio-quote">프랑스 IBM 기술이사부터 생성형 AI 강사, AI 영화감독까지,
         30년 IT 현장 경험과 국제 AI 영화제 수상 경력을 바탕으로
         누구나 쉽게 AI를 활용할 수 있도록 돕는 실무 중심 전문 강사입니다.</p>
     </div>
 
     <!-- 통계 -->
     <div class="section-card">
-      <div class="stats-row">
+      <div id="instrStats" class="stats-row">
         <div class="stat-item">
           <span class="stat-number">30+</span>
           <span class="stat-label-sm">IT 경력</span>
@@ -342,7 +342,7 @@
     <!-- 주요 경력 -->
     <div class="section-card">
       <p class="section-label">주요 경력</p>
-      <ul class="info-list">
+      <ul id="instrCareers" class="info-list">
         <li><span>(주)포인트넥스트 대표이사</span><span class="info-year">2007~</span></li>
         <li><span>디지털융합교육원 지도교수</span><span class="info-year">2024~</span></li>
         <li><span>AI리터러시강사 협회 이사</span><span class="info-year">2025~</span></li>
@@ -354,7 +354,7 @@
     <!-- 자격증 & 저서 -->
     <div class="section-card">
       <p class="section-label">자격증 & 저서</p>
-      <ul class="info-list info-list--plain">
+      <ul id="instrCerts" class="info-list info-list--plain">
         <li>Google Gemini 공인 교육자</li>
         <li>생성형 AI 강사 자격 1급</li>
         <li>프롬프트 엔지니어링 1급</li>
@@ -363,7 +363,7 @@
     </div>
 
     <!-- 수상 경력 -->
-    <div class="section-card">
+    <div id="instrAwards" class="section-card">
       <p class="section-label">🏆 수상 경력</p>
 
       <div class="award-item"><span class="award-text">서울 국제 AI 영화제 금상 ('25)</span></div>
@@ -389,14 +389,92 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../../js/supabase-client.js"></script>
   <script src="../../assets/js/mobile-nav.js?v=2"></script>
   <script>
-    // 강사 Mobile Message 연동
-    (function() {
+    function normInstrPath(p) {
+      if (!p) return '';
+      return '../../' + p.replace(/^(\.\.\/)+/, '');
+    }
+
+    function applyInstructorData(d) {
+      if (!d) return;
+      // 히어로 사진
+      if (d.photo) {
+        const img = document.getElementById('instrHeroImg');
+        if (img) img.setAttribute('href', normInstrPath(d.photo));
+      }
+      // SNS
+      if (d.sns) {
+        const yt1 = document.getElementById('instrSnsYt1');
+        const yt2 = document.getElementById('instrSnsYt2');
+        const ig  = document.getElementById('instrSnsIg');
+        if (yt1 && d.sns.yt1) yt1.href = d.sns.yt1;
+        if (yt2 && d.sns.yt2) yt2.href = d.sns.yt2;
+        if (ig  && d.sns.ig)  ig.href  = d.sns.ig;
+      }
+      // 바이오
+      const bioName  = document.getElementById('instrBioName');
+      const bioRole  = document.getElementById('instrBioRole');
+      const bioQuote = document.getElementById('instrBioQuote');
+      if (bioName  && d.name)  bioName.textContent  = d.name;
+      if (bioRole  && d.role)  bioRole.innerHTML    = d.role.replace(/·/g, '<br>');
+      if (bioQuote && d.quote) bioQuote.innerHTML   = d.quote.replace(/\n/g, '<br>');
+      // 통계
+      if (d.stats && d.stats.length) {
+        const statsEl = document.getElementById('instrStats');
+        if (statsEl) {
+          statsEl.innerHTML = d.stats.map(s =>
+            `<div class="stat-item"><span class="stat-number">${s.value}</span><span class="stat-label-sm">${s.label}</span></div>`
+          ).join('');
+        }
+      }
+      // 경력
+      if (d.careers && d.careers.length) {
+        const careersEl = document.getElementById('instrCareers');
+        if (careersEl) {
+          careersEl.innerHTML = d.careers.map(c =>
+            `<li><span>${c.text}</span><span class="info-year">${c.year || ''}</span></li>`
+          ).join('');
+        }
+      }
+      // 자격증·저서
+      if (d.certs && d.certs.length) {
+        const certsEl = document.getElementById('instrCerts');
+        if (certsEl) {
+          certsEl.innerHTML = d.certs.map(c => `<li>${c}</li>`).join('');
+        }
+      }
+      // 수상
+      if (d.awards && d.awards.length) {
+        const awardsEl = document.getElementById('instrAwards');
+        if (awardsEl) {
+          const label = awardsEl.querySelector('.section-label');
+          awardsEl.innerHTML = (label ? label.outerHTML : '<p class="section-label">🏆 수상 경력</p>') +
+            d.awards.map(a => `<div class="award-item"><span class="award-text">${a}</span></div>`).join('');
+        }
+      }
+    }
+
+    (async function() {
+      // Mobile 메시지
       try {
-        const d = JSON.parse(localStorage.getItem('pageMsgInstructor') || '{}');
+        const msg = JSON.parse(localStorage.getItem('pageMsgInstructor') || '{}');
         const el = document.getElementById('instrTopMsg');
-        if (el && d.mobile) el.textContent = d.mobile;
+        if (el && msg.mobile) el.textContent = msg.mobile;
+      } catch(e) {}
+
+      // 강사 데이터: localStorage → Supabase
+      try {
+        let data = null;
+        const s = localStorage.getItem('instructorData');
+        if (s) data = JSON.parse(s);
+        if (window.sbLoad) {
+          const cloud = await window.sbLoad('instructorData', null);
+          if (cloud) data = cloud;
+        }
+        applyInstructorData(data);
       } catch(e) {}
     })();
   </script>
