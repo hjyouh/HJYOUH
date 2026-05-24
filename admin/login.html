@@ -266,7 +266,8 @@
 
     <div class="login-options">
       <label class="auto-login">
-        <input type="checkbox" id="autoLogin"> 자동 로그인
+        <input type="checkbox" id="rememberMe">
+        자동 로그인 유지
       </label>
       <a href="reset.html" class="forgot-link">비밀번호를 잊었나요?</a>
     </div>
@@ -280,30 +281,36 @@
   </div>
 </div>
 
-<script src="admin-auth.js?v=2"></script>
+<script src="admin-auth.js?v=4"></script>
 <script>
-  // 이미 로그인 중이면 대시보드로
-  if (getSession()) window.location.href = 'home.html';
+  // 구버전 자동 로그인 세션 정리
+  localStorage.removeItem('adminAutoSession');
 
-  // 초기 설치 힌트 (로그인 시도 전 localStorage에 users 없으면 표시)
-  if (!localStorage.getItem('adminUsers')) {
-    document.getElementById('hintBox').style.display = 'block';
-  }
+  // 이미 세션(자동 로그인 포함)이 있으면 바로 home으로
+  (function() {
+    let s = null;
+    try { const r = sessionStorage.getItem('adminSession'); s = r ? JSON.parse(r) : null; } catch {}
+    if (!s) {
+      try { const r = localStorage.getItem('adminPersistSession'); s = r ? JSON.parse(r) : null; } catch {}
+      if (s) try { sessionStorage.setItem('adminSession', JSON.stringify(s)); } catch {}
+    }
+    if (s) window.location.replace('home.html');
+  })();
 
-  // Enter 키 지원
+  // Enter 키 지원 (버튼 클릭과 동일하게)
   document.addEventListener('keydown', e => {
     if (e.key === 'Enter') doLogin();
   });
 
   function doLogin() {
-    const id   = document.getElementById('loginId').value.trim();
-    const pw   = document.getElementById('loginPw').value;
-    const auto = document.getElementById('autoLogin').checked;
-    const err  = document.getElementById('errMsg');
+    const id  = document.getElementById('loginId').value.trim();
+    const pw  = document.getElementById('loginPw').value;
+    const rem = document.getElementById('rememberMe').checked;
+    const err = document.getElementById('errMsg');
 
     if (!id || !pw) { err.textContent = '아이디와 비밀번호를 모두 입력해주세요.'; err.classList.add('show'); return; }
 
-    const session = authLogin(id, pw, auto);
+    const session = authLogin(id, pw, rem);
     if (!session) {
       err.textContent = '아이디 또는 비밀번호가 일치하지 않습니다.';
       err.classList.add('show');

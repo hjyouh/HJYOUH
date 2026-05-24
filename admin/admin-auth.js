@@ -6,7 +6,8 @@
 const AUTH = {
   USERS:   'adminUsers',
   SESSION: 'adminSession',
-  AUTO:    'adminAutoSession',
+  AUTO:    'adminAutoSession', // 하위 호환 정리용
+  PERSIST: 'adminPersistSession', // 자동 로그인 유지 (localStorage)
   RESET:   'adminResetTokens'
 };
 
@@ -111,32 +112,51 @@ function deleteUser(id) {
   saveUsers(users);
 }
 
+/* ── 자동 로그인 유지 (localStorage) ── */
+function getPersistSession() {
+  try { const r = localStorage.getItem(AUTH.PERSIST); return r ? JSON.parse(r) : null; }
+  catch { return null; }
+}
+function setPersistSession(session) {
+  localStorage.setItem(AUTH.PERSIST, JSON.stringify(session));
+}
+function clearPersistSession() {
+  localStorage.removeItem(AUTH.PERSIST);
+}
+
 /* ── 로그인 / 로그아웃 / 세션 ── */
-function authLogin(loginId, password, autoLogin) {
+function authLogin(loginId, password, remember) {
   const users = getUsers();
   const user  = users.find(u => u.loginId === loginId && u.password === _enc(password));
   if (!user) return null;
   const session = { id: user.id, loginId: user.loginId, name: user.name, role: user.role };
   sessionStorage.setItem(AUTH.SESSION, JSON.stringify(session));
-  if (autoLogin) localStorage.setItem(AUTH.AUTO, JSON.stringify(session));
-  else           localStorage.removeItem(AUTH.AUTO);
+  if (remember) { setPersistSession(session); }
+  else          { clearPersistSession(); }
+  localStorage.removeItem(AUTH.AUTO); // 구버전 정리
   return session;
 }
 
 function authLogout() {
   sessionStorage.removeItem(AUTH.SESSION);
+  clearPersistSession();
   localStorage.removeItem(AUTH.AUTO);
   window.location.href = 'login.html';
 }
 
 function getSession() {
-  const raw = sessionStorage.getItem(AUTH.SESSION) || localStorage.getItem(AUTH.AUTO);
+  const raw = sessionStorage.getItem(AUTH.SESSION);
   try { return raw ? JSON.parse(raw) : null; } catch { return null; }
 }
 
-/* 세션 없으면 로그인 페이지로 리다이렉트 */
+/* 세션 없으면 로그인 페이지로 리다이렉트
+   자동 로그인 유지 중이면 세션 복원 후 통과 */
 function requireAuth() {
-  const s = getSession();
+  let s = getSession();
+  if (!s) {
+    s = getPersistSession();
+    if (s) sessionStorage.setItem(AUTH.SESSION, JSON.stringify(s)); // 복원
+  }
   if (!s) { window.location.href = 'login.html'; return null; }
   return s;
 }
