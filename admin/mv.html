@@ -120,10 +120,28 @@
     <!-- 페이지 메시지 카드 -->
     <div class="card">
       <div class="card-title">💬 페이지 메시지</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+        <div>
+          <label style="font-size:12px; color:var(--sub); display:block; margin-bottom:6px;">메인 문구 (30자 이내, 줄바꿈 가능)</label>
+          <textarea id="mvMainMsg" rows="3" placeholder="Maison d'Étoile"
+            style="width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:8px;
+                   color:var(--text); font-family:inherit; font-size:14px; padding:9px 12px; outline:none;
+                   resize:vertical; transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(201,169,110,0.5)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        </div>
+        <div>
+          <label style="font-size:12px; color:var(--sub); display:block; margin-bottom:6px;">부제목 (선택)</label>
+          <textarea id="mvSubtitle" rows="3" placeholder="클래식 명화 BGM · 프렌치 샹송 · 재즈 · K-POP"
+            style="width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:8px;
+                   color:var(--text); font-family:inherit; font-size:14px; padding:9px 12px; outline:none;
+                   resize:vertical; transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(201,169,110,0.5)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        </div>
+      </div>
       <div style="display:flex; gap:10px; align-items:flex-end;">
         <div style="flex:1;">
-          <label style="font-size:12px; color:var(--sub); display:block; margin-bottom:6px;">상단 메시지 (모바일/데스크탑 공통)</label>
-          <input id="mvPageMsg" type="text" placeholder="Maison d'Étoile"
+          <label style="font-size:12px; color:var(--sub); display:block; margin-bottom:6px;">Mobile Message (20자 이내)</label>
+          <input id="mvMobileMsg" type="text" placeholder="M/V 채널 모음"
             style="width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:8px;
                    color:var(--text); font-family:inherit; font-size:14px; padding:9px 12px; outline:none; transition:border-color 0.2s;"
             onfocus="this.style.borderColor='rgba(201,169,110,0.5)'" onblur="this.style.borderColor='var(--border)'">
@@ -175,6 +193,13 @@
         <div class="mv-row">
           <label>YouTube</label>
           <input id="mvChannelUrl" type="text" placeholder="https://www.youtube.com/@channel">
+          <button type="button" id="mvActiveToggle" onclick="toggleMvActive()"
+            style="flex-shrink:0; padding:5px 14px; border-radius:20px; cursor:pointer;
+                   font-size:12px; font-weight:600; font-family:inherit; transition:all 0.2s;
+                   background:rgba(34,197,94,0.15); color:#16a34a; border:1px solid rgba(34,197,94,0.4);">
+            Active
+          </button>
+          <input type="hidden" id="mvActive" value="true">
         </div>
         <div class="mv-row">
           <label>장르</label>
@@ -222,6 +247,8 @@
 <script src="admin-data.js"></script>
 <script>
 
+let mvFileDataUrl = null; // 파일 피커로 선택한 이미지의 base64
+
 /* ===== 기본 데이터 ===== */
 const DEFAULT_MV = [
   {
@@ -229,7 +256,7 @@ const DEFAULT_MV = [
     tag: '🎭 클래식 명화 · BGM채널',
     title: 'Korisian', sub: '명화에 음악을 입히다',
     imgPath: 'assets/images/mv/@Korisian.png',
-    channelUrl: 'https://www.youtube.com/@Korisian',
+    channelUrl: 'https://www.youtube.com/@Korisian', active: true,
     genre: '클래식 명화 BGM · 시네마틱 아트',
     concept: '명화 + 감성 음악의 시각적 콜라보',
     affiliation: "Maison d'Étoile",
@@ -240,7 +267,7 @@ const DEFAULT_MV = [
     tag: '🎙️ French Chanson · 클래식 샹송',
     title: 'Isabelle Lumière', sub: '빛의 목소리',
     imgPath: 'assets/images/mv/Isabelle Lumière.png',
-    channelUrl: 'https://www.youtube.com/@IsabelleLumiere',
+    channelUrl: 'https://www.youtube.com/@IsabelleLumiere', active: true,
     genre: 'French Chanson · 드라마틱 소프라노',
     concept: '에디트 피아프 스타일 · 1950s 파리 카바레',
     affiliation: "Maison d'Étoile",
@@ -251,7 +278,7 @@ const DEFAULT_MV = [
     tag: '🌙 French Jazz · Cabaret Noir',
     title: 'Margot Ombre', sub: '그림자 속의 목소리',
     imgPath: 'assets/images/mv/Margot Ombre.png',
-    channelUrl: 'https://www.youtube.com/@MargotOmbre',
+    channelUrl: 'https://www.youtube.com/@MargotOmbre', active: false,
     genre: 'French Jazz · Cabaret Noir',
     concept: '누아르 · 서정적 · 파리 강변의 밤',
     affiliation: "Maison d'Étoile",
@@ -262,7 +289,7 @@ const DEFAULT_MV = [
     tag: '🌸 French K-POP · 프렌치 팝',
     title: 'Hana Chérie', sub: '파리에서 온 봄',
     imgPath: 'assets/images/mv/Hana Chérie.png',
-    channelUrl: 'https://www.youtube.com/@HanaCherieOfficial',
+    channelUrl: 'https://www.youtube.com/@HanaCherieOfficial', active: false,
     genre: 'French K-POP · French Pop',
     concept: '한국 감성 · 프랑스어 · 따뜻한 설렘',
     affiliation: "Maison d'Étoile",
@@ -279,11 +306,13 @@ function renderMvList() {
     list.innerHTML = '<div class="empty-state">등록된 아티스트가 없습니다</div>';
     return;
   }
-  list.innerHTML = mvItems.map((item, idx) => `
+  list.innerHTML = mvItems.map((item, idx) => {
+    const isActive = item.active !== false;
+    return `
     <div class="item-row" draggable="true" data-idx="${idx}"
          ondragstart="dragStart(event,${idx})" ondragover="dragOver(event)" ondrop="dropItem(event,${idx})" ondragleave="dragLeave(event)">
       <span class="drag-handle" title="드래그로 순서 변경">⠿</span>
-      <img class="mv-thumb-preview" src="../${item.imgPath || ''}" alt=""
+      <img class="mv-thumb-preview" src="${item.imgDataUrl || ('../' + (item.imgPath || ''))}" alt=""
            onerror="this.style.visibility='hidden'">
       <div style="flex:1; min-width:0;">
         <div style="font-size:14px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
@@ -293,13 +322,18 @@ function renderMvList() {
           ${escHtml(item.tag || '')} ${item.channelUrl ? '· <a href="' + escHtml(item.channelUrl) + '" target="_blank" style="color:var(--gold); text-decoration:none;">YouTube ↗</a>' : ''}
         </div>
       </div>
-      <div style="display:flex; gap:6px; flex-shrink:0;">
+      <div style="display:flex; gap:6px; flex-shrink:0; align-items:center;">
+        <button onclick="toggleMvActiveInline(${idx})" title="클릭하여 활성/비활성 전환"
+          style="font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; cursor:pointer; border:1px solid; transition:all 0.2s;
+          ${isActive ? 'background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.4);' : 'background:rgba(150,150,150,0.12);color:#888;border-color:rgba(150,150,150,0.3);'}">
+          ${isActive ? 'Active' : 'Inactive'}
+        </button>
         <button class="btn btn-sm btn-outline" onclick="editMvItem(${idx})">수정</button>
         <button class="btn btn-sm" style="background:var(--red); color:#fff; border:none; border-radius:8px; padding:4px 12px; font-size:12px; cursor:pointer;"
                 onclick="deleteMvItem(${idx})">삭제</button>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 /* ===== 드래그 순서 변경 ===== */
@@ -319,6 +353,7 @@ function dropItem(e, targetIdx) {
 
 /* ===== 모달 ===== */
 function openMvModal(item) {
+  mvFileDataUrl = null;
   document.getElementById('mvEditId').value    = item ? item.id : '';
   document.getElementById('mvModalTitle').textContent = item ? '아티스트 수정' : '아티스트 추가';
   document.getElementById('mvTitle').value       = item ? (item.title || '') : '';
@@ -330,13 +365,18 @@ function openMvModal(item) {
   document.getElementById('mvConcept').value     = item ? (item.concept || '') : '';
   document.getElementById('mvAffiliation').value = item ? (item.affiliation || '') : '';
   document.getElementById('mvSynopsis').value    = item ? (item.synopsis || '') : '';
+  const active = item ? (item.active !== false) : true;
+  document.getElementById('mvActive').value = active ? 'true' : 'false';
+  updateMvActiveToggleUI(active);
 
   const thumbImg  = document.getElementById('mvThumbImg');
   const thumbHint = document.getElementById('mvThumbHint');
-  if (item && item.imgPath) {
-    thumbImg.src     = '../' + item.imgPath;
+  const src = item ? (item.imgDataUrl || (item.imgPath ? '../' + item.imgPath : '')) : '';
+  if (src) {
+    thumbImg.src = src;
     thumbImg.style.display = 'block';
     thumbHint.style.display = 'none';
+    mvFileDataUrl = item.imgDataUrl || null;
   } else {
     thumbImg.style.display = 'none';
     thumbHint.style.display = 'flex';
@@ -373,7 +413,9 @@ function saveMvItem() {
     tag:         document.getElementById('mvTag').value.trim(),
     sub:         document.getElementById('mvSub').value.trim(),
     imgPath:     document.getElementById('mvImgPath').value.trim(),
+    imgDataUrl:  mvFileDataUrl || null,
     channelUrl:  document.getElementById('mvChannelUrl').value.trim(),
+    active:      document.getElementById('mvActive').value !== 'false',
     genre:       document.getElementById('mvGenre').value.trim(),
     concept:     document.getElementById('mvConcept').value.trim(),
     affiliation: document.getElementById('mvAffiliation').value.trim(),
@@ -419,9 +461,10 @@ function onMvFilePicked(input) {
   const file = input.files[0];
   const reader = new FileReader();
   reader.onload = e => {
+    mvFileDataUrl = e.target.result;
     const thumbImg  = document.getElementById('mvThumbImg');
     const thumbHint = document.getElementById('mvThumbHint');
-    thumbImg.src = e.target.result;
+    thumbImg.src = mvFileDataUrl;
     thumbImg.style.display = 'block';
     thumbHint.style.display = 'none';
     /* 경로 힌트 자동 채우기 */
@@ -429,18 +472,62 @@ function onMvFilePicked(input) {
     if (!pathInp.value) pathInp.value = 'assets/images/mv/' + file.name;
   };
   reader.readAsDataURL(file);
+  input.value = '';
+}
+
+/* ===== Active 인라인 토글 (목록에서 직접 클릭) ===== */
+function toggleMvActiveInline(idx) {
+  if (!mvItems[idx]) return;
+  mvItems[idx].active = mvItems[idx].active === false ? true : false;
+  saveMvData();
+  renderMvList();
+  toast(mvItems[idx].active ? `"${mvItems[idx].title}" 활성화` : `"${mvItems[idx].title}" 비활성화`);
+}
+
+/* ===== Active 토글 (모달 내) ===== */
+function toggleMvActive() {
+  const inp = document.getElementById('mvActive');
+  const active = inp.value === 'false';
+  inp.value = active ? 'true' : 'false';
+  updateMvActiveToggleUI(active);
+}
+function updateMvActiveToggleUI(active) {
+  const btn = document.getElementById('mvActiveToggle');
+  if (active) {
+    btn.textContent = 'Active';
+    btn.style.background = 'rgba(34,197,94,0.15)';
+    btn.style.color = '#16a34a';
+    btn.style.border = '1px solid rgba(34,197,94,0.4)';
+  } else {
+    btn.textContent = 'Inactive';
+    btn.style.background = 'rgba(150,150,150,0.12)';
+    btn.style.color = '#888';
+    btn.style.border = '1px solid rgba(150,150,150,0.3)';
+  }
 }
 
 /* ===== 페이지 메시지 ===== */
 function saveMvMsg() {
-  const msg = document.getElementById('mvPageMsg').value.trim();
-  saveData('mvPageMsg', msg || "Maison d'Étoile");
+  const d = {
+    mainMsg:  document.getElementById('mvMainMsg').value.trim(),
+    subtitle: document.getElementById('mvSubtitle').value.trim(),
+    mobile:   document.getElementById('mvMobileMsg').value.trim()
+  };
+  saveData('mvPageMsg', d);
   toast('메시지가 저장되었습니다');
 }
 
 function loadMvMsg() {
   const saved = loadData('mvPageMsg', null);
-  if (saved) document.getElementById('mvPageMsg').value = saved;
+  if (!saved) return;
+  // 구버전 호환: string이면 mainMsg로 변환
+  if (typeof saved === 'string') {
+    document.getElementById('mvMainMsg').value = saved;
+    return;
+  }
+  document.getElementById('mvMainMsg').value   = saved.mainMsg  || '';
+  document.getElementById('mvSubtitle').value  = saved.subtitle || '';
+  document.getElementById('mvMobileMsg').value = saved.mobile   || '';
 }
 
 /* ===== 초기화 ===== */

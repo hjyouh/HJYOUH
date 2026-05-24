@@ -297,7 +297,10 @@ function buildMvCard(item, idx) {
 
 function renderMvList() {
   const el = document.getElementById('mv-card-list');
-  if (el) el.innerHTML = MV_DATA.map((item, i) => buildMvCard(item, i)).join('');
+  if (!el) return;
+  // active === false 항목 제외
+  const visible = MV_DATA.filter(item => item.active !== false);
+  el.innerHTML = visible.map((item, i) => buildMvCard(item, i)).join('');
 }
 
 function openMvImage(src) {
@@ -348,33 +351,42 @@ function showList() {
   window.scrollTo(0, 0);
 }
 
-async function initMvMobile() {
-  try {
-    let raw = null;
-    if (window.sbLoad) raw = await window.sbLoad('mvData', null);
-    if (!raw) { const s = localStorage.getItem('mvData'); if (s) raw = JSON.parse(s); }
-    if (raw && Array.isArray(raw) && raw.length) MV_DATA = raw.map(i => ({ ...i }));
-  } catch(e) {}
-
-  // 페이지 메시지 로드
-  try {
-    let msg = null;
-    if (window.sbLoad) msg = await window.sbLoad('mvPageMsg', null);
-    if (!msg) { const s = localStorage.getItem('mvPageMsg'); if (s) msg = JSON.parse(s); }
-    if (msg) {
-      const mobile = typeof msg === 'string' ? msg : (msg.mobile || msg.mainMsg || '');
-      const sub    = typeof msg === 'string' ? '' : (msg.subtitle || '');
-      if (mobile) document.getElementById('mvTopMsg').textContent = mobile;
-      const subEl = document.getElementById('mvTopSub');
-      if (subEl && sub) { subEl.textContent = sub; subEl.style.display = 'block'; }
-    }
-  } catch(e) {}
-
-  renderMvList();
+/* 로컬 데이터로 즉시 렌더 (딜레이 없음) */
+function applyMvMsg(msg) {
+  if (!msg) return;
+  const mobile = typeof msg === 'string' ? msg : (msg.mobile || msg.mainMsg || '');
+  const sub    = typeof msg === 'string' ? '' : (msg.subtitle || '');
+  if (mobile) { const el = document.getElementById('mvTopMsg'); if (el) el.textContent = mobile; }
+  const subEl = document.getElementById('mvTopSub');
+  if (subEl && sub) { subEl.textContent = sub; subEl.style.display = 'block'; }
 }
 
-/* supabase 로드 완료 후 init */
-window.addEventListener('load', initMvMobile);
+// ① DOMContentLoaded: localStorage에서 즉시 렌더
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    const s = localStorage.getItem('mvData');
+    if (s) { const raw = JSON.parse(s); if (raw?.length) MV_DATA = raw.map(i => ({...i})); }
+  } catch(e) {}
+  try {
+    const ms = localStorage.getItem('mvPageMsg');
+    if (ms) applyMvMsg(JSON.parse(ms));
+  } catch(e) {}
+  renderMvList();
+});
+
+// ② load: Supabase 동기화 (CDN 로드 완료 후)
+window.addEventListener('load', async function() {
+  try {
+    if (!window.sbLoad) return;
+    const raw = await window.sbLoad('mvData', null);
+    if (raw && Array.isArray(raw) && raw.length) {
+      MV_DATA = raw.map(i => ({...i}));
+      renderMvList();
+    }
+    const msg = await window.sbLoad('mvPageMsg', null);
+    applyMvMsg(msg);
+  } catch(e) {}
+});
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>

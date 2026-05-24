@@ -85,9 +85,9 @@
   .works-bg {
     position: absolute;
     inset: 0;
-    background-image: url('assets/images/mv/@Korisian.png');
     background-size: cover;
     background-position: center;
+    /* background-image은 initMvPage()에서 동적으로 설정 */
   }
 
   .works-bg-overlay {
@@ -342,7 +342,8 @@
     const cols = 2;
     grid.style.setProperty('--card-w', `calc((100% - ${(cols-1)*10}px) / ${cols})`);
     grid.innerHTML = '';
-    MV_DATA.forEach(item => {
+    // active === false 인 항목 제외
+    MV_DATA.filter(item => item.active !== false).forEach(item => {
       const imgSrc = item.imgDataUrl || encodeMvImgPath(item.imgPath);
       const card = document.createElement('div');
       card.className = 'work-card' + (item.id === selectedMvId ? ' selected' : '');
@@ -485,6 +486,18 @@
           imgPath:    (item.imgPath || item.thumb || '').replace(/^\.\.\//, ''),
           imgDataUrl: item.imgDataUrl || null
         }));
+      }
+    } catch(e) {}
+
+    // 배경 이미지: 첫 번째 active 항목 이미지를 동적으로 설정
+    try {
+      const bgEl = document.querySelector('.works-bg');
+      if (bgEl) {
+        const first = MV_DATA.find(item => item.active !== false) || MV_DATA[0];
+        if (first) {
+          const bgSrc = first.imgDataUrl || encodeMvImgPath(first.imgPath);
+          if (bgSrc) bgEl.style.backgroundImage = `url("${bgSrc}")`;
+        }
       }
     } catch(e) {}
 
