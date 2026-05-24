@@ -85,7 +85,7 @@
       color: rgba(255,255,255,0.88); font-size: 12px; font-weight: 400;
       padding: 4px 4px; border: none; cursor: pointer;
     }
-    .mv-card-info { margin: 5px 4px 14px; }
+    .mv-card-info { margin: 5px 0 14px; padding: 0 4.4%; }
     .mv-card-title {
       font-size: 15px; color: #fff; font-weight: 700; margin-bottom: 2px;
       font-family: 'Poppins', sans-serif;
@@ -160,51 +160,44 @@
     </div>
     <div class="sticky-top-area">
       <div class="sticky-msg" id="mvTopMsg">Maison d'Étoile</div>
+      <div class="sticky-sub" id="mvTopSub" style="display:none; text-align:center; font-size:11px; color:rgba(255,255,255,0.45); padding:0 16px 6px;"></div>
     </div>
   </div>
 
   <div class="card-list" id="mv-card-list"></div>
-
-  <footer class="mobile-footer">
-    <div class="footer-row1">
-      <a href="tel:010-3558-6960">📞 010-3558-6960</a>
-      <a href="mailto:hjyouh@naver.com">✉️ hjyouh@naver.com</a>
-    </div>
-    <div class="footer-row2">
-      <a href="https://aitalker.co.kr/hjyouh" target="_blank">🌐 aitalker.co.kr/hjyouh</a>
-    </div>
-  </footer>
 
 </div>
 
 <!-- ============ SCREEN 2: 상세 ============ -->
 <div id="view-detail">
 
-  <div class="header">
-    <button class="header-back" onclick="showList()">
-      <img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;">
-    </button>
-    <span class="header-title" id="detail-header-title"></span>
-    <button class="hamburger" onclick="openDrawer()">
-      <img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;">
-    </button>
+  <div class="top-fixed-wrapper">
+    <div class="header">
+      <button class="header-back" onclick="showList()">
+        <img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;">
+      </button>
+      <span class="header-title" id="detail-header-title"></span>
+      <button class="hamburger" onclick="openDrawer()">
+        <img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;">
+      </button>
+    </div>
   </div>
 
   <div class="content-wrap">
     <div class="section-card" id="detail-body"></div>
   </div>
 
-  <footer class="mobile-footer">
-    <div class="footer-row1">
-      <a href="tel:010-3558-6960">📞 010-3558-6960</a>
-      <a href="mailto:hjyouh@naver.com">✉️ hjyouh@naver.com</a>
-    </div>
-    <div class="footer-row2">
-      <a href="https://aitalker.co.kr/hjyouh" target="_blank">🌐 aitalker.co.kr/hjyouh</a>
-    </div>
-  </footer>
-
 </div>
+
+<footer class="mobile-footer">
+  <div class="footer-row1">
+    <a href="tel:010-3558-6960">📞 010-3558-6960</a>
+    <a href="mailto:hjyouh@naver.com">✉️ hjyouh@naver.com</a>
+  </div>
+  <div class="footer-row2">
+    <a href="https://aitalker.co.kr/hjyouh" target="_blank">🌐 aitalker.co.kr/hjyouh</a>
+  </div>
+</footer>
 
 <script>
 let MV_DATA = [
@@ -214,7 +207,7 @@ let MV_DATA = [
     title: 'Korisian',
     sub: '명화에 음악을 입히다',
     imgPath: 'assets/images/mv/@Korisian.png',
-    channelUrl: 'https://www.youtube.com/@Korisian',
+    channelUrl: 'https://www.youtube.com/@Korisian', active: true,
     genre: '클래식 명화 BGM · 시네마틱 아트',
     concept: '명화 + 감성 음악의 시각적 콜라보',
     affiliation: "Maison d'Étoile",
@@ -226,7 +219,7 @@ let MV_DATA = [
     title: 'Isabelle Lumière',
     sub: '빛의 목소리',
     imgPath: 'assets/images/mv/Isabelle Lumière.png',
-    channelUrl: 'https://www.youtube.com/@IsabelleLumiere',
+    channelUrl: 'https://www.youtube.com/@IsabelleLumiere', active: true,
     genre: 'French Chanson · 드라마틱 소프라노',
     concept: '에디트 피아프 스타일 · 1950s 파리 카바레',
     affiliation: "Maison d'Étoile",
@@ -238,7 +231,7 @@ let MV_DATA = [
     title: 'Margot Ombre',
     sub: '그림자 속의 목소리',
     imgPath: 'assets/images/mv/Margot Ombre.png',
-    channelUrl: 'https://www.youtube.com/@MargotOmbre',
+    channelUrl: 'https://www.youtube.com/@MargotOmbre', active: false,
     genre: 'French Jazz · Cabaret Noir',
     concept: '누아르 · 서정적 · 파리 강변의 밤',
     affiliation: "Maison d'Étoile",
@@ -250,7 +243,7 @@ let MV_DATA = [
     title: 'Hana Chérie',
     sub: '파리에서 온 봄',
     imgPath: 'assets/images/mv/Hana Chérie.png',
-    channelUrl: 'https://www.youtube.com/@HanaCherieOfficial',
+    channelUrl: 'https://www.youtube.com/@HanaCherieOfficial', active: false,
     genre: 'French K-POP · French Pop',
     concept: '한국 감성 · 프랑스어 · 따뜻한 설렘',
     affiliation: "Maison d'Étoile",
@@ -260,21 +253,24 @@ let MV_DATA = [
 
 function normalizeImgPath(p) {
   if (!p) return '';
-  if (p.startsWith('http')) return p;
+  if (p.startsWith('data:') || p.startsWith('http')) return p;
   p = p.replace(/^\.\.\//, '');
-  return p.startsWith('assets/') ? '../../' + p : p;
+  const base = p.startsWith('assets/') ? '../../' + p : p;
+  // SVG <image href> 에서 공백·특수문자 인코딩 필요
+  return base.split('/').map((seg, i, arr) =>
+    i === arr.length - 1 ? encodeURIComponent(seg).replace(/%40/g, '@') : seg
+  ).join('/');
 }
 
 function buildMvCard(item, idx) {
   const duration = (2.8 + idx * 0.4).toFixed(1);
   const delay    = -(idx * 0.9).toFixed(1);
   const clipId   = 'mv-clip-' + item.id;
-  const imgSrc   = normalizeImgPath(item.imgPath);
-  const imgEsc   = imgSrc.replace(/'/g, "\\'");
+  const imgSrc   = item.imgDataUrl || normalizeImgPath(item.imgPath);
   /* 4:3 비율(320×240) + 작업들과 동일한 우상단 노치 클립 패턴 */
   const notchPath = 'M 14 226 Q 14 240 26 240 L 294 240 Q 306 240 306 226 L 306 40 Q 306 28 294 28 L 238 28 Q 226 28 222 19 Q 218 10 206 10 L 26 10 Q 14 10 14 22 Z';
   return `
-    <div class="mv-card-wrap" onclick="openMvImage('${imgEsc}')">
+    <div class="mv-card-wrap" onclick="showMvDetail('${item.id}')">
       <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <clipPath id="${clipId}">
@@ -292,11 +288,10 @@ function buildMvCard(item, idx) {
           style="animation-duration:${duration}s; animation-delay:${delay}s"/>
       </svg>
       <span class="mv-genre-badge">${item.tag}</span>
-      <button class="mv-detail-btn" onclick="event.stopPropagation(); showMvDetail('${item.id}')">내용보기</button>
     </div>
-    <div class="mv-card-info">
+    <div class="mv-card-info" style="display:flex; justify-content:space-between; align-items:baseline; gap:8px;">
       <div class="mv-card-title">${item.title}</div>
-      <div class="mv-card-subtitle">${item.sub || ''}</div>
+      <div class="mv-card-subtitle" style="text-align:right; flex-shrink:0; max-width:52%;">${item.sub || ''}</div>
     </div>`;
 }
 
@@ -318,8 +313,8 @@ function showMvDetail(id) {
   const item = MV_DATA.find(d => d.id === id);
   if (!item) return;
   document.getElementById('detail-header-title').textContent = item.title;
-  const imgSrc = normalizeImgPath(item.imgPath);
-  const synopsisHtml = (item.synopsis || '').split('\n\n')
+  const imgSrc = item.imgDataUrl || normalizeImgPath(item.imgPath);
+  const synopsisHtml = (item.synopsis || '').trim().split('\n\n')
     .filter(Boolean).map(p => `<p class="detail-intro">${p.replace(/\n/g,'<br>')}</p>`).join('');
   const infoHtml = [
     item.genre       ? `<div class="detail-info-row"><span class="detail-info-label">장르</span>${item.genre}</div>` : '',
@@ -327,7 +322,10 @@ function showMvDetail(id) {
     item.affiliation ? `<div class="detail-info-row"><span class="detail-info-label">소속</span>${item.affiliation}</div>` : ''
   ].filter(Boolean).join('');
   const channelBtn = item.channelUrl
-    ? `<a class="link-btn" href="${item.channelUrl}" target="_blank" rel="noopener">▶ YouTube 채널 바로가기</a>` : '';
+    ? (item.active === false
+        ? `<span class="link-btn" style="opacity:0.35;cursor:not-allowed;pointer-events:none;">▶ 준비 중입니다</span>`
+        : `<a class="link-btn" href="${item.channelUrl}" target="_blank" rel="noopener">▶ YouTube 채널 바로가기</a>`)
+    : '';
   document.getElementById('detail-body').innerHTML = `
     <div class="detail-img-wrap">
       <img src="${imgSrc}" alt="${item.title}" onclick="openMvImage('${imgSrc.replace(/'/g,"\\'")}')">
@@ -357,6 +355,21 @@ async function initMvMobile() {
     if (!raw) { const s = localStorage.getItem('mvData'); if (s) raw = JSON.parse(s); }
     if (raw && Array.isArray(raw) && raw.length) MV_DATA = raw.map(i => ({ ...i }));
   } catch(e) {}
+
+  // 페이지 메시지 로드
+  try {
+    let msg = null;
+    if (window.sbLoad) msg = await window.sbLoad('mvPageMsg', null);
+    if (!msg) { const s = localStorage.getItem('mvPageMsg'); if (s) msg = JSON.parse(s); }
+    if (msg) {
+      const mobile = typeof msg === 'string' ? msg : (msg.mobile || msg.mainMsg || '');
+      const sub    = typeof msg === 'string' ? '' : (msg.subtitle || '');
+      if (mobile) document.getElementById('mvTopMsg').textContent = mobile;
+      const subEl = document.getElementById('mvTopSub');
+      if (subEl && sub) { subEl.textContent = sub; subEl.style.display = 'block'; }
+    }
+  } catch(e) {}
+
   renderMvList();
 }
 

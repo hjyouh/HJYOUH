@@ -49,13 +49,18 @@
   }
 
   .slide {
-    display: none;
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
   }
 
-  .slide.active { display: block; }
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
   .slide img {
     width: 100%; height: 100%;
@@ -177,6 +182,11 @@
 
   /* 첫 번째 카드(강사) 전체 너비 */
   .side-card:first-child {
+    grid-column: 1 / -1;
+  }
+
+  /* 마지막 카드가 혼자 남는 경우(짝수 번째) 전체 너비 차지 */
+  .side-card:last-child:nth-child(even) {
     grid-column: 1 / -1;
   }
 
@@ -326,11 +336,12 @@
       'assets/images/lectures/main3.png'
     ];
     const DEFAULT_PANELS_WEB = [
-      { label: '강사',   nav: 'about',    path: 'assets/images/instructor1.png' },
-      { label: '강의',   nav: 'lectures', path: 'assets/images/lectures/main6.png' },
-      { label: '작업들', nav: 'works',    path: 'assets/images/posters/Jeong Poster.png' },
+      { label: '강사',    nav: 'about',    path: 'assets/images/instructor1.png' },
+      { label: '강의',    nav: 'lectures', path: 'assets/images/lectures/main6.png' },
+      { label: '작업들',  nav: 'works',    path: 'assets/images/posters/Jeong Poster.png' },
+      { label: '문의',    nav: 'contact',  path: 'assets/images/lectures/main3.png' },
       { label: '프롬프트', nav: 'prompts',  path: 'assets/images/prompt.png' },
-      { label: 'M/V',   nav: 'mv',       path: 'assets/images/mv/@Korisian.png' }
+      { label: 'M/V',    nav: 'mv',       path: 'assets/images/mv/@Korisian.png' }
     ];
 
     function toWebPath(p) { return p ? p.replace(/^\.\.\//, '') : p; }
@@ -388,6 +399,7 @@
     const prevBtn = container.querySelector('.prev-btn');
     const nextBtn = container.querySelector('.next-btn');
     let current = 0, timer = null;
+    const INTERVAL = 3000;
 
     function showSlide(n) {
       if (n >= slides.length) current = 0;
@@ -398,7 +410,7 @@
       slides[current].classList.add('active');
       if (dots[current]) dots[current].classList.add('active');
     }
-    function startTimer() { timer = setInterval(() => showSlide(current + 1), 5000); }
+    function startTimer() { timer = setInterval(() => showSlide(current + 1), INTERVAL); }
     function resetTimer() { clearInterval(timer); startTimer(); }
 
     if (prevBtn) prevBtn.addEventListener('click', () => { showSlide(current - 1); resetTimer(); });
@@ -406,8 +418,18 @@
     dots.forEach((dot, i) => dot.addEventListener('click', () => { showSlide(i); resetTimer(); }));
     container.addEventListener('mouseenter', () => clearInterval(timer));
     container.addEventListener('mouseleave', startTimer);
-    showSlide(0);
-    startTimer();
+
+    /* 모든 슬라이드 이미지 프리로드 후 시작 → 첫 루프부터 균일한 전환 */
+    let loaded = 0;
+    const total = slidePaths.length;
+    function onImgReady() {
+      if (++loaded >= total) { showSlide(0); startTimer(); }
+    }
+    slidePaths.forEach(src => {
+      const img = new Image();
+      img.onload = img.onerror = onImgReady;
+      img.src = src;
+    });
 
     /* 사이드 패널 렌더 */
     const sidePanel = document.querySelector('.desktop-side-panel');
@@ -425,7 +447,7 @@
           sessionStorage.setItem('sideHintDone', '1');
           navigateTo(panel.nav);
         };
-        const isWip = ['prompts','mv'].includes(panel.nav);
+        const isWip = ['prompts'].includes(panel.nav);
         card.innerHTML = `
           <img src="${panel.path}" alt="${panel.label}" onerror="this.style.display='none'">
           <div class="side-card-overlay"></div>

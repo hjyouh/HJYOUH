@@ -92,6 +92,14 @@ function setupEventListeners() {
         if (page) navigateTo(page);
       });
     });
+    // WIP 페이지 nav 시각적 비활성화 (색상 + 커서)
+    elements.nav.querySelectorAll('a[data-page]').forEach(link => {
+      if (UNDER_CONSTRUCTION.includes(link.dataset.page)) {
+        link.style.color = 'rgba(255,255,255,0.28)';
+        link.style.cursor = 'default';
+        link.title = '준비 중입니다';
+      }
+    });
   }
 
   // Mobile hamburger
@@ -136,7 +144,7 @@ function setupEventListeners() {
 // ===== NAVIGATION & ROUTING =====
 
 /* ── 작업 중인 페이지 (차단 목록) ── */
-const UNDER_CONSTRUCTION = ['prompts', 'mv'];
+const UNDER_CONSTRUCTION = ['prompts'];
 
 function showConstructionMsg() {
   const existing = document.getElementById('construction-toast');
@@ -265,6 +273,11 @@ function updateActiveNav(pageName) {
   if (elements.nav) {
     elements.nav.querySelectorAll('a').forEach(link => {
       link.classList.toggle('active', link.dataset.page === pageName);
+      // WIP 링크는 항상 색상 비활성화 유지
+      if (UNDER_CONSTRUCTION.includes(link.dataset.page)) {
+        link.style.color = 'rgba(255,255,255,0.28)';
+        link.style.cursor = 'default';
+      }
     });
   }
 

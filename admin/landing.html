@@ -62,23 +62,68 @@
     .slide-icon-btn:hover { border-color: var(--gold); color: var(--gold); }
     .slide-icon-btn.del:hover { border-color: var(--red); color: var(--red); }
 
-    /* ── 섹션 이미지 그리드 ── */
+    /* ── 섹션 이미지 그리드 (홈페이지 2-column 레이아웃 동일) ── */
     .section-img-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 16px;
     }
+    /* 첫 번째 카드: 가로 전체 (landscape) */
+    .section-img-item:first-child {
+      grid-column: 1 / -1;
+    }
+    /* 마지막 카드가 홀수 번째(짝수 자식)이면 가로 전체 */
+    .section-img-item:last-child:nth-child(even) {
+      grid-column: 1 / -1;
+    }
+
     .section-img-item {
       display: flex; flex-direction: column; gap: 8px;
+      transition: opacity 0.2s;
+      border-radius: 12px;
     }
-    .section-img-label {
-      font-size: 12px; font-weight: 600; color: var(--gold); text-align: center;
+    .section-img-item.dragging { opacity: 0.35; }
+    /* | 표시: 카드 좌측 */
+    .section-img-item.drop-before {
+      box-shadow: -4px 0 0 0 var(--gold);
+      border-radius: 12px;
     }
+    /* | 표시: 카드 우측 */
+    .section-img-item.drop-after {
+      box-shadow: 4px 0 0 0 var(--gold);
+      border-radius: 12px;
+    }
+
+    /* 헤더: 드래그핸들 + 라벨 입력 */
+    .section-img-item-header {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .section-drag-handle {
+      cursor: grab; color: var(--sub); font-size: 14px;
+      user-select: none; flex-shrink: 0; line-height: 1; padding: 2px 4px;
+    }
+    .section-drag-handle:active { cursor: grabbing; }
+    .section-img-label-input {
+      flex: 1;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 7px; color: var(--gold);
+      font-family: inherit; font-size: 12px; font-weight: 700;
+      padding: 5px 8px; outline: none; text-align: center;
+      transition: border-color 0.2s;
+    }
+    .section-img-label-input:focus { border-color: rgba(201,169,110,0.5); }
+
+    /* 이미지 미리보기: 기본 세로(portrait) 비율 */
     .section-img-preview {
-      aspect-ratio: 2/3;
       border-radius: 10px; overflow: hidden;
       background: var(--bg); border: 1px solid var(--border);
       position: relative;
+      aspect-ratio: 3/4;
+    }
+    /* 첫 번째 카드 + 마지막 단독 카드: 가로(landscape) 비율 */
+    .section-img-item:first-child .section-img-preview,
+    .section-img-item:last-child:nth-child(even) .section-img-preview {
+      aspect-ratio: 16/9;
     }
     .section-img-preview img {
       width: 100%; height: 100%; object-fit: cover; display: block;
@@ -149,9 +194,9 @@
       <input type="file" id="slideFilePicker" accept="image/*" style="display:none;" onchange="onSlideFilePicked(this)">
     </div>
 
-    <!-- ② 섹션 이미지 (강사/강의/작업들/문의) -->
+    <!-- ② 섹션 이미지 (강사/강의/작업들/문의/프롬프트/M/V) -->
     <div class="card">
-      <div class="card-title">🖼️ 섹션 이미지</div>
+      <div class="card-title">🖼️ 섹션 이미지 <span style="font-size:12px;color:var(--sub);font-weight:400;">(강사·강의·작업들·문의·프롬프트·M/V)</span></div>
       <div class="section-img-grid" id="sectionImgGrid"></div>
       <div style="display:flex; justify-content:flex-end; margin-top:14px;">
         <button class="btn btn-gold btn-sm" onclick="saveSectionPanels()">저장</button>
@@ -296,16 +341,29 @@ function onSlideDrop(e, i) {
 }
 
 /* ═══════════════════════════════════════
-   섹션 이미지 (강사/강의/작업들/문의)
+   섹션 이미지 (강사/강의/작업들/문의/프롬프트/M/V)
 ═══════════════════════════════════════ */
 let panelsData = loadData('landingSidePanels', DEFAULT_SIDE_PANELS);
 let activePanelPickerIdx = null;
+let panelDragSrcIdx = null;
+let panelDropIdx = null; // 최종 삽입 위치
 
 function renderSectionPanels() {
   const el = document.getElementById('sectionImgGrid');
   el.innerHTML = panelsData.map((panel, i) => `
-    <div class="section-img-item">
-      <div class="section-img-label">${escHtml(panel.label)}</div>
+    <div class="section-img-item"
+         ondragover="onPanelDragOver(event,${i})"
+         ondragleave="onPanelDragLeave(event)"
+         ondrop="onPanelDrop(event,${i})">
+      <div class="section-img-item-header">
+        <span class="section-drag-handle"
+              draggable="true"
+              title="☰ 드래그로 순서 변경"
+              ondragstart="onPanelDragStart(event,${i})"
+              ondragend="onPanelDragEnd(event)">☰</span>
+        <input class="section-img-label-input" type="text" value="${escHtml(panel.label || '')}"
+               placeholder="카드 제목">
+      </div>
       <div class="section-img-preview" id="sectionPreview-${i}">
         ${panel.path
           ? `<img src="${escHtml(panel.path)}" onerror="this.style.display='none';document.getElementById('sectionEmpty-${i}').style.display='flex';">`
@@ -314,7 +372,6 @@ function renderSectionPanels() {
       </div>
       <div class="section-img-actions">
         <input type="text" value="${escHtml(panel.path || '')}"
-               onchange="panelsData[${i}].path=this.value"
                placeholder="../assets/images/...">
         <button class="slide-icon-btn" title="미리보기 갱신" onclick="reloadPanelThumb(${i})">↻</button>
         <button class="slide-icon-btn" title="파일 선택" onclick="openSectionFilePicker(${i})">📁</button>
@@ -323,9 +380,19 @@ function renderSectionPanels() {
   `).join('');
 }
 
+/* 입력값을 panelsData에 동기화 */
+function syncPanelItem(i) {
+  const items = document.querySelectorAll('#sectionImgGrid .section-img-item');
+  const item = items[i];
+  if (!item || !panelsData[i]) return;
+  const lbl = item.querySelector('.section-img-label-input');
+  const pth = item.querySelector('.section-img-actions input');
+  if (lbl) panelsData[i].label = lbl.value.trim();
+  if (pth) panelsData[i].path  = pth.value.trim();
+}
+
 function reloadPanelThumb(i) {
-  const inputs = document.querySelectorAll('#sectionImgGrid .section-img-actions input');
-  if (inputs[i]) panelsData[i].path = inputs[i].value.trim();
+  syncPanelItem(i);
   renderSectionPanels();
 }
 
@@ -343,12 +410,88 @@ function onSectionFilePicked(input) {
 }
 
 function saveSectionPanels() {
-  // 현재 입력값 동기화
-  document.querySelectorAll('#sectionImgGrid .section-img-actions input').forEach((inp, i) => {
-    if (panelsData[i]) panelsData[i].path = inp.value.trim();
+  /* 전체 입력값 동기화 (label + path) */
+  document.querySelectorAll('#sectionImgGrid .section-img-item').forEach((item, i) => {
+    if (!panelsData[i]) return;
+    const lbl = item.querySelector('.section-img-label-input');
+    const pth = item.querySelector('.section-img-actions input');
+    if (lbl) panelsData[i].label = lbl.value.trim();
+    if (pth) panelsData[i].path  = pth.value.trim();
   });
   if (saveData('landingSidePanels', panelsData)) toast('섹션 이미지가 저장되었습니다');
   else toast('저장 실패', true);
+  renderSectionPanels();
+}
+
+/* ── 드래그로 순서 변경 ── */
+function clearPanelDropIndicators() {
+  document.querySelectorAll('#sectionImgGrid .section-img-item').forEach(r => {
+    r.classList.remove('drop-before', 'drop-after');
+  });
+}
+
+function onPanelDragStart(e, i) {
+  panelDragSrcIdx = i;
+  panelDropIdx = null;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', String(i));
+  // 드래그 시작 카드를 반투명하게
+  setTimeout(() => {
+    const items = document.querySelectorAll('#sectionImgGrid .section-img-item');
+    if (items[i]) items[i].classList.add('dragging');
+  }, 0);
+}
+
+function onPanelDragEnd(e) {
+  clearPanelDropIndicators();
+  document.querySelectorAll('#sectionImgGrid .section-img-item').forEach(r => r.classList.remove('dragging'));
+  panelDragSrcIdx = null;
+  panelDropIdx = null;
+}
+
+function onPanelDragOver(e, i) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  clearPanelDropIndicators();
+
+  const items = document.querySelectorAll('#sectionImgGrid .section-img-item');
+  const item = items[i];
+  if (!item) return;
+
+  const rect = item.getBoundingClientRect();
+  const isAfter = e.clientX > rect.left + rect.width / 2;
+  item.classList.add(isAfter ? 'drop-after' : 'drop-before');
+  panelDropIdx = isAfter ? i + 1 : i;
+}
+
+function onPanelDragLeave(e) {
+  // 자식 요소로 이동할 때는 무시
+  const related = e.relatedTarget;
+  if (related && e.currentTarget.contains(related)) return;
+  clearPanelDropIndicators();
+}
+
+function onPanelDrop(e, i) {
+  e.preventDefault();
+  clearPanelDropIndicators();
+  document.querySelectorAll('#sectionImgGrid .section-img-item').forEach(r => r.classList.remove('dragging'));
+
+  if (panelDragSrcIdx === null) { panelDragSrcIdx = null; panelDropIdx = null; return; }
+
+  let target = (panelDropIdx !== null) ? panelDropIdx : i;
+
+  // 제자리 드롭이면 무시
+  if (target === panelDragSrcIdx || target === panelDragSrcIdx + 1) {
+    panelDragSrcIdx = null; panelDropIdx = null; return;
+  }
+
+  const moved = panelsData.splice(panelDragSrcIdx, 1)[0];
+  // splice 후 인덱스 보정: 원본이 target보다 앞이면 target이 1 줄어듦
+  if (panelDragSrcIdx < target) target--;
+  panelsData.splice(target, 0, moved);
+
+  panelDragSrcIdx = null;
+  panelDropIdx = null;
   renderSectionPanels();
 }
 

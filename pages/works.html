@@ -724,6 +724,8 @@
 
   var currentTab = 'film';
   var selectedId = null;
+  var savedWorkCardEl   = null;  // X로 교체된 카드 요소 저장
+  var savedWorkCardHtml = null;  // X로 교체 전 원본 innerHTML 저장
 
   function fixWorksData(parsed) {
     const fixPath = (items, subfolder) => (items || []).map(item => {
@@ -826,6 +828,8 @@
   function switchTab(tab) {
     currentTab = tab;
     selectedId = null;
+    savedWorkCardEl = null;
+    savedWorkCardHtml = null;
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.tab === tab);
     });
@@ -864,12 +868,17 @@
       }
     }
 
-    // 2) 선택된 카드 X로 교체 (강의 패턴 그대로)
-    document.querySelectorAll('.work-card').forEach(c => {
-      c.classList.remove('selected-placeholder', 'active');
-    });
+    // 2) 이전 X 카드 복원 후 새 카드 X로 교체 (재렌더링 없이)
+    if (savedWorkCardEl && savedWorkCardHtml) {
+      savedWorkCardEl.classList.remove('selected-placeholder', 'active');
+      savedWorkCardEl.innerHTML = savedWorkCardHtml;
+      savedWorkCardEl = null;
+      savedWorkCardHtml = null;
+    }
     const activeCard = document.querySelector('.work-card[data-id="' + id + '"]');
     if (activeCard) {
+      savedWorkCardEl   = activeCard;
+      savedWorkCardHtml = activeCard.innerHTML;
       const ratioClass = tab === 'film' ? 'ratio-film' : 'ratio-book';
       activeCard.classList.add('selected-placeholder');
       activeCard.innerHTML = '<div class="card-img-wrap ' + ratioClass + '"><div class="work-card-x">✕</div></div>';
@@ -883,8 +892,14 @@
     const zoomLayer = document.getElementById('worksZoomLayer');
     if (zoomLayer) zoomLayer.classList.remove('active');
     selectedId = null;
+    /* 카드 복원 — 전체 재렌더링 없이 해당 카드만 복원 */
+    if (savedWorkCardEl && savedWorkCardHtml) {
+      savedWorkCardEl.classList.remove('selected-placeholder', 'active');
+      savedWorkCardEl.innerHTML = savedWorkCardHtml;
+      savedWorkCardEl = null;
+      savedWorkCardHtml = null;
+    }
     showPanelEmpty();
-    renderGrid(currentTab);
   }
 
   /* ===== PANEL ===== */

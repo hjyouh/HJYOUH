@@ -89,7 +89,7 @@
     closeBtn.addEventListener('click', closeDrawer);
     drawer.appendChild(closeBtn);
 
-    const WIP_HREFS = ['mobile-프롬프트.html', 'mobile-mv.html'];
+    const WIP_HREFS = ['mobile-프롬프트.html'];
     NAV_ITEMS.forEach(function (item) {
       const a = document.createElement('a');
       if (WIP_HREFS.includes(item.href)) {
