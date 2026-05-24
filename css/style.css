@@ -31,7 +31,7 @@
   --radius-md: 15px;
   --radius-lg: 15px;
   --radius-xl: 999px;
-  --panel-width: min(500px, 40vw);
+  --panel-width: min(680px, 46vw);
 
   /* Spacing */
   --spacing-xs: 4px;
@@ -176,17 +176,17 @@ nav.desktop-nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(10px, 1.4vw, 22px);
+  gap: clamp(14px, 2vw, 30px);
   height: 100%;
   width: var(--panel-width);
-  padding: 0 20px;
+  padding: 0 24px;
   background: #0d0d0d;
   border-radius: 0 0 0 0;
   pointer-events: all;
 }
 
 nav.desktop-nav a {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 400;
   position: relative;
   white-space: nowrap;
@@ -629,12 +629,12 @@ footer {
   }
 
   nav.desktop-nav {
-    gap: clamp(10px, 1.4vw, 22px);
+    gap: clamp(12px, 1.8vw, 26px);
     padding: 0 20px;
   }
 
   nav.desktop-nav a {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   .grid-3 {
