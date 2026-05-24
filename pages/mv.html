@@ -342,8 +342,7 @@
     const cols = 2;
     grid.style.setProperty('--card-w', `calc((100% - ${(cols-1)*10}px) / ${cols})`);
     grid.innerHTML = '';
-    // active === false 인 항목 제외
-    MV_DATA.filter(item => item.active !== false).forEach(item => {
+    MV_DATA.forEach(item => {
       const imgSrc = item.imgDataUrl || encodeMvImgPath(item.imgPath);
       const card = document.createElement('div');
       card.className = 'work-card' + (item.id === selectedMvId ? ' selected' : '');
@@ -493,7 +492,7 @@
     try {
       const bgEl = document.querySelector('.works-bg');
       if (bgEl) {
-        const first = MV_DATA.find(item => item.active !== false) || MV_DATA[0];
+        const first = MV_DATA[0];
         if (first) {
           const bgSrc = first.imgDataUrl || encodeMvImgPath(first.imgPath);
           if (bgSrc) bgEl.style.backgroundImage = `url("${bgSrc}")`;

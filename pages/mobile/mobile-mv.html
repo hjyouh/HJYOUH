@@ -298,9 +298,7 @@ function buildMvCard(item, idx) {
 function renderMvList() {
   const el = document.getElementById('mv-card-list');
   if (!el) return;
-  // active === false 항목 제외
-  const visible = MV_DATA.filter(item => item.active !== false);
-  el.innerHTML = visible.map((item, i) => buildMvCard(item, i)).join('');
+  el.innerHTML = MV_DATA.map((item, i) => buildMvCard(item, i)).join('');
 }
 
 function openMvImage(src) {
