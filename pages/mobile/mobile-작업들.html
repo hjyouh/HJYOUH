@@ -726,7 +726,12 @@ async function initData() {
     // Supabase 우선, 없으면 localStorage 폴백
     let parsed = null;
     if (window.sbLoad) {
-      parsed = await sbLoad('worksData', null);
+      // 작품 데이터 + 페이지 메시지 동시 로드 (sbLoad가 localStorage도 갱신함)
+      [parsed] = await Promise.all([
+        sbLoad('worksData', null),
+        sbLoad('pageMsgWorksFilm', {}),
+        sbLoad('pageMsgWorksBook', {})
+      ]);
     }
     if (!parsed) {
       const saved = localStorage.getItem('worksData');
