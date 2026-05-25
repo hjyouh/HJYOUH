@@ -924,9 +924,10 @@
     const awardsEl = document.getElementById('detailAwards');
     if (tab === 'film' && item.awards?.length) {
       awardsEl.style.display = 'flex';
-      awardsEl.innerHTML = item.awards.map(a =>
-        `<div class="award-item"><span class="award-dot"></span><span>${a}</span></div>`
-      ).join('');
+      awardsEl.innerHTML = item.awards.map(a => {
+        const text = typeof a === 'string' ? a : `${a.emoji} ${a.text}`;
+        return `<div class="award-item"><span class="award-dot"></span><span>${text}</span></div>`;
+      }).join('');
     } else {
       awardsEl.style.display = 'none';
     }

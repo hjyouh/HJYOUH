@@ -423,6 +423,8 @@
 </div><!-- /view-detail -->
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../../js/supabase-client.js"></script>
 <script>
 let FILMS = [
   {
@@ -788,7 +790,10 @@ function showDetail(id) {
 
   document.getElementById('detail-header-title').textContent = film.title;
 
-  const awardsHtml = film.awards.map(a => `<li>🏆 ${a}</li>`).join('');
+  const awardsHtml = film.awards.map(a => {
+    const text = typeof a === 'string' ? a : `${a.emoji} ${a.text}`;
+    return `<li>🏆 ${text}</li>`;
+  }).join('');
   const introHtml = Array.isArray(film.intro)
     ? film.intro.map(p => `<p class="detail-intro">${p}</p>`).join('')
     : `<p class="detail-intro">${film.intro}</p>`;
@@ -841,8 +846,6 @@ document.addEventListener('scroll', function () {
 })();
 </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="../../js/supabase-client.js"></script>
   <script src="../../assets/js/mobile-nav.js?v=2"></script>
 </body>
 </html>
