@@ -31,6 +31,20 @@ window.sbSave = async function(key, val) {
   } catch(e) { console.error('[Supabase] save exception:', key, e); return false; }
 };
 
+// 이미지 → Supabase Storage 업로드 → 공개 URL 반환
+window.sbUploadImage = async function(file, folder) {
+  try {
+    const safeName = Date.now() + '_' + file.name.replace(/[^\w.\-]/g, '_');
+    const path = folder ? `${folder}/${safeName}` : safeName;
+    const { error } = await _sb.storage
+      .from('work')
+      .upload(path, file, { cacheControl: '3600', upsert: true });
+    if (error) { console.error('[Supabase Storage] upload error:', error.message); return null; }
+    const { data } = _sb.storage.from('work').getPublicUrl(path);
+    return data.publicUrl;
+  } catch(e) { console.error('[Supabase Storage] upload exception:', e); return null; }
+};
+
 // 문의 접수 저장
 window.sbSubmitContact = async function(name, email, phone, message) {
   try {

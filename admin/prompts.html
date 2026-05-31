@@ -594,9 +594,10 @@ function setRatio(ratio) {
 }
 
 /* ── 파일 선택 ── */
-function onPmFilePicked(input) {
+async function onPmFilePicked(input) {
   if (!input.files || !input.files[0]) return;
   const file = input.files[0];
+  // 즉시 미리보기 + 비율 자동 감지
   const reader = new FileReader();
   reader.onload = e => {
     pmFileDataUrl = e.target.result;
@@ -608,9 +609,19 @@ function onPmFilePicked(input) {
     const tmp = new Image();
     tmp.onload = () => setRatio(tmp.naturalHeight >= tmp.naturalWidth ? 'portrait' : 'landscape');
     tmp.src = pmFileDataUrl;
-    document.getElementById('pmImgPath').value = '../assets/images/prompts/' + file.name;
   };
   reader.readAsDataURL(file);
+  // Supabase Storage 업로드
+  toast('이미지 업로드 중...');
+  const url = window.sbUploadImage ? await sbUploadImage(file, 'prompts') : null;
+  if (url) {
+    document.getElementById('pmImgPath').value = url;
+    pmFileDataUrl = null;
+    toast('이미지 업로드 완료 ✓');
+  } else {
+    document.getElementById('pmImgPath').value = '../assets/images/prompts/' + file.name;
+    toast('업로드 실패 — 경로를 직접 입력하세요', true);
+  }
   input.value = '';
 }
 

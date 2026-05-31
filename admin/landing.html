@@ -308,13 +308,17 @@ function openSlideFilePicker(i) {
   document.getElementById('slideFilePicker').click();
 }
 
-function onSlideFilePicked(input) {
+async function onSlideFilePicked(input) {
   if (!input.files || !input.files[0] || activeSlidePickerIdx === null) return;
-  const path = '../assets/images/' + input.files[0].name;
-  slidesData[activeSlidePickerIdx] = path;
+  const file = input.files[0];
+  toast('이미지 업로드 중...');
+  const url = window.sbUploadImage ? await sbUploadImage(file, 'landing') : null;
+  slidesData[activeSlidePickerIdx] = url || ('../assets/images/' + file.name);
   input.value = '';
   renderSlides();
   activeSlidePickerIdx = null;
+  if (url) toast('이미지 업로드 완료 ✓');
+  else toast('업로드 실패 — 경로를 직접 입력하세요', true);
 }
 
 /* 드래그 */
@@ -403,12 +407,17 @@ function openSectionFilePicker(i) {
   document.getElementById('sectionFilePicker').click();
 }
 
-function onSectionFilePicked(input) {
+async function onSectionFilePicked(input) {
   if (!input.files || !input.files[0] || activePanelPickerIdx === null) return;
-  panelsData[activePanelPickerIdx].path = '../assets/images/' + input.files[0].name;
+  const file = input.files[0];
+  toast('이미지 업로드 중...');
+  const url = window.sbUploadImage ? await sbUploadImage(file, 'sections') : null;
+  panelsData[activePanelPickerIdx].path = url || ('../assets/images/' + file.name);
   input.value = '';
   renderSectionPanels();
   activePanelPickerIdx = null;
+  if (url) toast('이미지 업로드 완료 ✓');
+  else toast('업로드 실패 — 경로를 직접 입력하세요', true);
 }
 
 function saveSectionPanels() {

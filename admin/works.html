@@ -783,11 +783,12 @@ function syncThumb(val) {
   document.getElementById('workThumb').value = val;
 }
 
-/* ── 파일 선택 → 미리보기 + 경로 자동입력 ── */
-function onThumbFilePicked(input) {
+/* ── 파일 선택 → 미리보기 + Supabase Storage 업로드 ── */
+async function onThumbFilePicked(input) {
   if (!input.files || !input.files[0]) return;
   const file = input.files[0];
-  // 미리보기 (FileReader로 즉시 표시)
+
+  // 즉시 미리보기 (FileReader)
   const reader = new FileReader();
   reader.onload = e => {
     const img  = document.getElementById('thumbImg');
@@ -797,15 +798,30 @@ function onThumbFilePicked(input) {
     hint.style.display = 'none';
   };
   reader.readAsDataURL(file);
-  // 경로 자동 입력 (유형별 하위 폴더)
+
+  // Supabase Storage 업로드
   const isFilm = document.getElementById('workType').value === 'film';
-  const subfolder = isFilm ? 'posters' : 'books';
-  const suggestedPath = `../assets/images/${subfolder}/` + file.name;
-  document.getElementById('workThumb').value = suggestedPath;
-  const visibleInput = document.getElementById(isFilm ? 'workThumb' : 'workThumbBook');
-  visibleInput.value = suggestedPath;
-  // 파일 input 리셋 (같은 파일 재선택 가능하게)
-  input.value = '';
+  const folder = isFilm ? 'posters' : 'books';
+
+  toast('이미지 업로드 중...');
+  const url = window.sbUploadImage ? await sbUploadImage(file, folder) : null;
+
+  const targetInput    = document.getElementById('workThumb');
+  const visibleInput   = document.getElementById(isFilm ? 'workThumb' : 'workThumbBook');
+
+  if (url) {
+    targetInput.value  = url;
+    visibleInput.value = url;
+    toast('이미지 업로드 완료 ✓');
+  } else {
+    // 업로드 실패 시 로컬 경로 폴백 (개발환경용)
+    const fallback = `../assets/images/${folder}/` + file.name;
+    targetInput.value  = fallback;
+    visibleInput.value = fallback;
+    toast('Storage 업로드 실패 — 경로를 직접 확인하세요', true);
+  }
+
+  input.value = ''; // 같은 파일 재선택 가능하게
 }
 
 /* ── 저장 ── */

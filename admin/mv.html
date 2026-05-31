@@ -458,9 +458,10 @@ function updateMvThumbPreview() {
   };
 }
 
-function onMvFilePicked(input) {
+async function onMvFilePicked(input) {
   if (!input.files || !input.files[0]) return;
   const file = input.files[0];
+  // 즉시 미리보기
   const reader = new FileReader();
   reader.onload = e => {
     mvFileDataUrl = e.target.result;
@@ -469,11 +470,20 @@ function onMvFilePicked(input) {
     thumbImg.src = mvFileDataUrl;
     thumbImg.style.display = 'block';
     thumbHint.style.display = 'none';
-    /* 경로 힌트 자동 채우기 */
-    const pathInp = document.getElementById('mvImgPath');
-    if (!pathInp.value) pathInp.value = 'assets/images/mv/' + file.name;
   };
   reader.readAsDataURL(file);
+  // Supabase Storage 업로드
+  toast('이미지 업로드 중...');
+  const url = window.sbUploadImage ? await sbUploadImage(file, 'mv') : null;
+  const pathInp = document.getElementById('mvImgPath');
+  if (url) {
+    pathInp.value = url;
+    mvFileDataUrl = null;
+    toast('이미지 업로드 완료 ✓');
+  } else {
+    if (!pathInp.value) pathInp.value = 'assets/images/mv/' + file.name;
+    toast('업로드 실패 — 경로를 직접 입력하세요', true);
+  }
   input.value = '';
 }
 
