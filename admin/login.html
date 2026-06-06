@@ -286,16 +286,8 @@
   // 구버전 자동 로그인 세션 정리
   localStorage.removeItem('adminAutoSession');
 
-  // 이미 세션(자동 로그인 포함)이 있으면 바로 home으로
-  (function() {
-    let s = null;
-    try { const r = sessionStorage.getItem('adminSession'); s = r ? JSON.parse(r) : null; } catch {}
-    if (!s) {
-      try { const r = localStorage.getItem('adminPersistSession'); s = r ? JSON.parse(r) : null; } catch {}
-      if (s) try { sessionStorage.setItem('adminSession', JSON.stringify(s)); } catch {}
-    }
-    if (s) window.location.replace('home.html');
-  })();
+  // 항상 로그인 절차를 거치도록 세션 초기화
+  sessionStorage.removeItem('adminSession');
 
   // Enter 키 지원 (버튼 클릭과 동일하게)
   document.addEventListener('keydown', e => {

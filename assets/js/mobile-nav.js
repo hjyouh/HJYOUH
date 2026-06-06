@@ -9,7 +9,7 @@
     { href: 'mobile-page.html',    label: 'Home'   },
     { href: 'mobile-강사.html',    label: '강사'   },
     { href: 'mobile-강의.html',    label: '강의'   },
-    { href: 'mobile-작업들.html',  label: '작업들' },
+    { href: 'mobile-작업들.html',  label: '작품' },
     { href: 'mobile-프롬프트.html',label: '프롬프트'},
     { href: 'mobile-mv.html',      label: 'M/V'    },
     { href: 'mobile-문의.html',    label: '문의'   },
