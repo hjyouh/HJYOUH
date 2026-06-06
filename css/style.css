@@ -31,7 +31,7 @@
   --radius-md: 15px;
   --radius-lg: 15px;
   --radius-xl: 999px;
-  --panel-width: min(680px, 46vw);
+  --panel-width: 25vw;
 
   /* Spacing */
   --spacing-xs: 4px;
@@ -176,17 +176,17 @@ nav.desktop-nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(14px, 2vw, 30px);
+  gap: clamp(6px, 0.9vw, 18px);
   height: 100%;
   width: var(--panel-width);
-  padding: 0 24px;
+  padding: 0 12px;
   background: #0d0d0d;
   border-radius: 0 0 0 0;
   pointer-events: all;
 }
 
 nav.desktop-nav a {
-  font-size: 16px;
+  font-size: clamp(12px, 1.05vw, 15px);
   font-weight: 400;
   position: relative;
   white-space: nowrap;
