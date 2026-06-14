@@ -61,11 +61,13 @@
       position: absolute;
       top: 16px; right: 14px;
       font-size: 15px;
-      color: rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.75);
       cursor: pointer;
       background: none;
       border: none;
       line-height: 1;
+      min-width: 44px;
+      min-height: 44px;
     }
   `;
   document.head.appendChild(style);
@@ -79,13 +81,15 @@
     overlay.addEventListener('click', closeDrawer);
 
     /* 드로어 */
-    const drawer = document.createElement('div');
+    const drawer = document.createElement('nav');
     drawer.className = 'drawer';
     drawer.id = 'drawer';
+    drawer.setAttribute('aria-label', '사이트 내비게이션');
 
     const closeBtn = document.createElement('button');
     closeBtn.className = 'drawer-close';
     closeBtn.textContent = '✕';
+    closeBtn.setAttribute('aria-label', '메뉴 닫기');
     closeBtn.addEventListener('click', closeDrawer);
     drawer.appendChild(closeBtn);
 
@@ -94,7 +98,7 @@
       const a = document.createElement('a');
       if (WIP_HREFS.includes(item.href)) {
         a.href = '#';
-        a.style.color = 'rgba(201,169,110,0.45)';
+        a.style.color = 'rgba(201,169,110,0.75)';
         a.addEventListener('click', function(e) {
           e.preventDefault();
           closeDrawer();
