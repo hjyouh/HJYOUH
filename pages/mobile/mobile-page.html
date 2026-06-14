@@ -10,8 +10,10 @@
   <!-- 히어로 이미지 최우선 프리로드 (LCP 최적화) -->
   <link rel="preload" href="../../assets/images/lectures/main1.webp" as="image" type="image/webp" fetchpriority="high">
 
-  <!-- SUITE 핵심 폰트 프리로드 (Regular·Bold만 — 가장 많이 사용) -->
+  <!-- SUITE 폰트 프리로드 (이 페이지에서 실제 사용하는 4가지 굵기) -->
   <link rel="preload" href="../../assets/fonts/SUITE-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../assets/fonts/SUITE-Medium.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../assets/fonts/SUITE-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../../assets/fonts/SUITE-Bold.woff2" as="font" type="font/woff2" crossorigin>
 
   <!-- Poppins (Google Fonts) 비동기 -->
