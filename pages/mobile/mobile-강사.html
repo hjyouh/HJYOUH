@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"></noscript>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>강사 소개 - 유형재</title>
   <link rel="stylesheet" href="../../assets/css/tab-card.css?v=3">
   <link rel="stylesheet" href="../../assets/css/fonts.css?v=3">
   <link rel="stylesheet" href="../../assets/css/mobile-frame.css?v=3">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -244,10 +248,10 @@
 
   <!-- 헤더 -->
   <div class="header">
-    <button class="header-back" onclick="history.back()"><img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;"></button>
+    <button class="header-back" onclick="history.back()"><img src="../../assets/images/Back-white.webp" style="height:22px;vertical-align:middle;opacity:0.7;"></button>
     <span class="header-title">강사</span>
     <div style="display:flex; align-items:center;">
-      <button class="hamburger" onclick="openDrawer()"><img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;"></button>
+      <button class="hamburger" onclick="openDrawer()"><img src="../../assets/images/menu-white.webp" style="height:20px;vertical-align:middle;opacity:0.7;"></button>
     </div>
   </div>
 
@@ -272,7 +276,7 @@
         </defs>
         <rect width="360" height="240" fill="#000"/>
         <g clip-path="url(#heroClip)">
-          <image id="instrHeroImg" href="../../assets/images/instructor1.png"
+          <image id="instrHeroImg" href="../../assets/images/instructor1.webp"
             x="0" y="0" width="360" height="240"
             preserveAspectRatio="xMidYMid slice"/>
           <rect x="0" y="155" width="360" height="85" fill="url(#bottomFade)"/>
@@ -389,7 +393,7 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="../../js/supabase-client.js"></script>
   <script src="../../assets/js/mobile-nav.js?v=2"></script>
   <script>

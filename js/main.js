@@ -207,16 +207,20 @@ function loadPage(pageName) {
   const currentUrl = window.location.href;
   const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
 
-  fetch(pagePath + '?v=' + Date.now())
+  // contact 페이지 진입 시 EmailJS 지연 로드
+  if (pageName === 'contact' && !window._emailjsLoaded) {
+    window._emailjsLoaded = true;
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+    document.head.appendChild(s);
+  }
+
+  fetch(pagePath + '?v=23')
     .then(response => {
-      console.log(`Fetch response status: ${response.status} for ${pageName}`);
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: Failed to load ${pageName}`);
-      }
+      if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to load ${pageName}`);
       return response.text();
     })
     .then(html => {
-      console.log(`Successfully loaded ${pageName}`);
       if (elements.pageContainer) {
         elements.pageContainer.innerHTML = html;
         document.title = `${pageData.title} | 유형재 강사 포트폴리오`;

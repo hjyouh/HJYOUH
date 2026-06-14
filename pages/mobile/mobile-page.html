@@ -7,15 +7,13 @@
   <link rel="stylesheet" href="../../assets/css/tab-card.css?v=3">
   <link rel="stylesheet" href="../../assets/css/fonts.css?v=3">
   <link rel="stylesheet" href="../../assets/css/mobile-frame.css?v=3">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- 이미지 프리로드 -->
-  <link rel="preload" href="../../assets/images/lectures/main1.png" as="image">
-  <link rel="preload" href="../../assets/images/lectures/main5.png" as="image">
-  <link rel="preload" href="../../assets/images/lectures/main4.png" as="image">
-  <link rel="preload" href="../../assets/images/lectures/main3.png" as="image">
-  <link rel="preload" href="../../assets/images/instructor1.png" as="image">
-  <link rel="preload" href="../../assets/images/lectures/main6.png" as="image">
-  <link rel="preload" href="../../assets/images/mv/@Korisian.png" as="image">
+  <!-- Google Fonts 비동기 로드 (렌더 블로킹 제거) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"></noscript>
+  <!-- 히어로 첫 이미지만 프리로드 (나머지는 lazy) -->
+  <link rel="preload" href="../../assets/images/lectures/main1.webp" as="image" type="image/webp">
   <style>
     body {
       margin: 0;
@@ -117,11 +115,11 @@
   <div class="sticky-top">
     <div class="header">
       <img class="header-logo"
-           src="../../assets/images/aimt-logo-white.png"
+           src="../../assets/images/aimt-logo-white.webp"
            alt="aimt"
            style="height:22px; opacity:0.85;">
       <div style="margin-left:auto; display:flex; align-items:center;">
-        <button class="hamburger" style="margin-left:0;" onclick="openDrawer()"><img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;"></button>
+        <button class="hamburger" style="margin-left:0;" onclick="openDrawer()"><img src="../../assets/images/menu-white.webp" style="height:20px;vertical-align:middle;opacity:0.7;"></button>
       </div>
     </div>
     <div class="sticky-top-msg" id="homeTopMsg">AI로 바꾸는 당신의 내일</div>
@@ -144,10 +142,10 @@
         <rect width="360" height="280" fill="#000000"/>
         <g clip-path="url(#cardClip1)">
           <g id="slideTrack">
-            <image href="../../assets/images/lectures/main1.png"  x="0"    y="0" width="360" height="280" preserveAspectRatio="xMidYMid slice"/>
-            <image href="../../assets/images/lectures/main5.png"  x="360"  y="0" width="360" height="280" preserveAspectRatio="xMidYMid slice"/>
-            <image href="../../assets/images/lectures/main4.png"  x="720"  y="0" width="360" height="280" preserveAspectRatio="xMidYMid slice"/>
-            <image href="../../assets/images/lectures/main3.png"  x="1080" y="0" width="360" height="280" preserveAspectRatio="xMidYMid slice"/>
+            <image href="../../assets/images/lectures/main1.webp"  x="0"    y="0" width="360" height="280" preserveAspectRatio="xMidYMid slice"/>
+            <image href="../../assets/images/lectures/main5.webp"  x="360"  y="0" width="360" height="280" preserveAspectRatio="xMidYMid slice"/>
+            <image href="../../assets/images/lectures/main4.webp"  x="720"  y="0" width="360" height="280" preserveAspectRatio="xMidYMid slice"/>
+            <image href="../../assets/images/lectures/main3.webp"  x="1080" y="0" width="360" height="280" preserveAspectRatio="xMidYMid slice"/>
           </g>
         </g>
         <text x="46" y="20" font-size="17" fill="#ffffff" font-family="'Poppins', 'SUITE', sans-serif" text-anchor="middle">aimt</text>
@@ -171,7 +169,7 @@
           </clipPath>
         </defs>
         <rect width="360" height="240" fill="#000000"/>
-        <image id="cardImg2" href="../../assets/images/instructor1.png"
+        <image id="cardImg2" href="../../assets/images/instructor1.webp"
           x="0" y="0" width="360" height="240"
           clip-path="url(#cardClip2)"
           preserveAspectRatio="xMidYMid slice"/>
@@ -192,7 +190,7 @@
           </clipPath>
         </defs>
         <rect width="360" height="240" fill="#000000"/>
-        <image id="cardImg3" href="../../assets/images/lectures/main6.png"
+        <image id="cardImg3" href="../../assets/images/lectures/main6.webp"
           x="0" y="0" width="360" height="240"
           clip-path="url(#cardClip3)"
           preserveAspectRatio="xMidYMid slice"/>
@@ -214,7 +212,7 @@
             </clipPath>
           </defs>
           <rect width="360" height="240" fill="#000000"/>
-          <image id="cardImg4" href="../../assets/images/posters/Jeong Poster.png"
+          <image id="cardImg4" href="../../assets/images/posters/Jeong Poster.webp"
             x="0" y="0" width="360" height="240"
             clip-path="url(#cardClip4)"
             preserveAspectRatio="xMidYMid slice"/>
@@ -237,7 +235,7 @@
             </clipPath>
           </defs>
           <rect width="360" height="240" fill="#000000"/>
-          <image id="cardImg5" href="../../assets/images/prompt.png"
+          <image id="cardImg5" href="../../assets/images/prompt.webp"
             x="0" y="0" width="360" height="240"
             clip-path="url(#cardClip5)"
             preserveAspectRatio="xMidYMid slice"/>
@@ -260,7 +258,7 @@
             </clipPath>
           </defs>
           <rect width="360" height="240" fill="#000000"/>
-          <image id="cardImg6" href="../../assets/images/mv/@Korisian.png"
+          <image id="cardImg6" href="../../assets/images/mv/@Korisian.webp"
             x="0" y="0" width="360" height="240"
             clip-path="url(#cardClip6)"
             preserveAspectRatio="xMidYMid slice"/>

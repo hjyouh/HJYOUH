@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"></noscript>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>M/V - aimt</title>
   <link rel="stylesheet" href="../../assets/css/tab-card.css?v=3">
   <link rel="stylesheet" href="../../assets/css/fonts.css?v=3">
   <link rel="stylesheet" href="../../assets/css/mobile-frame.css?v=3">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -151,11 +155,11 @@
   <div class="top-fixed-wrapper">
     <div class="header">
       <button class="header-back" onclick="location.href='mobile-page.html'">
-        <img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;">
+        <img src="../../assets/images/Back-white.webp" style="height:22px;vertical-align:middle;opacity:0.7;">
       </button>
       <span class="header-title">M/V</span>
       <button class="hamburger" onclick="openDrawer()">
-        <img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;">
+        <img src="../../assets/images/menu-white.webp" style="height:20px;vertical-align:middle;opacity:0.7;">
       </button>
     </div>
     <div class="sticky-top-area">
@@ -174,11 +178,11 @@
   <div class="top-fixed-wrapper">
     <div class="header">
       <button class="header-back" onclick="showList()">
-        <img src="../../assets/images/Back-white.png" style="height:22px;vertical-align:middle;opacity:0.7;">
+        <img src="../../assets/images/Back-white.webp" style="height:22px;vertical-align:middle;opacity:0.7;">
       </button>
       <span class="header-title" id="detail-header-title"></span>
       <button class="hamburger" onclick="openDrawer()">
-        <img src="../../assets/images/menu-white.png" style="height:20px;vertical-align:middle;opacity:0.7;">
+        <img src="../../assets/images/menu-white.webp" style="height:20px;vertical-align:middle;opacity:0.7;">
       </button>
     </div>
   </div>
@@ -206,7 +210,7 @@ let MV_DATA = [
     tag: '🎭 클래식 명화 · BGM채널',
     title: 'Korisian',
     sub: '명화에 음악을 입히다',
-    imgPath: 'assets/images/mv/@Korisian.png',
+    imgPath: 'assets/images/mv/@Korisian.webp',
     channelUrl: 'https://www.youtube.com/@Korisian', active: true,
     genre: '클래식 명화 BGM · 시네마틱 아트',
     concept: '명화 + 감성 음악의 시각적 콜라보',
@@ -218,7 +222,7 @@ let MV_DATA = [
     tag: '🎙️ French Chanson · 클래식 샹송',
     title: 'Isabelle Lumière',
     sub: '빛의 목소리',
-    imgPath: 'assets/images/mv/Isabelle Lumière.png',
+    imgPath: 'assets/images/mv/Isabelle Lumière.webp',
     channelUrl: 'https://www.youtube.com/@IsabelleLumiere', active: true,
     genre: 'French Chanson · 드라마틱 소프라노',
     concept: '에디트 피아프 스타일 · 1950s 파리 카바레',
@@ -230,7 +234,7 @@ let MV_DATA = [
     tag: '🌙 French Jazz · Cabaret Noir',
     title: 'Margot Ombre',
     sub: '그림자 속의 목소리',
-    imgPath: 'assets/images/mv/Margot Ombre.png',
+    imgPath: 'assets/images/mv/Margot Ombre.webp',
     channelUrl: 'https://www.youtube.com/@MargotOmbre', active: false,
     genre: 'French Jazz · Cabaret Noir',
     concept: '누아르 · 서정적 · 파리 강변의 밤',
@@ -242,7 +246,7 @@ let MV_DATA = [
     tag: '🌸 French K-POP · 프렌치 팝',
     title: 'Hana Chérie',
     sub: '파리에서 온 봄',
-    imgPath: 'assets/images/mv/Hana Chérie.png',
+    imgPath: 'assets/images/mv/Hana Chérie.webp',
     channelUrl: 'https://www.youtube.com/@HanaCherieOfficial', active: false,
     genre: 'French K-POP · French Pop',
     concept: '한국 감성 · 프랑스어 · 따뜻한 설렘',
@@ -387,7 +391,7 @@ window.addEventListener('load', async function() {
 });
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="../../js/supabase-client.js"></script>
 <script src="../../assets/js/mobile-nav.js"></script>
 </body>

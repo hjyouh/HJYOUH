@@ -1,23 +1,54 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="유형재 강사의 생성형 AI 포트폴리오 홈페이지">
-  <meta name="keywords" content="AI, 생성형AI, 강사, 포트폴리오, 교육">
-  <meta name="author" content="유형재">
-  <meta property="og:title" content="유형재 강사 | 생성형 AI Creator">
-  <meta property="og:description" content="생성형 AI를 활용해 더 나은 미래를 만드는 강사">
-  <meta property="og:image" content="https://hjyouh.com/assets/images/lectures/main1.png">
-  <meta property="og:url" content="https://hjyouh.com">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://hjyouh.com/assets/images/lectures/main1.png">
-  <meta name="theme-color" content="#0d0d0d">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>유형재 강사 | 생성형 AI Creator 포트폴리오</title>
+  <meta name="description" content="생성형 AI를 활용해 더 나은 미래를 만드는 강사 유형재. 강의·작품·프롬프트 포트폴리오." />
+  <meta name="keywords" content="유형재, 생성형AI 강사, AI 강의, AI 포트폴리오, 프롬프트, AIMT" />
+  <meta name="author" content="유형재" />
 
-  <!-- Mobile redirect -->
+  <!-- 검색엔진 색인·링크추적 허용 -->
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://hjyouh.com/" />
+
+  <!-- 테마 색 -->
+  <meta name="theme-color" content="#0d0d0d" />
+
+  <!-- Open Graph (카톡·페북·네이버 공유 미리보기) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="유형재 | 생성형 AI Creator" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:title" content="유형재 강사 | 생성형 AI Creator" />
+  <meta property="og:description" content="생성형 AI를 활용해 더 나은 미래를 만드는 강사 유형재." />
+  <meta property="og:url" content="https://hjyouh.com" />
+  <meta property="og:image" content="https://hjyouh.com/assets/images/lectures/main1.webp" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="유형재 강사 생성형 AI 포트폴리오" />
+
+  <!-- Twitter Card (X 공유 미리보기) -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="유형재 강사 | 생성형 AI Creator" />
+  <meta name="twitter:description" content="생성형 AI를 활용해 더 나은 미래를 만드는 강사 유형재." />
+  <meta name="twitter:image" content="https://hjyouh.com/assets/images/lectures/main1.webp" />
+
+  <!-- 구조화 데이터 (JSON-LD) — 구글에 "강사"임을 명확히 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "유형재",
+    "url": "https://hjyouh.com",
+    "image": "https://hjyouh.com/assets/images/instructor1.webp",
+    "jobTitle": "생성형 AI 강사",
+    "description": "생성형 AI를 활용해 더 나은 미래를 만드는 강사",
+    "knowsAbout": ["생성형 AI", "AI 교육", "프롬프트 엔지니어링", "Claude", "ChatGPT"],
+    "sameAs": []
+  }
+  </script>
+
+  <!-- 모바일 리디렉트 (render 전 실행 필수) -->
   <script>
     (function() {
       var isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
@@ -28,16 +59,27 @@
     })();
   </script>
 
-  <!-- Fonts: Poppins (Google CDN) — preconnect + link for reliable loading -->
+  <!-- 외부 CDN 사전 연결 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 
-  <!-- 슬라이드 이미지 프리로드 -->
-  <link rel="preload" href="assets/images/lectures/main1.png" as="image">
-  <link rel="preload" href="assets/images/lectures/main5.png" as="image">
-  <link rel="preload" href="assets/images/lectures/main4.png" as="image">
-  <link rel="preload" href="assets/images/lectures/main3.png" as="image">
+  <!-- Google Fonts 비동기 로드 (렌더 블로킹 제거) -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"></noscript>
+
+  <!-- 히어로 첫 슬라이드 이미지 프리로드 -->
+  <link rel="preload" href="assets/images/lectures/main1.webp" as="image" type="image/webp">
+
+  <!-- Critical CSS 인라인 (초기 로딩 화면 깜빡임 방지) -->
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;background:#0d0d0d;color:#fff;font-family:'Poppins',sans-serif}
+    #app{position:relative;width:100%;min-height:100vh;background:#0d0d0d}
+    .logo{position:fixed;top:16px;left:20px;z-index:1000}
+    .logo-img{height:32px;width:auto}
+    #page-container .loading-init{display:flex;justify-content:center;align-items:center;min-height:100vh;color:#a0a0a0}
+  </style>
 
   <!-- Main Stylesheet -->
   <link rel="stylesheet" href="css/style.css?v=23">
@@ -58,7 +100,7 @@
   <div id="app">
     <!-- Logo: always fixed to #app top-left, independent of header layout -->
     <div class="logo">
-      <img src="assets/images/aimt-logo-white.png" alt="AIMT Logo" class="logo-img">
+      <img src="assets/images/aimt-logo-white.webp" alt="AIMT Logo" class="logo-img">
     </div>
 
     <!-- Header Navigation -->
@@ -128,12 +170,12 @@
     </div>
   </div>
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="js/supabase-client.js"></script>
+  <!-- Supabase + 클라이언트 (defer: DOM 파싱 후 순서대로 실행) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script defer src="js/supabase-client.js"></script>
 
-  <!-- Main JavaScript -->
-  <script src="js/main.js?v=5"></script>
+  <!-- Main JavaScript (defer) -->
+  <script defer src="js/main.js?v=5"></script>
   <script>
     function openMobilePreview(e) {
       e.preventDefault();
@@ -146,29 +188,6 @@
     }
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') document.getElementById('mobilePreviewOverlay').style.display = 'none';
-    });
-  </script>
-
-  <!-- Google Analytics (optional) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
-  </script>
-
-  <!-- EmailJS SDK -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-
-  <!-- Scroll to top button (optional enhancement) -->
-  <script>
-    // Add scroll-to-top button dynamically if needed
-    window.addEventListener('scroll', function() {
-      const scrollButton = document.getElementById('scroll-to-top');
-      if (scrollButton) {
-        scrollButton.style.display = window.scrollY > 300 ? 'flex' : 'none';
-      }
     });
   </script>
 </body>

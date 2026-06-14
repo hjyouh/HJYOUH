@@ -330,18 +330,18 @@
 <script>
   async function initHomePage() {
     const DEFAULT_SLIDES_WEB = [
-      'assets/images/lectures/main1.png',
-      'assets/images/lectures/main5.png',
-      'assets/images/lectures/main4.png',
-      'assets/images/lectures/main3.png'
+      'assets/images/lectures/main1.webp',
+      'assets/images/lectures/main5.webp',
+      'assets/images/lectures/main4.webp',
+      'assets/images/lectures/main3.webp'
     ];
     const DEFAULT_PANELS_WEB = [
-      { label: '강사',    nav: 'about',    path: 'assets/images/instructor1.png' },
-      { label: '강의',    nav: 'lectures', path: 'assets/images/lectures/main6.png' },
-      { label: '작품',  nav: 'works',    path: 'assets/images/posters/Jeong Poster.png' },
-      { label: '문의',    nav: 'contact',  path: 'assets/images/lectures/main3.png' },
-      { label: '프롬프트', nav: 'prompts',  path: 'assets/images/prompt.png' },
-      { label: 'M/V',    nav: 'mv',       path: 'assets/images/mv/@Korisian.png' }
+      { label: '강사',    nav: 'about',    path: 'assets/images/instructor1.webp' },
+      { label: '강의',    nav: 'lectures', path: 'assets/images/lectures/main6.webp' },
+      { label: '작품',  nav: 'works',    path: 'assets/images/posters/Jeong Poster.webp' },
+      { label: '문의',    nav: 'contact',  path: 'assets/images/lectures/main3.webp' },
+      { label: '프롬프트', nav: 'prompts',  path: 'assets/images/prompt.webp' },
+      { label: 'M/V',    nav: 'mv',       path: 'assets/images/mv/@Korisian.webp' }
     ];
 
     function toWebPath(p) { return p ? p.replace(/^\.\.\//, '') : p; }
@@ -383,7 +383,7 @@
     slidePaths.forEach((src, i) => {
       const div = document.createElement('div');
       div.className = 'slide' + (i === 0 ? ' active' : '');
-      div.innerHTML = `<img src="${src}" alt="슬라이드 ${i+1}">`;
+      div.innerHTML = `<img src="${src}" alt="슬라이드 ${i+1}"${i > 0 ? ' loading="lazy"' : ''}>`;
       container.insertBefore(div, overlay);
     });
     slidePaths.forEach((_, i) => {
@@ -449,7 +449,7 @@
         };
         const isWip = ['prompts'].includes(panel.nav);
         card.innerHTML = `
-          <img src="${panel.path}" alt="${panel.label}" onerror="this.style.display='none'">
+          <img src="${panel.path}" alt="${panel.label}" loading="lazy" onerror="this.style.display='none'">
           <div class="side-card-overlay"></div>
           <span class="side-card-label">${panel.label}</span>
           ${isWip ? '<span class="side-card-wip">🚧 작업중</span>' : ''}
