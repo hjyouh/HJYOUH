@@ -3,17 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>유형재 강사 포트폴리오</title>
-  <link rel="stylesheet" href="../../assets/css/tab-card.css?v=3">
-  <link rel="stylesheet" href="../../assets/css/fonts.css?v=3">
-  <link rel="stylesheet" href="../../assets/css/mobile-frame.css?v=3">
-  <!-- Google Fonts 비동기 로드 (렌더 블로킹 제거) -->
+  <title>유형재 강사 | 생성형 AI Creator 포트폴리오</title>
+  <meta name="description" content="생성형 AI를 활용해 더 나은 미래를 만드는 강사 유형재. 강의·작품·프롬프트 포트폴리오.">
+  <meta name="robots" content="index, follow">
+
+  <!-- 히어로 이미지 최우선 프리로드 (LCP 최적화) -->
+  <link rel="preload" href="../../assets/images/lectures/main1.webp" as="image" type="image/webp" fetchpriority="high">
+
+  <!-- SUITE 핵심 폰트 프리로드 (Regular·Bold만 — 가장 많이 사용) -->
+  <link rel="preload" href="../../assets/fonts/SUITE-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../assets/fonts/SUITE-Bold.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- Poppins (Google Fonts) 비동기 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"></noscript>
-  <!-- 히어로 첫 이미지만 프리로드 (나머지는 lazy) -->
-  <link rel="preload" href="../../assets/images/lectures/main1.webp" as="image" type="image/webp">
+
+  <!-- mobile-frame.css: 데스크톱 전용(min-width:431px) → 모바일에서 렌더 블로킹 없음 -->
+  <link rel="stylesheet" href="../../assets/css/mobile-frame.css?v=3" media="(min-width: 431px)">
   <style>
     body {
       margin: 0;
@@ -107,6 +115,31 @@
       0%, 100% { transform: translateY(0) rotate(0deg); }
       40%       { transform: translateY(-3px) rotate(-6deg); }
     }
+
+    /* ===== tab-card.css 인라인 (렌더 블로킹 제거) ===== */
+    .tab-card-wrap { position:relative; width:100%; margin-bottom:5px; cursor:pointer; }
+    .tab-card-wrap svg { width:100%; height:auto; display:block; }
+    .tab-card-title { font-size:14px; }
+    * { scrollbar-width:none; }
+    *::-webkit-scrollbar { width:0px; }
+    body.is-scrolling::-webkit-scrollbar { width:3px; }
+    body.is-scrolling::-webkit-scrollbar-track { background:transparent; }
+    body.is-scrolling::-webkit-scrollbar-thumb { background:#555; border-radius:999px; }
+    .mobile-footer { position:fixed; bottom:0; left:0; right:0; background:#111; padding:8px 16px; z-index:999; }
+    .mobile-footer::before { content:''; display:block; height:1px; background:#3a3a3a; margin:0 40px 8px; }
+    .mobile-footer .footer-row1 { display:flex; justify-content:center; align-items:center; gap:16px; margin-bottom:4px; }
+    .mobile-footer a { color:#ccc; text-decoration:none; font-size:12px; display:flex; align-items:center; gap:4px; white-space:nowrap; }
+    .mobile-footer .footer-row2 { text-align:center; }
+    .mobile-footer .footer-row2 a { color:#ccc; font-size:12px; font-family:'Poppins','SUITE',sans-serif; justify-content:center; }
+
+    /* ===== fonts.css 인라인 (렌더 블로킹 제거) ===== */
+    @font-face { font-family:'SUITE'; src:url('../../assets/fonts/SUITE-Light.woff2') format('woff2'); font-weight:300; font-style:normal; font-display:swap; }
+    @font-face { font-family:'SUITE'; src:url('../../assets/fonts/SUITE-Regular.woff2') format('woff2'); font-weight:400; font-style:normal; font-display:swap; }
+    @font-face { font-family:'SUITE'; src:url('../../assets/fonts/SUITE-Medium.woff2') format('woff2'); font-weight:500; font-style:normal; font-display:swap; }
+    @font-face { font-family:'SUITE'; src:url('../../assets/fonts/SUITE-SemiBold.woff2') format('woff2'); font-weight:600; font-style:normal; font-display:swap; }
+    @font-face { font-family:'SUITE'; src:url('../../assets/fonts/SUITE-Bold.woff2') format('woff2'); font-weight:700; font-style:normal; font-display:swap; }
+    @font-face { font-family:'SUITE'; src:url('../../assets/fonts/SUITE-ExtraBold.woff2') format('woff2'); font-weight:800; font-style:normal; font-display:swap; }
+    @font-face { font-family:'SUITE'; src:url('../../assets/fonts/SUITE-Heavy.woff2') format('woff2'); font-weight:900; font-style:normal; font-display:swap; }
   </style>
 </head>
 <body>
@@ -119,7 +152,7 @@
            alt="aimt"
            style="height:22px; opacity:0.85;">
       <div style="margin-left:auto; display:flex; align-items:center;">
-        <button class="hamburger" style="margin-left:0;" onclick="openDrawer()"><img src="../../assets/images/menu-white.webp" style="height:20px;vertical-align:middle;opacity:0.7;"></button>
+        <button class="hamburger" style="margin-left:0;" onclick="openDrawer()" aria-label="메뉴 열기"><img src="../../assets/images/menu-white.webp" alt="메뉴" style="height:20px;vertical-align:middle;opacity:0.7;"></button>
       </div>
     </div>
     <div class="sticky-top-msg" id="homeTopMsg">AI로 바꾸는 당신의 내일</div>
@@ -127,6 +160,7 @@
 
 
   <!-- 카드 영역 -->
+  <main>
   <div class="card-container">
 
     <!-- 카드1: aimt 슬라이드 -->
@@ -201,7 +235,7 @@
     </div>
 
     <!-- 카드4: 작업들 -->
-    <a href="mobile-작업들.html?v=2" style="text-decoration:none;">
+    <a href="mobile-작업들.html?v=2" aria-label="작품 페이지로 이동" style="text-decoration:none;">
       <div class="tab-card-wrap">
         <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -224,7 +258,7 @@
     </a>
 
     <!-- 카드5: 프롬프트 -->
-    <a href="#" onclick="showMobileWip();return false;" style="text-decoration:none;">
+    <a href="#" onclick="showMobileWip();return false;" aria-label="프롬프트 페이지 (준비중)" style="text-decoration:none;">
       <div class="tab-card-wrap">
         <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -247,7 +281,7 @@
     </a>
 
     <!-- 카드6: M/V -->
-    <a href="mobile-mv.html" style="text-decoration:none;">
+    <a href="mobile-mv.html" aria-label="M/V 페이지로 이동" style="text-decoration:none;">
       <div class="tab-card-wrap">
         <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -268,6 +302,7 @@
     </a>
 
   </div>
+  </main>
 
   <!-- 스크롤 탭 힌트 (스크롤 시 1회 출현 후 소멸) -->
   <div class="scroll-tap-hint" id="scrollTapHint" aria-hidden="true">
@@ -280,11 +315,11 @@
   <!-- Footer -->
   <footer class="mobile-footer">
     <div class="footer-row1">
-      <a href="tel:010-3558-6960">📞 010-3558-6960</a>
-      <a href="mailto:hjyouh@naver.com">✉️ hjyouh@naver.com</a>
+      <a href="tel:010-3558-6960" aria-label="전화하기 010-3558-6960" style="min-height:44px;padding:8px 4px;">📞 010-3558-6960</a>
+      <a href="mailto:hjyouh@naver.com" aria-label="이메일 보내기 hjyouh@naver.com" style="min-height:44px;padding:8px 4px;">✉️ hjyouh@naver.com</a>
     </div>
     <div class="footer-row2">
-      <a href="https://aitalker.co.kr/hjyouh" target="_blank">
+      <a href="https://aitalker.co.kr/hjyouh" target="_blank" aria-label="홈페이지 aitalker.co.kr/hjyouh" style="min-height:44px;padding:8px 4px;">
         🌐 aitalker.co.kr/hjyouh
       </a>
     </div>
