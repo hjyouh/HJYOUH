@@ -47,6 +47,13 @@
     }
     .instr-row input { flex: 1; }
     .instr-year { width: 110px; flex: none !important; }
+    .instr-drag-handle {
+      cursor: grab; color: var(--sub); font-size: 15px;
+      flex-shrink: 0; line-height: 1; padding: 0 2px;
+      background: none; border: none; user-select: none;
+    }
+    .instr-drag-handle:active { cursor: grabbing; }
+    .instr-row.drag-over { outline: 1px solid var(--gold); border-radius: 8px; background: rgba(201,169,110,0.06); }
 
     /* ── SNS 행 ── */
     .sns-row {
@@ -447,10 +454,46 @@ function addCertRow(data) {
   document.getElementById('certRows').appendChild(row);
 }
 
+let _awardDragSrc = null;
+function onAwardDragStart(e) {
+  _awardDragSrc = e.target.closest('.instr-row');
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => _awardDragSrc && (_awardDragSrc.style.opacity = '0.4'), 0);
+}
+function onAwardDragEnd(e) {
+  if (_awardDragSrc) _awardDragSrc.style.opacity = '';
+  document.querySelectorAll('#awardRows .instr-row').forEach(r => r.classList.remove('drag-over'));
+}
+function onAwardDragOver(e) {
+  e.preventDefault();
+  const target = e.target.closest('#awardRows .instr-row');
+  if (!target) return;
+  document.querySelectorAll('#awardRows .instr-row').forEach(r => r.classList.remove('drag-over'));
+  target.classList.add('drag-over');
+}
+function onAwardDrop(e) {
+  e.preventDefault();
+  const target = e.target.closest('#awardRows .instr-row');
+  document.querySelectorAll('#awardRows .instr-row').forEach(r => r.classList.remove('drag-over'));
+  if (!_awardDragSrc || !target || _awardDragSrc === target) { _awardDragSrc = null; return; }
+  const rows = [...document.querySelectorAll('#awardRows .instr-row')];
+  const si = rows.indexOf(_awardDragSrc), ti = rows.indexOf(target);
+  rows.splice(si, 1); rows.splice(ti, 0, _awardDragSrc);
+  const c = document.getElementById('awardRows');
+  rows.forEach(r => c.appendChild(r));
+  _awardDragSrc = null;
+}
+
 function addAwardRow(data) {
   const row = document.createElement('div');
   row.className = 'instr-row';
+  row.draggable = true;
+  row.addEventListener('dragstart', onAwardDragStart);
+  row.addEventListener('dragend',   onAwardDragEnd);
+  row.addEventListener('dragover',  onAwardDragOver);
+  row.addEventListener('drop',      onAwardDrop);
   row.innerHTML = `
+    <button type="button" class="instr-drag-handle" title="드래그로 순서 변경" onclick="event.stopPropagation()">☰</button>
     <input type="text" class="fi cur-title-input" placeholder="수상 내용" value="${data ? escHtml(data) : ''}">
     <button type="button" class="cur-del-btn" onclick="this.closest('.instr-row').remove()">✕</button>
   `;

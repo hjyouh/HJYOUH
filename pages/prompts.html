@@ -732,7 +732,7 @@
   function renderPrompts(tab) {
     const masonry = document.getElementById('promptsMasonry');
     if (!masonry) return;
-    const items = (PROMPT_DATA[tab] || []).slice().reverse();
+    const items = (PROMPT_DATA[tab] || []).filter(p => p.active !== false).slice().reverse();
     masonry.innerHTML = '';
     items.forEach((item, i) => {
       const card = document.createElement('div');

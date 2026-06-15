@@ -69,6 +69,13 @@
       gap: 6px;
       margin-bottom: 6px;
     }
+    .award-drag-handle {
+      cursor: grab; color: var(--sub); font-size: 15px;
+      flex-shrink: 0; line-height: 1; padding: 0 2px;
+      background: none; border: none; user-select: none;
+    }
+    .award-drag-handle:active { cursor: grabbing; }
+    .award-row.drag-over { outline: 1px solid var(--gold); border-radius: 8px; background: rgba(201,169,110,0.06); }
     .award-emoji-sel {
       flex: none;
       width: 130px;
@@ -713,13 +720,50 @@ function normalizeAwards(awards) {
   return awards;
 }
 
+/* ── 수상 행 드래그 ── */
+let _awDragSrc = null;
+function onAwDragStart(e) {
+  _awDragSrc = e.target.closest('.award-row');
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => _awDragSrc && (_awDragSrc.style.opacity = '0.4'), 0);
+}
+function onAwDragEnd(e) {
+  if (_awDragSrc) _awDragSrc.style.opacity = '';
+  document.querySelectorAll('#awardRows .award-row').forEach(r => r.classList.remove('drag-over'));
+}
+function onAwDragOver(e) {
+  e.preventDefault();
+  const target = e.target.closest('#awardRows .award-row');
+  if (!target) return;
+  document.querySelectorAll('#awardRows .award-row').forEach(r => r.classList.remove('drag-over'));
+  target.classList.add('drag-over');
+}
+function onAwDrop(e) {
+  e.preventDefault();
+  const target = e.target.closest('#awardRows .award-row');
+  document.querySelectorAll('#awardRows .award-row').forEach(r => r.classList.remove('drag-over'));
+  if (!_awDragSrc || !target || _awDragSrc === target) { _awDragSrc = null; return; }
+  const rows = [...document.querySelectorAll('#awardRows .award-row')];
+  const si = rows.indexOf(_awDragSrc), ti = rows.indexOf(target);
+  rows.splice(si, 1); rows.splice(ti, 0, _awDragSrc);
+  const c = document.getElementById('awardRows');
+  rows.forEach(r => c.appendChild(r));
+  _awDragSrc = null;
+}
+
 /* ── 수상 행 추가 ── */
 function addAwardRow(data) {
   const sel = (data && data.emoji) || '⭐';
   const txt = (data && data.text)  || '';
   const row = document.createElement('div');
   row.className = 'award-row';
+  row.draggable = true;
+  row.addEventListener('dragstart', onAwDragStart);
+  row.addEventListener('dragend',   onAwDragEnd);
+  row.addEventListener('dragover',  onAwDragOver);
+  row.addEventListener('drop',      onAwDrop);
   row.innerHTML = `
+    <button type="button" class="award-drag-handle" title="드래그로 순서 변경" onclick="event.stopPropagation()">☰</button>
     <select class="award-emoji-sel">${awardEmojiOpts(sel)}</select>
     <input type="text" class="award-text-inp" placeholder="2025 서울 국제 AI 영화제 금상" value="${escHtml(txt)}">
     <button type="button" class="cur-del-btn" onclick="this.closest('.award-row').remove()">✕</button>
