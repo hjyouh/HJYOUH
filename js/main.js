@@ -56,6 +56,14 @@ document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
   loadPage('home');
   initializeHeaderScroll();
+  // Supabase 로드 후 prompts active 상태 동기화
+  const waitForSb = setInterval(() => {
+    if (window.sbLoad) {
+      clearInterval(waitForSb);
+      syncPromptsActiveState();
+    }
+  }, 100);
+  setTimeout(() => clearInterval(waitForSb), 5000);
 });
 
 /**
@@ -92,14 +100,8 @@ function setupEventListeners() {
         if (page) navigateTo(page);
       });
     });
-    // WIP 페이지 nav 시각적 비활성화 (색상 + 커서)
-    elements.nav.querySelectorAll('a[data-page]').forEach(link => {
-      if (UNDER_CONSTRUCTION.includes(link.dataset.page)) {
-        link.style.color = 'rgba(255,255,255,0.28)';
-        link.style.cursor = 'default';
-        link.title = '준비 중입니다';
-      }
-    });
+    // WIP 페이지 nav 시각적 비활성화 (동적)
+    applyNavWipStyles();
   }
 
   // Mobile hamburger
@@ -143,8 +145,57 @@ function setupEventListeners() {
 
 // ===== NAVIGATION & ROUTING =====
 
-/* ── 작업 중인 페이지 (차단 목록) ── */
-const UNDER_CONSTRUCTION = ['prompts'];
+/* ── 작업 중인 페이지 (차단 목록) — Supabase active 상태로 동적 제어 ── */
+let UNDER_CONSTRUCTION = ['prompts'];
+
+async function syncPromptsActiveState() {
+  try {
+    let cfg = null;
+    if (window.sbLoad) {
+      cfg = await window.sbLoad('pageMsgPrompts', {});
+    } else {
+      try { cfg = JSON.parse(localStorage.getItem('pageMsgPrompts') || '{}'); } catch(e) {}
+    }
+    if (!cfg) return;
+    const anyActive = cfg.imageActive !== false || cfg.videoActive !== false || cfg.etcActive !== false;
+    if (anyActive) {
+      UNDER_CONSTRUCTION = UNDER_CONSTRUCTION.filter(p => p !== 'prompts');
+    } else {
+      if (!UNDER_CONSTRUCTION.includes('prompts')) UNDER_CONSTRUCTION.push('prompts');
+    }
+    applyNavWipStyles();
+  } catch(e) {}
+}
+
+function applyNavWipStyles() {
+  if (elements.nav) {
+    elements.nav.querySelectorAll('a[data-page]').forEach(link => {
+      if (UNDER_CONSTRUCTION.includes(link.dataset.page)) {
+        link.style.color = 'rgba(255,255,255,0.28)';
+        link.style.cursor = 'default';
+        link.title = '준비 중입니다';
+      } else {
+        link.style.color = '';
+        link.style.cursor = '';
+        link.title = '';
+      }
+    });
+  }
+  // home 사이드 카드 뱃지 동기화
+  document.querySelectorAll('.side-card[data-nav]').forEach(card => {
+    const nav = card.getAttribute('data-nav');
+    const shouldBeWip = UNDER_CONSTRUCTION.includes(nav);
+    let wipEl = card.querySelector('.side-card-wip');
+    if (shouldBeWip && !wipEl) {
+      wipEl = document.createElement('span');
+      wipEl.className = 'side-card-wip';
+      wipEl.textContent = '🚧 작업중';
+      card.appendChild(wipEl);
+    } else if (!shouldBeWip && wipEl) {
+      wipEl.remove();
+    }
+  });
+}
 
 function showConstructionMsg() {
   const existing = document.getElementById('construction-toast');
@@ -281,6 +332,9 @@ function updateActiveNav(pageName) {
       if (UNDER_CONSTRUCTION.includes(link.dataset.page)) {
         link.style.color = 'rgba(255,255,255,0.28)';
         link.style.cursor = 'default';
+      } else {
+        if (link.dataset.page !== pageName) link.style.color = '';
+        link.style.cursor = '';
       }
     });
   }

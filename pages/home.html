@@ -447,7 +447,8 @@
           sessionStorage.setItem('sideHintDone', '1');
           navigateTo(panel.nav);
         };
-        const isWip = ['prompts'].includes(panel.nav);
+        const isWip = window.UNDER_CONSTRUCTION ? window.UNDER_CONSTRUCTION.includes(panel.nav) : ['prompts'].includes(panel.nav);
+        card.dataset.nav = panel.nav;
         card.innerHTML = `
           <img src="${panel.path}" alt="${panel.label}" loading="lazy" onerror="this.style.display='none'">
           <div class="side-card-overlay"></div>
