@@ -498,12 +498,13 @@
     function renderGrid(tab) {
       const masonry = document.getElementById('promptsMasonry');
       if (!masonry) return;
-      // inactive 섹션이면 작업중 표시
-      if (window._sectionActive && window._sectionActive[tab] === false) {
-        masonry.innerHTML = '<div style="text-align:center;padding:80px 20px;color:rgba(255,255,255,0.4);font-size:14px;"><div style="font-size:36px;margin-bottom:10px;">🚧</div>작업중입니다</div>';
+      const isInactive = window._sectionActive && window._sectionActive[tab] === false;
+      const items = (PROMPT_DATA[tab] || []).filter(p => p.active !== false).slice().reverse();
+      const isEmpty = items.length === 0;
+      if (isInactive || isEmpty) {
+        masonry.innerHTML = '<div style="text-align:center;padding:80px 20px;color:rgba(255,255,255,0.4);font-size:14px;"><div style="font-size:36px;margin-bottom:10px;">🚧</div>준비중입니다</div>';
         return;
       }
-      const items = (PROMPT_DATA[tab] || []).slice().reverse();
       masonry.innerHTML = '';
       items.forEach((item, i) => {
         const card = document.createElement('div');
