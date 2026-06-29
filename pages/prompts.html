@@ -895,6 +895,18 @@
         subEl.innerHTML = cfg.subtitle.replace(/\n/g,'<br>');
         subEl.style.display = '';
       }
+      // active 체크: false면 콘텐츠 대신 "작업중" 표시
+      if (cfg.active === false) {
+        const grid = document.getElementById('promptsGrid');
+        const tabs = document.querySelector('.prompt-tabs');
+        if (grid) grid.innerHTML = '';
+        if (tabs) tabs.style.display = 'none';
+        const wip = document.createElement('div');
+        wip.style.cssText = 'text-align:center;padding:80px 20px;color:rgba(255,255,255,0.45);font-size:15px;';
+        wip.innerHTML = '<div style="font-size:40px;margin-bottom:12px;">🚧</div><div>작업중입니다</div>';
+        const wrap = grid ? grid.parentElement : document.body;
+        if (wrap) wrap.appendChild(wip);
+      }
     } catch(e) {}
   }
 

@@ -603,7 +603,7 @@
       renderGrid('image');
     })();
 
-    // 페이지 메시지 로드
+    // 페이지 메시지 로드 + active 체크
     (async () => {
       try {
         const cfg = window.sbLoad
@@ -620,11 +620,20 @@
             sub.style.display = '';
           }
         }
+        // active === false 이면 "작업중" 표시
+        if (cfg.active === false) {
+          document.querySelector('.tabs-wrap').style.display = 'none';
+          document.getElementById('promptsMasonry').style.display = 'none';
+          const wip = document.createElement('div');
+          wip.style.cssText = 'text-align:center;padding:80px 20px;color:rgba(255,255,255,0.45);font-size:15px;';
+          wip.innerHTML = '<div style="font-size:40px;margin-bottom:12px;">🚧</div><div>작업중입니다</div>';
+          document.body.appendChild(wip);
+        }
       } catch(e) {}
     })();
   </script>
 
-  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="../../js/supabase-client.js"></script>
   <script src="../../assets/js/mobile-nav.js?v=1"></script>
 </body>

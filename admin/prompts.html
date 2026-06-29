@@ -319,11 +319,17 @@
     </div>
 
     <!-- 카테고리 탭 -->
-    <div class="prompt-tabs">
+    <div class="prompt-tabs" style="display:flex; align-items:center; gap:8px;">
       <button class="btn btn-gold btn-sm"    id="tabAll"   onclick="switchPromptsTab('all')">전체</button>
       <button class="btn btn-outline btn-sm" id="tabImage" onclick="switchPromptsTab('image')">🖼 이미지</button>
       <button class="btn btn-outline btn-sm" id="tabVideo" onclick="switchPromptsTab('video')">🎬 영상</button>
       <button class="btn btn-outline btn-sm" id="tabEtc"   onclick="switchPromptsTab('etc')">✨ 기타</button>
+      <div style="flex:1;"></div>
+      <button type="button" id="promptsActiveToggle" onclick="togglePromptsActive()"
+        style="padding:5px 14px; border-radius:6px; border:1px solid; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; font-family:inherit;">
+        Active
+      </button>
+      <input type="hidden" id="promptsActiveVal" value="true">
     </div>
 
     <div class="card">
@@ -721,18 +727,45 @@ function findPromptById(id) {
 }
 
 /* ── 프롬프트 페이지 메시지 저장/로드 ── */
+function updatePromptsActiveUI(active) {
+  const btn = document.getElementById('promptsActiveToggle');
+  if (!btn) return;
+  if (active) {
+    btn.textContent = 'Active';
+    btn.style.background = 'rgba(34,197,94,0.12)';
+    btn.style.color = '#16a34a';
+    btn.style.borderColor = 'rgba(34,197,94,0.4)';
+  } else {
+    btn.textContent = 'Inactive';
+    btn.style.background = 'rgba(150,150,150,0.12)';
+    btn.style.color = '#888';
+    btn.style.borderColor = 'rgba(150,150,150,0.3)';
+  }
+}
+
+function togglePromptsActive() {
+  const inp = document.getElementById('promptsActiveVal');
+  const active = inp.value === 'false';
+  inp.value = active ? 'true' : 'false';
+  updatePromptsActiveUI(active);
+}
+
 function loadPromptsMsg() {
   const d = loadData('pageMsgPrompts', {});
   document.getElementById('promptMainMsg').value   = d.mainMsg  || '';
   document.getElementById('promptSubMsg').value    = d.subtitle || '';
   document.getElementById('promptMobileMsg').value = d.mobile   || '';
+  const active = d.active !== false;
+  document.getElementById('promptsActiveVal').value = active ? 'true' : 'false';
+  updatePromptsActiveUI(active);
 }
 
 function savePromptsMsg() {
   const d = {
     mainMsg:  document.getElementById('promptMainMsg').value.trim(),
     subtitle: document.getElementById('promptSubMsg').value.trim(),
-    mobile:   document.getElementById('promptMobileMsg').value.trim()
+    mobile:   document.getElementById('promptMobileMsg').value.trim(),
+    active:   document.getElementById('promptsActiveVal').value !== 'false'
   };
   if (saveData('pageMsgPrompts', d)) toast('메시지가 저장되었습니다');
   else toast('저장 실패', true);

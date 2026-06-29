@@ -469,7 +469,32 @@
     })();
   </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../../js/supabase-client.js"></script>
   <script src="../../assets/js/mobile-nav.js?v=1"></script>
+  <script>
+    // 프롬프트 카드5: active 상태에 따라 동적 처리
+    (async function() {
+      try {
+        const cfg = window.sbLoad
+          ? await window.sbLoad('pageMsgPrompts', {})
+          : JSON.parse(localStorage.getItem('pageMsgPrompts') || '{}');
+        if (cfg.active !== false) {
+          // Active → 프롬프트 페이지로 링크 변경, 작업중 뱃지 숨김
+          const card5 = document.querySelector('[aria-label="프롬프트 페이지 (준비중)"]');
+          if (card5) {
+            card5.href = 'mobile-프롬프트.html';
+            card5.removeAttribute('onclick');
+            card5.setAttribute('aria-label', '프롬프트 페이지로 이동');
+            const wipRect = card5.querySelector('rect[x="110"]');
+            const wipText = card5.querySelector('text[x="180"]');
+            if (wipRect) wipRect.style.display = 'none';
+            if (wipText) wipText.style.display = 'none';
+          }
+        }
+      } catch(e) {}
+    })();
+  </script>
 </body>
 </html>
 
