@@ -630,11 +630,18 @@
     return p;
   }
 
-  function initLecturesData() {
+  async function initLecturesData() {
     try {
-      const saved = localStorage.getItem('lecturesData');
-      if (saved) {
-        LECTURES = JSON.parse(saved).map(lec => ({ ...lec, image: fixLecPath(lec.image) }));
+      let data = null;
+      if (window.sbLoad) {
+        data = await window.sbLoad('lecturesData', null);
+      }
+      if (!data) {
+        const saved = localStorage.getItem('lecturesData');
+        if (saved) data = JSON.parse(saved);
+      }
+      if (data && Array.isArray(data)) {
+        LECTURES = data.map(lec => ({ ...lec, image: fixLecPath(lec.image) }));
       } else {
         LECTURES = LECTURES.map(lec => ({ ...lec, image: fixLecPath(lec.image) }));
       }
@@ -658,10 +665,12 @@
                   Q 272 10 260 10 L 26 10 Q 14 10 14 20 Z"/>
               </clipPath>
             </defs>
-            <rect width="360" height="220" fill="#111" clip-path="url(#lc${i})"/>
-            <image href="${imgEsc}"
-              x="0" y="0" width="360" height="220"
-              clip-path="url(#lc${i})" preserveAspectRatio="xMidYMid slice"/>
+            <g clip-path="url(#lc${i})">
+              <rect width="360" height="220" fill="#111"/>
+              <image href="${imgEsc}"
+                x="0" y="0" width="360" height="220"
+                preserveAspectRatio="xMidYMid slice"/>
+            </g>
             <polygon points="260,10 346,10 346,28 292,28" fill="#000000"/>
             <path d="M 14 206 Q 14 218 26 218 L 334 218 Q 346 218 346 206
               L 346 40 Q 346 28 334 28 L 292 28 Q 280 28 276 19
@@ -758,16 +767,22 @@
   });
 
   /* 초기 렌더링 호출 */
-  initLecturesData();
-  renderLectures();
+  initLecturesData().then(() => renderLectures());
 </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../../js/supabase-client.js"></script>
   <script src="../../assets/js/mobile-nav.js?v=2"></script>
   <script>
     // 강의 Mobile Message 연동
-    (function() {
+    (async function() {
       try {
-        const d = JSON.parse(localStorage.getItem('pageMsgLectures') || '{}');
+        let d = {};
+        if (window.sbLoad) {
+          d = await window.sbLoad('pageMsgLectures', {});
+        } else {
+          d = JSON.parse(localStorage.getItem('pageMsgLectures') || '{}');
+        }
         const el = document.getElementById('lecTopMsg');
         if (el && d.mobile) el.textContent = d.mobile;
       } catch(e) {}

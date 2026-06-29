@@ -427,7 +427,7 @@
 </div><!-- /view-detail -->
 
 
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="../../js/supabase-client.js"></script>
 <script>
 let FILMS = [
@@ -644,10 +644,12 @@ function buildFilmCard(film, idx = 0) {
             <path d="M 14 366 Q 14 380 26 380 L 294 380 Q 306 380 306 366 L 306 40 Q 306 28 294 28 L 238 28 Q 226 28 222 19 Q 218 10 206 10 L 26 10 Q 14 10 14 22 Z"/>
           </clipPath>
         </defs>
-        <rect width="320" height="380" fill="#111" clip-path="url(#${clipId})"/>
-        <image href="${film.image}"
-          x="0" y="0" width="320" height="380"
-          clip-path="url(#${clipId})" preserveAspectRatio="xMidYMid meet"/>
+        <g clip-path="url(#${clipId})">
+          <rect width="320" height="380" fill="#111"/>
+          <image href="${film.image}"
+            x="0" y="0" width="320" height="380"
+            preserveAspectRatio="xMidYMid meet"/>
+        </g>
         <polygon points="206,10 306,10 306,28 238,28" fill="#000000"/>
         <path d="M 14 366 Q 14 380 26 380 L 294 380 Q 306 380 306 366 L 306 40 Q 306 28 294 28 L 238 28 Q 226 28 222 19 Q 218 10 206 10 L 26 10 Q 14 10 14 22 Z"
           fill="none" stroke="rgba(150,150,150,0.5)" stroke-width="1"/>

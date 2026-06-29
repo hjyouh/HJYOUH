@@ -281,9 +281,11 @@ function buildMvCard(item, idx) {
             <path d="${notchPath}"/>
           </clipPath>
         </defs>
-        <rect width="320" height="240" fill="#111" clip-path="url(#${clipId})"/>
-        <image href="${imgSrc}" x="0" y="0" width="320" height="240"
-          clip-path="url(#${clipId})" preserveAspectRatio="xMidYMid slice"/>
+        <g clip-path="url(#${clipId})">
+          <rect width="320" height="240" fill="#111"/>
+          <image href="${imgSrc}" x="0" y="0" width="320" height="240"
+            preserveAspectRatio="xMidYMid slice"/>
+        </g>
         <polygon points="206,10 306,10 306,28 238,28" fill="#000"/>
         <path d="${notchPath}" fill="none" stroke="rgba(150,150,150,0.5)" stroke-width="1"/>
         <path class="gold-border-path" d="${notchPath}"
@@ -391,7 +393,7 @@ window.addEventListener('load', async function() {
 });
 </script>
 
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="../../js/supabase-client.js"></script>
 <script src="../../assets/js/mobile-nav.js"></script>
 </body>
