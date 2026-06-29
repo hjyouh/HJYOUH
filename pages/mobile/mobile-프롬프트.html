@@ -495,6 +495,11 @@
     function renderGrid(tab) {
       const masonry = document.getElementById('promptsMasonry');
       if (!masonry) return;
+      // inactive 섹션이면 작업중 표시
+      if (window._sectionActive && window._sectionActive[tab] === false) {
+        masonry.innerHTML = '<div style="text-align:center;padding:80px 20px;color:rgba(255,255,255,0.4);font-size:14px;"><div style="font-size:36px;margin-bottom:10px;">🚧</div>작업중입니다</div>';
+        return;
+      }
       const items = (PROMPT_DATA[tab] || []).slice().reverse();
       masonry.innerHTML = '';
       items.forEach((item, i) => {
@@ -603,7 +608,7 @@
       renderGrid('image');
     })();
 
-    // 페이지 메시지 로드 + active 체크
+    // 페이지 메시지 로드 + 섹션별 active 체크
     (async () => {
       try {
         const cfg = window.sbLoad
@@ -620,14 +625,31 @@
             sub.style.display = '';
           }
         }
-        // active === false 이면 "작업중" 표시
-        if (cfg.active === false) {
+        // 섹션별 active 상태 (기본값 true)
+        window._sectionActive = {
+          image: cfg.imageActive !== false,
+          video: cfg.videoActive !== false,
+          etc:   cfg.etcActive   !== false
+        };
+        const anyActive = Object.values(window._sectionActive).some(Boolean);
+        if (!anyActive) {
+          // 전부 inactive
           document.querySelector('.tabs-wrap').style.display = 'none';
-          document.getElementById('promptsMasonry').style.display = 'none';
-          const wip = document.createElement('div');
-          wip.style.cssText = 'text-align:center;padding:80px 20px;color:rgba(255,255,255,0.45);font-size:15px;';
-          wip.innerHTML = '<div style="font-size:40px;margin-bottom:12px;">🚧</div><div>작업중입니다</div>';
-          document.body.appendChild(wip);
+          document.getElementById('promptsMasonry').innerHTML =
+            '<div style="text-align:center;padding:80px 20px;color:rgba(255,255,255,0.45);font-size:15px;"><div style="font-size:40px;margin-bottom:12px;">🚧</div><div>작업중입니다</div></div>';
+        } else {
+          // inactive 탭 버튼 숨기기
+          ['image','video','etc'].forEach(cat => {
+            if (!window._sectionActive[cat]) {
+              const btn = document.querySelector(`.tab-btn[data-tab="${cat}"]`);
+              if (btn) btn.style.display = 'none';
+            }
+          });
+          // 현재 탭이 inactive면 첫 번째 active 탭으로 전환
+          if (!window._sectionActive[currentTab]) {
+            const first = ['image','video','etc'].find(c => window._sectionActive[c]);
+            if (first) switchTab(first);
+          }
         }
       } catch(e) {}
     })();

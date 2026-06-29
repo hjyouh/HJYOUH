@@ -732,6 +732,11 @@
   function renderPrompts(tab) {
     const masonry = document.getElementById('promptsMasonry');
     if (!masonry) return;
+    // inactive 섹션이면 작업중 표시
+    if (window._promptSectionActive && window._promptSectionActive[tab] === false) {
+      masonry.innerHTML = '<div style="text-align:center;padding:80px 20px;color:rgba(255,255,255,0.4);font-size:14px;"><div style="font-size:36px;margin-bottom:10px;">🚧</div>작업중입니다</div>';
+      return;
+    }
     const items = (PROMPT_DATA[tab] || []).filter(p => p.active !== false).slice().reverse();
     masonry.innerHTML = '';
     items.forEach((item, i) => {
@@ -895,8 +900,27 @@
         subEl.innerHTML = cfg.subtitle.replace(/\n/g,'<br>');
         subEl.style.display = '';
       }
-      // active 체크: false면 콘텐츠 대신 "작업중" 표시
-      if (cfg.active === false) {
+      // 섹션별 active 상태 (기본값 true)
+      window._promptSectionActive = {
+        image: cfg.imageActive !== false,
+        video: cfg.videoActive !== false,
+        etc:   cfg.etcActive   !== false
+      };
+      // 탭 버튼 표시 제어
+      const tabBtnMap = { image: '[data-tab="image"]', video: '[data-tab="video"]', etc: '[data-tab="etc"]' };
+      let firstActive = null;
+      ['image','video','etc'].forEach(cat => {
+        const btn = document.querySelector(`.tab-btn${tabBtnMap[cat]}`);
+        if (window._promptSectionActive[cat]) {
+          if (!firstActive) firstActive = cat;
+          if (btn) btn.style.display = '';
+        } else {
+          if (btn) btn.style.display = 'none';
+        }
+      });
+      // 전부 inactive면 "작업중" 표시
+      const anyActive = Object.values(window._promptSectionActive).some(Boolean);
+      if (!anyActive) {
         const grid = document.getElementById('promptsGrid');
         const tabs = document.querySelector('.prompt-tabs');
         if (grid) grid.innerHTML = '';
@@ -906,6 +930,10 @@
         wip.innerHTML = '<div style="font-size:40px;margin-bottom:12px;">🚧</div><div>작업중입니다</div>';
         const wrap = grid ? grid.parentElement : document.body;
         if (wrap) wrap.appendChild(wip);
+      }
+      // 현재 탭이 inactive면 첫 번째 active 탭으로 전환
+      if (firstActive && window._promptSectionActive && !window._promptSectionActive[window._currentPromptTab || 'image']) {
+        window._currentPromptTab = firstActive;
       }
     } catch(e) {}
   }

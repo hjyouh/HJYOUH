@@ -318,18 +318,32 @@
       <button class="btn btn-gold" onclick="openPromptModal()">+ 프롬프트 추가</button>
     </div>
 
-    <!-- 카테고리 탭 -->
-    <div class="prompt-tabs" style="display:flex; align-items:center; gap:8px;">
+    <!-- 카테고리 탭 + 섹션별 Active 토글 -->
+    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; row-gap:6px;">
       <button class="btn btn-gold btn-sm"    id="tabAll"   onclick="switchPromptsTab('all')">전체</button>
       <button class="btn btn-outline btn-sm" id="tabImage" onclick="switchPromptsTab('image')">🖼 이미지</button>
       <button class="btn btn-outline btn-sm" id="tabVideo" onclick="switchPromptsTab('video')">🎬 영상</button>
       <button class="btn btn-outline btn-sm" id="tabEtc"   onclick="switchPromptsTab('etc')">✨ 기타</button>
-      <div style="flex:1;"></div>
-      <button type="button" id="promptsActiveToggle" onclick="togglePromptsActive()"
-        style="padding:5px 14px; border-radius:6px; border:1px solid; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; font-family:inherit;">
-        Active
-      </button>
-      <input type="hidden" id="promptsActiveVal" value="true">
+      <div style="flex:1; min-width:8px;"></div>
+      <!-- 섹션별 독립 Active 토글 -->
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span style="font-size:11px; color:var(--sub);">섹션 공개:</span>
+        <button type="button" id="toggleImage" onclick="toggleSectionActive('image')"
+          style="padding:3px 10px; border-radius:5px; border:1px solid; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.2s; font-family:inherit;">
+          🖼 이미지
+        </button>
+        <button type="button" id="toggleVideo" onclick="toggleSectionActive('video')"
+          style="padding:3px 10px; border-radius:5px; border:1px solid; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.2s; font-family:inherit;">
+          🎬 영상
+        </button>
+        <button type="button" id="toggleEtc" onclick="toggleSectionActive('etc')"
+          style="padding:3px 10px; border-radius:5px; border:1px solid; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.2s; font-family:inherit;">
+          ✨ 기타
+        </button>
+      </div>
+      <input type="hidden" id="activeImage" value="true">
+      <input type="hidden" id="activeVideo" value="true">
+      <input type="hidden" id="activeEtc"   value="true">
     </div>
 
     <div class="card">
@@ -727,27 +741,28 @@ function findPromptById(id) {
 }
 
 /* ── 프롬프트 페이지 메시지 저장/로드 ── */
-function updatePromptsActiveUI(active) {
-  const btn = document.getElementById('promptsActiveToggle');
+const SECTION_IDS = { image: 'activeImage', video: 'activeVideo', etc: 'activeEtc' };
+const TOGGLE_IDS  = { image: 'toggleImage', video: 'toggleVideo', etc: 'toggleEtc' };
+
+function updateSectionUI(cat) {
+  const active = document.getElementById(SECTION_IDS[cat]).value !== 'false';
+  const btn    = document.getElementById(TOGGLE_IDS[cat]);
   if (!btn) return;
   if (active) {
-    btn.textContent = 'Active';
-    btn.style.background = 'rgba(34,197,94,0.12)';
-    btn.style.color = '#16a34a';
-    btn.style.borderColor = 'rgba(34,197,94,0.4)';
+    btn.style.background   = 'rgba(34,197,94,0.12)';
+    btn.style.color        = '#16a34a';
+    btn.style.borderColor  = 'rgba(34,197,94,0.4)';
   } else {
-    btn.textContent = 'Inactive';
-    btn.style.background = 'rgba(150,150,150,0.12)';
-    btn.style.color = '#888';
-    btn.style.borderColor = 'rgba(150,150,150,0.3)';
+    btn.style.background   = 'rgba(150,150,150,0.12)';
+    btn.style.color        = '#888';
+    btn.style.borderColor  = 'rgba(150,150,150,0.3)';
   }
 }
 
-function togglePromptsActive() {
-  const inp = document.getElementById('promptsActiveVal');
-  const active = inp.value === 'false';
-  inp.value = active ? 'true' : 'false';
-  updatePromptsActiveUI(active);
+function toggleSectionActive(cat) {
+  const inp = document.getElementById(SECTION_IDS[cat]);
+  inp.value = inp.value === 'false' ? 'true' : 'false';
+  updateSectionUI(cat);
 }
 
 function loadPromptsMsg() {
@@ -755,17 +770,21 @@ function loadPromptsMsg() {
   document.getElementById('promptMainMsg').value   = d.mainMsg  || '';
   document.getElementById('promptSubMsg').value    = d.subtitle || '';
   document.getElementById('promptMobileMsg').value = d.mobile   || '';
-  const active = d.active !== false;
-  document.getElementById('promptsActiveVal').value = active ? 'true' : 'false';
-  updatePromptsActiveUI(active);
+  // 섹션별 active 복원 (기본값 true)
+  document.getElementById('activeImage').value = (d.imageActive !== false) ? 'true' : 'false';
+  document.getElementById('activeVideo').value = (d.videoActive !== false) ? 'true' : 'false';
+  document.getElementById('activeEtc').value   = (d.etcActive   !== false) ? 'true' : 'false';
+  ['image','video','etc'].forEach(updateSectionUI);
 }
 
 function savePromptsMsg() {
   const d = {
-    mainMsg:  document.getElementById('promptMainMsg').value.trim(),
-    subtitle: document.getElementById('promptSubMsg').value.trim(),
-    mobile:   document.getElementById('promptMobileMsg').value.trim(),
-    active:   document.getElementById('promptsActiveVal').value !== 'false'
+    mainMsg:     document.getElementById('promptMainMsg').value.trim(),
+    subtitle:    document.getElementById('promptSubMsg').value.trim(),
+    mobile:      document.getElementById('promptMobileMsg').value.trim(),
+    imageActive: document.getElementById('activeImage').value !== 'false',
+    videoActive: document.getElementById('activeVideo').value !== 'false',
+    etcActive:   document.getElementById('activeEtc').value   !== 'false'
   };
   if (saveData('pageMsgPrompts', d)) toast('메시지가 저장되었습니다');
   else toast('저장 실패', true);

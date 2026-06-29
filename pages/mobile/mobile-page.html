@@ -479,7 +479,8 @@
         const cfg = window.sbLoad
           ? await window.sbLoad('pageMsgPrompts', {})
           : JSON.parse(localStorage.getItem('pageMsgPrompts') || '{}');
-        if (cfg.active !== false) {
+        const anyActive = cfg.imageActive !== false || cfg.videoActive !== false || cfg.etcActive !== false;
+        if (anyActive) {
           // Active → 프롬프트 페이지로 링크 변경, 작업중 뱃지 숨김
           const card5 = document.querySelector('[aria-label="프롬프트 페이지 (준비중)"]');
           if (card5) {
