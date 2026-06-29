@@ -367,6 +367,22 @@
             placeholder="이미지·영상·기타 카테고리별 프롬프트를 확인하세요"></textarea>
         </div>
       </div>
+      <!-- 열 수 설정 -->
+      <div style="display:flex; align-items:center; gap:16px; margin-bottom:10px; padding:10px 12px; background:var(--bg2); border-radius:8px; border:1px solid var(--border);">
+        <span style="font-size:12px; color:var(--sub); white-space:nowrap;">열 수 (1–8):</span>
+        <label style="font-size:12px; color:var(--text); display:flex; align-items:center; gap:6px;">🖼 이미지
+          <input type="number" id="colImage" min="1" max="8" value="4"
+            style="width:52px; background:var(--bg3); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:inherit; font-size:13px; padding:4px 6px; outline:none; text-align:center;">
+        </label>
+        <label style="font-size:12px; color:var(--text); display:flex; align-items:center; gap:6px;">🎬 영상
+          <input type="number" id="colVideo" min="1" max="8" value="4"
+            style="width:52px; background:var(--bg3); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:inherit; font-size:13px; padding:4px 6px; outline:none; text-align:center;">
+        </label>
+        <label style="font-size:12px; color:var(--text); display:flex; align-items:center; gap:6px;">✨ 기타
+          <input type="number" id="colEtc" min="1" max="8" value="4"
+            style="width:52px; background:var(--bg3); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:inherit; font-size:13px; padding:4px 6px; outline:none; text-align:center;">
+        </label>
+      </div>
       <div style="display:flex; align-items:flex-end; gap:8px;">
         <div style="flex:1;">
           <label style="font-size:12px; color:var(--sub); display:block; margin-bottom:6px;">Mobile Message <span style="font-size:10px;">(20자 이내)</span></label>
@@ -763,6 +779,7 @@ function toggleSectionActive(cat) {
   const inp = document.getElementById(SECTION_IDS[cat]);
   inp.value = inp.value === 'false' ? 'true' : 'false';
   updateSectionUI(cat);
+  savePromptsMsg(); // 즉시 저장
 }
 
 async function loadPromptsMsg() {
@@ -785,16 +802,24 @@ async function loadPromptsMsg() {
   document.getElementById('activeVideo').value = (d.videoActive !== false) ? 'true' : 'false';
   document.getElementById('activeEtc').value   = (d.etcActive   !== false) ? 'true' : 'false';
   ['image','video','etc'].forEach(updateSectionUI);
+  // 열 수 복원
+  document.getElementById('colImage').value = d.imageColumns || 4;
+  document.getElementById('colVideo').value = d.videoColumns || 4;
+  document.getElementById('colEtc').value   = d.etcColumns   || 4;
 }
 
 function savePromptsMsg() {
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, parseInt(v) || 4));
   const d = {
-    mainMsg:     document.getElementById('promptMainMsg').value.trim(),
-    subtitle:    document.getElementById('promptSubMsg').value.trim(),
-    mobile:      document.getElementById('promptMobileMsg').value.trim(),
-    imageActive: document.getElementById('activeImage').value !== 'false',
-    videoActive: document.getElementById('activeVideo').value !== 'false',
-    etcActive:   document.getElementById('activeEtc').value   !== 'false'
+    mainMsg:      document.getElementById('promptMainMsg').value.trim(),
+    subtitle:     document.getElementById('promptSubMsg').value.trim(),
+    mobile:       document.getElementById('promptMobileMsg').value.trim(),
+    imageActive:  document.getElementById('activeImage').value !== 'false',
+    videoActive:  document.getElementById('activeVideo').value !== 'false',
+    etcActive:    document.getElementById('activeEtc').value   !== 'false',
+    imageColumns: clamp(document.getElementById('colImage').value, 1, 8),
+    videoColumns: clamp(document.getElementById('colVideo').value, 1, 8),
+    etcColumns:   clamp(document.getElementById('colEtc').value,   1, 8)
   };
   if (saveData('pageMsgPrompts', d)) toast('메시지가 저장되었습니다');
   else toast('저장 실패', true);
