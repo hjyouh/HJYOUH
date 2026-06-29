@@ -56,14 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
   loadPage('home');
   initializeHeaderScroll();
-  // Supabase 로드 후 prompts active 상태 동기화
-  const waitForSb = setInterval(() => {
-    if (window.sbLoad) {
-      clearInterval(waitForSb);
-      syncPromptsActiveState();
-    }
-  }, 100);
-  setTimeout(() => clearInterval(waitForSb), 5000);
+  // defer 스크립트 실행 순서상 sbLoad는 이미 정의됨 — 직접 호출
+  syncPromptsActiveState();
 });
 
 /**
@@ -145,25 +139,24 @@ function setupEventListeners() {
 
 // ===== NAVIGATION & ROUTING =====
 
-/* ── 작업 중인 페이지 (차단 목록) — Supabase active 상태로 동적 제어 ── */
-let UNDER_CONSTRUCTION = ['prompts'];
+/* ── 작업 중인 페이지 (차단 목록) — 낙관적 초기값: 비어있음 ── */
+let UNDER_CONSTRUCTION = [];
 
 async function syncPromptsActiveState() {
   try {
-    let cfg = null;
+    let cfg = {};
+    try { cfg = JSON.parse(localStorage.getItem('pageMsgPrompts') || '{}'); } catch(e) {}
     if (window.sbLoad) {
-      cfg = await window.sbLoad('pageMsgPrompts', {});
-    } else {
-      try { cfg = JSON.parse(localStorage.getItem('pageMsgPrompts') || '{}'); } catch(e) {}
+      const cloud = await window.sbLoad('pageMsgPrompts', {});
+      if (cloud && typeof cloud === 'object') cfg = cloud;
     }
-    if (!cfg) return;
     const anyActive = cfg.imageActive !== false || cfg.videoActive !== false || cfg.etcActive !== false;
     if (anyActive) {
       UNDER_CONSTRUCTION = UNDER_CONSTRUCTION.filter(p => p !== 'prompts');
     } else {
       if (!UNDER_CONSTRUCTION.includes('prompts')) UNDER_CONSTRUCTION.push('prompts');
+      applyNavWipStyles();
     }
-    applyNavWipStyles();
   } catch(e) {}
 }
 

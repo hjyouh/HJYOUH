@@ -765,8 +765,18 @@ function toggleSectionActive(cat) {
   updateSectionUI(cat);
 }
 
-function loadPromptsMsg() {
-  const d = loadData('pageMsgPrompts', {});
+async function loadPromptsMsg() {
+  // Supabase 우선, 없으면 localStorage
+  let d = {};
+  try {
+    if (window.sbLoad) {
+      const cloud = await window.sbLoad('pageMsgPrompts', {});
+      if (cloud && typeof cloud === 'object') d = cloud;
+    } else {
+      d = loadData('pageMsgPrompts', {});
+    }
+  } catch(e) { d = loadData('pageMsgPrompts', {}); }
+
   document.getElementById('promptMainMsg').value   = d.mainMsg  || '';
   document.getElementById('promptSubMsg').value    = d.subtitle || '';
   document.getElementById('promptMobileMsg').value = d.mobile   || '';
