@@ -436,7 +436,29 @@
     }
     function prevSlide() { goSlide(current - 1); }
     function nextSlide() { goSlide(current + 1); }
-    setInterval(() => goSlide(current + 1), 4000);
+
+    // 슬라이드 유지시간(admin에서 설정, 최소 3초) — localStorage 우선 적용 후 Supabase로 갱신
+    let slideDurationMs = 3000;
+    try {
+      const raw = localStorage.getItem('landingSlideDuration');
+      if (raw) slideDurationMs = Math.max(3000, (Number(JSON.parse(raw)) || 3) * 1000);
+    } catch(e) {}
+    let slideTimer = setInterval(() => goSlide(current + 1), slideDurationMs);
+    window.addEventListener('load', function() {
+      try {
+        if (window.sbLoad) {
+          window.sbLoad('landingSlideDuration', null).then(function(sec) {
+            if (!sec) return;
+            const ms = Math.max(3000, (Number(sec) || 3) * 1000);
+            if (ms !== slideDurationMs) {
+              slideDurationMs = ms;
+              clearInterval(slideTimer);
+              slideTimer = setInterval(() => goSlide(current + 1), slideDurationMs);
+            }
+          }).catch(function(){});
+        }
+      } catch(e) {}
+    });
 
     // ===== 스크롤바 =====
     let scrollTimer;

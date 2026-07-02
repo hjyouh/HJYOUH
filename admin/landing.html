@@ -190,6 +190,12 @@
     <div class="card">
       <div class="card-title" id="slideCardTitle">🖼️ main image (0 slide)</div>
       <div id="slideList"></div>
+      <div style="display:flex; align-items:center; gap:10px; margin-top:12px;">
+        <label style="font-size:12px; color:var(--sub); margin:0;">슬라이드 유지시간(초, 최소 3초)</label>
+        <input type="number" id="slideDurationInput" min="3" step="0.5"
+               style="width:80px; background:var(--bg2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:inherit; font-size:13px; padding:6px 10px; outline:none;">
+        <span style="font-size:11px; color:var(--sub);">PC·모바일 공통 적용</span>
+      </div>
       <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
         <button class="btn btn-outline btn-sm" onclick="addSlide()">+ 슬라이드 추가</button>
         <button class="btn btn-gold btn-sm" onclick="saveSlides()">저장</button>
@@ -246,6 +252,7 @@
    슬라이드 관리
 ═══════════════════════════════════════ */
 let slidesData = loadData('landingSlides', DEFAULT_SLIDES);
+let slideDurationSec = Math.max(3, Number(loadData('landingSlideDuration', 3)) || 3);
 let slideDragSrcIdx = null;
 let activeSlidePickerIdx = null;
 
@@ -300,7 +307,14 @@ function saveSlides() {
     slidesData[i] = inp.value.trim();
   });
   slidesData = slidesData.filter(p => p); // 빈 항목 제거
-  if (saveData('landingSlides', slidesData)) { toast('슬라이드가 저장되었습니다'); renderSlides(); }
+
+  const durInput = document.getElementById('slideDurationInput');
+  slideDurationSec = Math.max(3, Number(durInput.value) || 3);
+  durInput.value = slideDurationSec;
+
+  const slidesOk = saveData('landingSlides', slidesData);
+  const durationOk = saveData('landingSlideDuration', slideDurationSec);
+  if (slidesOk && durationOk) { toast('슬라이드가 저장되었습니다'); renderSlides(); }
   else toast('저장 실패', true);
 }
 
@@ -534,6 +548,7 @@ function saveLandingMsg() {
 renderSlides();
 renderSectionPanels();
 loadLandingForm();
+document.getElementById('slideDurationInput').value = slideDurationSec;
 </script>
 </body>
 </html>

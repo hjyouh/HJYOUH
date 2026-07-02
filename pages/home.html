@@ -372,6 +372,15 @@
         : JSON.parse(localStorage.getItem('homeConfig') || '{}');
     } catch(e) {}
 
+    /* 슬라이드 유지시간 로드 (초 단위, 최소 3초) */
+    let slideDurationSec = 3;
+    try {
+      const raw = window.sbLoad
+        ? await sbLoad('landingSlideDuration', 3)
+        : JSON.parse(localStorage.getItem('landingSlideDuration') || '3');
+      if (raw) slideDurationSec = Math.max(3, Number(raw) || 3);
+    } catch(e) {}
+
     /* 슬라이드 DOM 주입 */
     const container = document.getElementById('homeSlideshowContainer');
     const dotsEl    = document.getElementById('homeDotsContainer');
@@ -399,7 +408,7 @@
     const prevBtn = container.querySelector('.prev-btn');
     const nextBtn = container.querySelector('.next-btn');
     let current = 0, timer = null;
-    const INTERVAL = 3000;
+    const INTERVAL = Math.max(3000, Math.round(slideDurationSec * 1000));
 
     function showSlide(n) {
       if (n >= slides.length) current = 0;
@@ -492,6 +501,4 @@
     if (cfg.stars  && starsEl)  starsEl.textContent  = cfg.stars;
     if (cfg.rating && ratingEl) ratingEl.textContent = cfg.rating;
   }
-
-  initHomePage();
 </script>
