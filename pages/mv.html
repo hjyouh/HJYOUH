@@ -177,9 +177,9 @@
   }
 
   /* 채널 바로가기 버튼 — works.html detail-link-btn 동일 스타일 */
+  #mvChannelBtn { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
   .mv-channel-btn {
     display: inline-flex; align-items: center; gap: 5px;
-    margin-top: 12px;
     padding: 7px 14px;
     border: 1px solid rgba(201,169,110,0.5);
     border-radius: 999px;
@@ -328,6 +328,17 @@
   let savedMvCardEl   = null;   // X로 교체된 카드 요소 저장
   let savedMvCardHtml = null;   // X로 교체 전 원본 innerHTML 저장
 
+  function escMvHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* 채널 목록 조회 — 구버전(channelUrl/active) 호환 */
+  function getMvChannels(item) {
+    if (Array.isArray(item.channels) && item.channels.length) return item.channels;
+    if (item.channelUrl) return [{ label: '', url: item.channelUrl, active: item.active !== false }];
+    return [];
+  }
+
   function encodeMvImgPath(p) {
     if (!p || p.startsWith('data:') || p.startsWith('http')) return p;
     return p.split('/').map((seg, i, arr) =>
@@ -433,16 +444,16 @@
       <div class="detail-info-row"><span class="detail-info-label">소속</span>${item.affiliation}</div>
     `);
 
-    /* 채널 바로가기 버튼 */
+    /* 채널 바로가기 버튼(들) */
     const btnEl = document.getElementById('mvChannelBtn');
     if (btnEl) {
-      if (!item.channelUrl) {
-        btnEl.innerHTML = '';
-      } else if (item.active === false) {
-        btnEl.innerHTML = `<span class="mv-channel-btn" style="opacity:0.35;cursor:not-allowed;pointer-events:none;">▶ 준비 중입니다</span>`;
-      } else {
-        btnEl.innerHTML = `<a class="mv-channel-btn" href="${item.channelUrl}" target="_blank" rel="noopener">▶ YouTube 채널 바로가기</a>`;
-      }
+      const channels = getMvChannels(item);
+      btnEl.innerHTML = channels.map(ch => {
+        const label = (ch.label && ch.label.trim()) || 'YouTube 채널 바로가기';
+        return ch.active === false
+          ? `<span class="mv-channel-btn" style="opacity:0.35;cursor:not-allowed;pointer-events:none;">▶ 준비 중입니다</span>`
+          : `<a class="mv-channel-btn" href="${escMvHtml(ch.url)}" target="_blank" rel="noopener">▶ ${escMvHtml(label)}</a>`;
+      }).join('');
     }
   }
 

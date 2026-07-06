@@ -74,6 +74,27 @@
       width: 56px; height: 42px; border-radius: 6px; object-fit: cover;
       background: var(--bg2); flex-shrink: 0; border: 1px solid var(--border);
     }
+
+    .mv-channel-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .mv-channel-row input {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-family: inherit;
+      font-size: 12px; padding: 7px 10px; outline: none; transition: border-color 0.2s;
+    }
+    .mv-channel-row input:focus { border-color: rgba(201,169,110,0.5); }
+    .mv-channel-row .mv-ch-label { width: 130px; flex-shrink: 0; }
+    .mv-channel-row .mv-ch-url { flex: 1; min-width: 0; }
+    .mv-ch-active-btn {
+      flex-shrink: 0; padding: 5px 12px; border-radius: 20px; cursor: pointer;
+      font-size: 11px; font-weight: 600; font-family: inherit; transition: all 0.2s;
+    }
+    .mv-ch-remove-btn {
+      flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+      border: 1px solid var(--border); background: transparent; color: var(--sub);
+      cursor: pointer; font-size: 14px; line-height: 1; transition: all 0.2s;
+    }
+    .mv-ch-remove-btn:hover { border-color: var(--red); color: var(--red); }
+    .mv-ch-empty { font-size: 12px; color: var(--sub); padding: 4px 0 8px; }
   </style>
 </head>
 <body>
@@ -193,17 +214,11 @@
         </div>
 
         <div class="mv-section">채널 · 장르</div>
-        <div class="mv-row">
-          <label>YouTube</label>
-          <input id="mvChannelUrl" type="text" placeholder="https://www.youtube.com/@channel">
-          <button type="button" id="mvActiveToggle" onclick="toggleMvActive()"
-            style="flex-shrink:0; padding:5px 14px; border-radius:20px; cursor:pointer;
-                   font-size:12px; font-weight:600; font-family:inherit; transition:all 0.2s;
-                   background:rgba(34,197,94,0.15); color:#16a34a; border:1px solid rgba(34,197,94,0.4);">
-            Active
-          </button>
-          <input type="hidden" id="mvActive" value="true">
+        <div style="font-size:11px; color:var(--sub); margin-bottom:6px;">
+          채널명은 자유롭게 입력 (예: 1집 재생목록, YouTube 채널 바로가기 등). 비워두면 기본값이 사용됩니다.
         </div>
+        <div id="mvChannelList"></div>
+        <button type="button" class="btn btn-sm btn-outline" onclick="addMvChannelRow()" style="margin-bottom:12px;">+ 채널 추가</button>
         <div class="mv-row">
           <label>장르</label>
           <input id="mvGenre" type="text" placeholder="French Chanson · 드라마틱 소프라노">
@@ -302,6 +317,23 @@ const DEFAULT_MV = [
 
 let mvItems = loadData('mvData', DEFAULT_MV);
 
+/* ===== 채널 데이터 정규화 (구버전 channelUrl/active → channels 배열) ===== */
+function normalizeMvItem(item) {
+  if (!Array.isArray(item.channels) || !item.channels.length) {
+    item.channels = item.channelUrl
+      ? [{ label: '', url: item.channelUrl, active: item.active !== false }]
+      : [];
+  }
+  delete item.channelUrl;
+  delete item.active;
+  return item;
+}
+function normalizeMvItems(items) {
+  items.forEach(normalizeMvItem);
+  return items;
+}
+normalizeMvItems(mvItems);
+
 /* ===== 목록 렌더 ===== */
 function renderMvList() {
   const list = document.getElementById('mvList');
@@ -310,7 +342,13 @@ function renderMvList() {
     return;
   }
   list.innerHTML = mvItems.map((item, idx) => {
-    const isActive = item.active !== false;
+    const channels = item.channels || [];
+    const hasActive = channels.some(c => c.active !== false);
+    const isActive = channels.length > 0 && hasActive;
+    const chLinks = channels.filter(c => c.url).map(c =>
+      '<a href="' + escHtml(c.url) + '" target="_blank" style="color:var(--gold); text-decoration:none;">' +
+      escHtml(c.label || 'YouTube 채널 바로가기') + ' ↗</a>'
+    ).join(' · ');
     return `
     <div class="item-row" draggable="true" data-idx="${idx}"
          ondragstart="dragStart(event,${idx})" ondragover="dragOver(event)" ondrop="dropItem(event,${idx})" ondragleave="dragLeave(event)">
@@ -322,15 +360,16 @@ function renderMvList() {
           ${escHtml(item.title)}
         </div>
         <div style="font-size:11px; color:var(--sub); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-          ${escHtml(item.tag || '')} ${item.channelUrl ? '· <a href="' + escHtml(item.channelUrl) + '" target="_blank" style="color:var(--gold); text-decoration:none;">YouTube ↗</a>' : ''}
+          ${escHtml(item.tag || '')} ${chLinks ? '· ' + chLinks : ''}
         </div>
       </div>
       <div style="display:flex; gap:6px; flex-shrink:0; align-items:center;">
-        <button onclick="toggleMvActiveInline(${idx})" title="클릭하여 활성/비활성 전환"
+        ${channels.length ? `
+        <button onclick="toggleMvActiveInline(${idx})" title="클릭하여 전체 채널 활성/비활성 전환"
           style="font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; cursor:pointer; border:1px solid; transition:all 0.2s;
           ${isActive ? 'background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.4);' : 'background:rgba(150,150,150,0.12);color:#888;border-color:rgba(150,150,150,0.3);'}">
           ${isActive ? 'Active' : 'Inactive'}
-        </button>
+        </button>` : ''}
         <button class="btn btn-sm btn-outline" onclick="editMvItem(${idx})">수정</button>
         <button class="btn btn-sm" style="background:var(--red); color:#fff; border:none; border-radius:8px; padding:4px 12px; font-size:12px; cursor:pointer;"
                 onclick="deleteMvItem(${idx})">삭제</button>
@@ -363,14 +402,15 @@ function openMvModal(item) {
   document.getElementById('mvTag').value         = item ? (item.tag || '') : '';
   document.getElementById('mvSub').value         = item ? (item.sub || '') : '';
   document.getElementById('mvImgPath').value     = item ? (item.imgPath || '') : '';
-  document.getElementById('mvChannelUrl').value  = item ? (item.channelUrl || '') : '';
   document.getElementById('mvGenre').value       = item ? (item.genre || '') : '';
   document.getElementById('mvConcept').value     = item ? (item.concept || '') : '';
   document.getElementById('mvAffiliation').value = item ? (item.affiliation || '') : '';
   document.getElementById('mvSynopsis').value    = item ? (item.synopsis || '') : '';
-  const active = item ? (item.active !== false) : true;
-  document.getElementById('mvActive').value = active ? 'true' : 'false';
-  updateMvActiveToggleUI(active);
+
+  mvChannels = (item && item.channels && item.channels.length)
+    ? item.channels.map(c => ({ label: c.label || '', url: c.url || '', active: c.active !== false }))
+    : [{ label: '', url: '', active: true }];
+  renderMvChannelRows();
 
   const thumbImg  = document.getElementById('mvThumbImg');
   const thumbHint = document.getElementById('mvThumbHint');
@@ -410,6 +450,9 @@ function saveMvItem() {
   if (!title) { toast('아티스트명을 입력해주세요', true); return; }
 
   const editId = document.getElementById('mvEditId').value;
+  const channels = mvChannels
+    .map(c => ({ label: c.label.trim(), url: c.url.trim(), active: c.active !== false }))
+    .filter(c => c.url);
   const item = {
     id:          editId || ('mv-' + Date.now()),
     title,
@@ -417,8 +460,7 @@ function saveMvItem() {
     sub:         document.getElementById('mvSub').value.trim(),
     imgPath:     document.getElementById('mvImgPath').value.trim(),
     imgDataUrl:  mvFileDataUrl || null,
-    channelUrl:  document.getElementById('mvChannelUrl').value.trim(),
-    active:      document.getElementById('mvActive').value !== 'false',
+    channels,
     genre:       document.getElementById('mvGenre').value.trim(),
     concept:     document.getElementById('mvConcept').value.trim(),
     affiliation: document.getElementById('mvAffiliation').value.trim(),
@@ -488,35 +530,54 @@ async function onMvFilePicked(input) {
   input.value = '';
 }
 
-/* ===== Active 인라인 토글 (목록에서 직접 클릭) ===== */
+/* ===== Active 인라인 토글 (목록에서 직접 클릭, 전체 채널 일괄 전환) ===== */
 function toggleMvActiveInline(idx) {
-  if (!mvItems[idx]) return;
-  mvItems[idx].active = mvItems[idx].active === false ? true : false;
+  const item = mvItems[idx];
+  if (!item || !item.channels || !item.channels.length) return;
+  const allActive = item.channels.every(c => c.active !== false);
+  item.channels.forEach(c => c.active = allActive ? false : true);
   saveMvData();
   renderMvList();
-  toast(mvItems[idx].active ? `"${mvItems[idx].title}" 활성화` : `"${mvItems[idx].title}" 비활성화`);
+  toast(allActive ? `"${item.title}" 전체 채널 비활성화` : `"${item.title}" 전체 채널 활성화`);
 }
 
-/* ===== Active 토글 (모달 내) ===== */
-function toggleMvActive() {
-  const inp = document.getElementById('mvActive');
-  const active = inp.value === 'false';
-  inp.value = active ? 'true' : 'false';
-  updateMvActiveToggleUI(active);
-}
-function updateMvActiveToggleUI(active) {
-  const btn = document.getElementById('mvActiveToggle');
-  if (active) {
-    btn.textContent = 'Active';
-    btn.style.background = 'rgba(34,197,94,0.15)';
-    btn.style.color = '#16a34a';
-    btn.style.border = '1px solid rgba(34,197,94,0.4)';
-  } else {
-    btn.textContent = 'Inactive';
-    btn.style.background = 'rgba(150,150,150,0.12)';
-    btn.style.color = '#888';
-    btn.style.border = '1px solid rgba(150,150,150,0.3)';
+/* ===== 채널 목록 (모달 내, 다중 채널 편집) ===== */
+let mvChannels = []; // [{label, url, active}] — 편집 중인 채널 목록
+
+function renderMvChannelRows() {
+  const wrap = document.getElementById('mvChannelList');
+  if (!mvChannels.length) {
+    wrap.innerHTML = '<div class="mv-ch-empty">등록된 채널이 없습니다</div>';
+    return;
   }
+  wrap.innerHTML = mvChannels.map((ch, idx) => `
+    <div class="mv-channel-row">
+      <input type="text" class="mv-ch-label" placeholder="YouTube 채널 바로가기"
+             value="${escHtml(ch.label)}" oninput="mvChannels[${idx}].label=this.value">
+      <input type="text" class="mv-ch-url" placeholder="https://www.youtube.com/@channel 또는 재생목록 URL"
+             value="${escHtml(ch.url)}" oninput="mvChannels[${idx}].url=this.value">
+      <button type="button" class="mv-ch-active-btn" onclick="toggleMvChannelActive(${idx})"
+        style="${ch.active !== false
+          ? 'background:rgba(34,197,94,0.15);color:#16a34a;border:1px solid rgba(34,197,94,0.4);'
+          : 'background:rgba(150,150,150,0.12);color:#888;border:1px solid rgba(150,150,150,0.3);'}">
+        ${ch.active !== false ? 'Active' : 'Inactive'}
+      </button>
+      <button type="button" class="mv-ch-remove-btn" onclick="removeMvChannelRow(${idx})" title="채널 삭제">✕</button>
+    </div>
+  `).join('');
+}
+
+function addMvChannelRow() {
+  mvChannels.push({ label: '', url: '', active: true });
+  renderMvChannelRows();
+}
+function removeMvChannelRow(idx) {
+  mvChannels.splice(idx, 1);
+  renderMvChannelRows();
+}
+function toggleMvChannelActive(idx) {
+  mvChannels[idx].active = mvChannels[idx].active === false ? true : false;
+  renderMvChannelRows();
 }
 
 /* ===== 페이지 메시지 ===== */
@@ -547,7 +608,7 @@ function loadMvMsg() {
 async function init() {
   try {
     const raw = await loadDataCloud('mvData', null);
-    if (raw && Array.isArray(raw) && raw.length) mvItems = raw;
+    if (raw && Array.isArray(raw) && raw.length) mvItems = normalizeMvItems(raw);
   } catch(e) {}
   renderMvList();
   loadMvMsg();
