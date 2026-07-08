@@ -60,7 +60,8 @@ module.exports = async function handler(req, res) {
   }
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  // CDN 60초 캐시 — admin 저장 후 최대 1분 내 반영, 갱신 중엔 이전 버전 서빙
-  res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=60, stale-while-revalidate=300');
+  // CDN 60초 캐시 — admin 저장 후 최대 1분 내 반영.
+  // stale-while-revalidate=0: 60초 후에는 옛 응답을 재사용하지 않고 즉시 재검증한다.
+  res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=60, stale-while-revalidate=0');
   res.status(200).send(html);
 };
