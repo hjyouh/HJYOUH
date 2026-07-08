@@ -79,6 +79,14 @@
     .logo{position:fixed;top:16px;left:20px;z-index:1000}
     .logo-img{height:32px;width:auto}
     #page-container .loading-init{display:flex;justify-content:center;align-items:center;min-height:100vh;color:#a0a0a0}
+    /* 정적 SEO 콘텐츠(JS 로드 전/폴백 시 노출). JS 앱이 뜨면 innerHTML 교체로 사라짐 */
+    .seo-intro{max-width:820px;margin:0 auto;padding:120px 24px 80px;line-height:1.75}
+    .seo-intro h1{font-size:28px;font-weight:600;margin-bottom:20px;color:#fff}
+    .seo-intro h2{font-size:20px;font-weight:600;margin:34px 0 12px;color:#c9a96e}
+    .seo-intro p{color:#b8b8b8}
+    .seo-intro ul{list-style:none;padding:0;margin:0}
+    .seo-intro li{position:relative;padding:6px 0 6px 18px;color:#c8c8c8}
+    .seo-intro li::before{content:"·";position:absolute;left:4px;color:#c9a96e}
   </style>
 
   <!-- Main Stylesheet -->
@@ -140,10 +148,30 @@
 
     <!-- Page Container (Dynamic Content) -->
     <main id="page-container" class="page-wrapper">
-      <!-- Pages loaded here via JavaScript -->
-      <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #a0a0a0;">
-        <p>로딩 중...</p>
-      </div>
+      <!-- 정적 SEO 콘텐츠: 크롤러·JS 미실행 환경에 노출되는 실제 본문.
+           JS 앱(home)이 로드되면 loadPage('home')가 innerHTML을 교체해 이 블록을 대체하고,
+           앱 로드 실패 시엔 이 콘텐츠가 그대로 남아 폴백 역할을 한다. -->
+      <section class="seo-intro">
+        <h1>AI강사 유형재 — 생성형 AI 교육 · AI영화감독</h1>
+        <p>생성형 AI 강사이자 AI영화감독 유형재입니다. IBM Korea·IBM France에서 쌓은 30년 IT 경력을 바탕으로, 기업·공공기관·병원·소상공인·시니어를 대상으로 실습 중심의 생성형 AI 교육을 진행합니다. (주)포인트넥스트 대표이사, 디지털융합교육원 지도교수.</p>
+
+        <h2>주요 강의 분야</h2>
+        <ul>
+          <li>생성형 AI 활용 실무 교육 (ChatGPT · Claude · Midjourney)</li>
+          <li>Claude Code 바이브 코딩</li>
+          <li>AI 콘텐츠 제작 (카드뉴스 · PPT 자동화 · 영상)</li>
+          <li>공공기관·기업 맞춤형 AI 리터러시 교육</li>
+        </ul>
+
+        <h2>수상 및 활동</h2>
+        <ul>
+          <li>서울국제AI영화제 그랑프리</li>
+          <li>ARFF Paris Finalist</li>
+          <li>베를린 영화제 Best AI Creation 부문 Official Finalist (영화 「情 Jeong: The Love that Lingers」)</li>
+          <li>Venice · Japan · Miami AI Film Festival 파이널리스트</li>
+          <li>유튜브 채널 Korisian · Maison d'Étoile 운영</li>
+        </ul>
+      </section>
     </main>
 
     <!-- Mobile Preview Modal -->
