@@ -778,6 +778,16 @@
       </div>
 
       <div class="card">
+        <div class="card-title">🏷️ Title <span style="font-weight:400;color:var(--sub);font-size:11px;">권장 30~60자 · 검색 결과 제목으로 표시됩니다</span></div>
+        <div class="seo-field-header">
+          <label style="font-size:12px;color:var(--sub);">Title</label>
+          <span class="seo-count" id="cnt-title">0자</span>
+        </div>
+        <textarea id="seo-title" class="seo-textarea" rows="2" oninput="updateCount('title')" placeholder="검색 결과·공유 카드의 제목 (30~60자)"></textarea>
+        <div class="seo-limit-bar"><div class="seo-limit-fill" id="fill-title"></div></div>
+      </div>
+
+      <div class="card">
         <div class="card-title">🔍 Meta Description <span style="font-weight:400;color:var(--sub);font-size:11px;">120–160자 권장</span></div>
         <div class="seo-field-header">
           <label style="font-size:12px;color:var(--sub);">Meta Description</label>
@@ -1335,6 +1345,7 @@ function switchSection(name) {
 // ===== SEO =====
 
 const DEFAULT_SEO = {
+  title: 'AI강사 유형재 | 생성형 AI 교육 · AI영화감독 | 포인트넥스트',
   metaDesc: '생성형 AI 강사·감독 유형재. IBM Korea·France 출신. Seoul International AI Film Festival Grand Prix · ARFF Paris Finalist · Berlin Red Carpet 초청. AI 교육·콘텐츠·영상 제작 · AIMT 브랜드 운영.',
   ogDesc: 'AI 강사·감독 유형재. Seoul AI영화제 Grand Prix · ARFF Paris Finalist · Berlin Red Carpet. 생성형 AI 교육·영상 제작 전문.',
   twitterDesc: 'Grand Prix에서 Berlin Red Carpet까지 — 생성형 AI로 세계를 두드리는 강사·감독 유형재의 포트폴리오.',
@@ -1342,6 +1353,7 @@ const DEFAULT_SEO = {
 };
 
 const SEO_LIMITS = {
+  title:       { min: 30,  max: 60  },
   metaDesc:    { min: 120, max: 160 },
   ogDesc:      { min: 60,  max: 90  },
   twitterDesc: { min: 70,  max: 100 },
@@ -1352,7 +1364,7 @@ let seoData = loadData('seoData', DEFAULT_SEO);
 
 function renderSeo() {
   seoData = loadData('seoData', DEFAULT_SEO);
-  ['metaDesc','ogDesc','twitterDesc','keywords'].forEach(k => {
+  ['title','metaDesc','ogDesc','twitterDesc','keywords'].forEach(k => {
     const el = document.getElementById('seo-' + k);
     if (el) { el.value = seoData[k] || ''; updateCount(k); }
   });
@@ -1384,6 +1396,7 @@ function updateCount(key) {
 
 function saveSeo() {
   seoData = {
+    title:       document.getElementById('seo-title').value.trim(),
     metaDesc:    document.getElementById('seo-metaDesc').value.trim(),
     ogDesc:      document.getElementById('seo-ogDesc').value.trim(),
     twitterDesc: document.getElementById('seo-twitterDesc').value.trim(),
@@ -1395,9 +1408,12 @@ function saveSeo() {
 
 function copySeoHtml() {
   const d = seoData || loadData('seoData', DEFAULT_SEO);
-  const html = `<meta name="description" content="${d.metaDesc}" />
+  const html = `<title>${d.title}</title>
+<meta name="description" content="${d.metaDesc}" />
 <meta name="keywords" content="${d.keywords}" />
+<meta property="og:title" content="${d.title}" />
 <meta property="og:description" content="${d.ogDesc}" />
+<meta name="twitter:title" content="${d.title}" />
 <meta name="twitter:description" content="${d.twitterDesc}" />`;
   navigator.clipboard.writeText(html).then(() => {
     toast('HTML이 클립보드에 복사되었습니다. index.html에 붙여넣기 하세요.');

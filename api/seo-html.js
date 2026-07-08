@@ -44,6 +44,12 @@ module.exports = async function handler(req, res) {
   try {
     const d = await fetchSeoData();
     if (d) {
+      // 타이틀 3종(<title>, og:title, twitter:title)은 seoData.title 하나로 통일
+      if (d.title) {
+        html = html.replace(/(<title>)[^<]*(<\/title>)/, (m, a, b) => a + escAttr(d.title) + b);
+      }
+      html = setMetaContent(html, /(<meta\s+property="og:title"\s+content=")[^"]*(")/, d.title);
+      html = setMetaContent(html, /(<meta\s+name="twitter:title"\s+content=")[^"]*(")/, d.title);
       html = setMetaContent(html, /(<meta\s+name="description"\s+content=")[^"]*(")/, d.metaDesc);
       html = setMetaContent(html, /(<meta\s+name="keywords"\s+content=")[^"]*(")/, d.keywords);
       html = setMetaContent(html, /(<meta\s+property="og:description"\s+content=")[^"]*(")/, d.ogDesc);
