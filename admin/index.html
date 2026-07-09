@@ -785,6 +785,9 @@
             <option value="about">강사 (/about)</option>
             <option value="lectures">강의 (/lectures)</option>
             <option value="works">작품 (/works)</option>
+            <option value="prompts">프롬프트 (/prompts)</option>
+            <option value="mv">M/V (/mv)</option>
+            <option value="contact">Contact (/contact)</option>
           </select>
         </div>
         <div style="font-size:11px;color:var(--sub);margin-top:8px;line-height:1.5;">홈은 title·description·OG·Twitter·Keywords를 모두 관리합니다. 서브페이지(강사·강의·작품)는 title·description만 사용합니다. 페이지를 바꿔도 <b>저장</b>을 눌러야 반영됩니다.</div>
@@ -1379,6 +1382,18 @@ const DEFAULT_SEO_ALL = {
   works: {
     title: 'AI 영화 작품 | 서울국제AI영화제 그랑프리 | AI영화감독 유형재',
     metaDesc: '서울국제AI영화제 그랑프리를 수상한 AI영화감독 유형재의 작품과 국내외 영화제 수상 이력을 소개합니다. 생성형 AI로 제작한 영화·뮤직비디오를 만나보세요.'
+  },
+  prompts: {
+    title: 'AI 생성 프롬프트 모음 | 이미지·영상 프롬프트 | AI강사 유형재',
+    metaDesc: '생성형 AI로 이미지와 영상을 만드는 실전 프롬프트를 모았습니다. ChatGPT·Claude·Midjourney에 바로 활용할 수 있는 프롬프트 예시를 소개합니다.'
+  },
+  mv: {
+    title: 'AI 뮤직비디오 | Korisian · Maison d’Étoile | AI영화감독 유형재',
+    metaDesc: '생성형 AI로 제작한 뮤직비디오를 소개합니다. 유튜브 채널 Korisian과 Maison d’Étoile에서 AI 영상 작품을 감상할 수 있습니다.'
+  },
+  contact: {
+    title: '생성형 AI 강의 문의 · 연락처 | AI강사 유형재',
+    metaDesc: '생성형 AI 강의·컨설팅 문의를 받습니다. 기업·공공기관·소상공인 대상 맞춤 교육 일정과 커리큘럼을 상담해 드립니다.'
   }
 };
 
@@ -1396,7 +1411,7 @@ function migrateSeo(raw) {
   if (!raw || typeof raw !== 'object') return base;
   const nested = raw.home || raw.about || raw.lectures || raw.works;
   if (nested) {
-    ['home','about','lectures','works'].forEach(p => { base[p] = { ...base[p], ...(raw[p] || {}) }; });
+    ['home','about','lectures','works','prompts','mv','contact'].forEach(p => { base[p] = { ...base[p], ...(raw[p] || {}) }; });
   } else {
     base.home = { ...base.home, ...raw }; // 평면 = home
   }

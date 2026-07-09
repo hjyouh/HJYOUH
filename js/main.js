@@ -31,7 +31,7 @@ const INSTRUCTOR_DATA = {
 // ===== URL ↔ PAGE 매핑 (SEO 다중 URL) =====
 // 독립 색인 대상 페이지만 실제 경로를 가진다. 나머지(prompts/mv/contact)는
 // SPA 전환만 하고 URL은 바꾸지 않는다(전용 서버 라우트가 없어 새로고침 404 방지).
-const PAGE_PATHS = { home: '/', about: '/about', lectures: '/lectures', works: '/works' };
+const PAGE_PATHS = { home: '/', about: '/about', lectures: '/lectures', works: '/works', prompts: '/prompts', mv: '/mv', contact: '/contact' };
 
 function pathToPage(pathname) {
   const clean = (pathname || '/').replace(/\/+$/, '') || '/';

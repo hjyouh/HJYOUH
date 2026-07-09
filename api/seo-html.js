@@ -103,6 +103,59 @@ const ROUTE_CONTENT = {
         <h2>작품 소개</h2>
         <p>대표작 「情 Jeong: The Love that Lingers」를 비롯한 AI 영화·뮤직비디오를 제작했습니다. 감독의 <a href="/about">프로필</a>과 진행 중인 <a href="/lectures">생성형 AI 강의</a>도 함께 살펴보세요.</p>
       </section>`
+  },
+  prompts: {
+    canonical: 'https://hjyouh.com/prompts',
+    title: 'AI 생성 프롬프트 모음 | 이미지·영상 프롬프트 | AI강사 유형재',
+    description: '생성형 AI로 이미지와 영상을 만드는 실전 프롬프트를 모았습니다. ChatGPT·Claude·Midjourney에 바로 활용할 수 있는 프롬프트 예시를 소개합니다.',
+    body: `      <section class="seo-intro">
+        <h1>AI 생성 프롬프트 모음</h1>
+        <p>생성형 AI로 이미지와 영상을 만들 때 바로 쓸 수 있는 실전 프롬프트를 정리했습니다. ChatGPT·Claude·Midjourney 등에서 검증한 프롬프트 예시를 카테고리별로 제공합니다.</p>
+
+        <h2>프롬프트 카테고리</h2>
+        <ul>
+          <li>이미지 생성 프롬프트 (Midjourney · DALL·E 등)</li>
+          <li>영상 생성 프롬프트</li>
+          <li>기타 실무 활용 프롬프트</li>
+        </ul>
+
+        <p>프롬프트 활용법은 <a href="/lectures">생성형 AI 강의</a>에서 더 자세히 다루며, 실제 <a href="/works">AI 영화 작품</a>에도 이 프롬프트들이 쓰였습니다.</p>
+      </section>`
+  },
+  mv: {
+    canonical: 'https://hjyouh.com/mv',
+    title: 'AI 뮤직비디오 | Korisian · Maison d’Étoile | AI영화감독 유형재',
+    description: '생성형 AI로 제작한 뮤직비디오를 소개합니다. 유튜브 채널 Korisian과 Maison d’Étoile에서 AI 영상 작품을 감상할 수 있습니다.',
+    body: `      <section class="seo-intro">
+        <h1>AI 뮤직비디오</h1>
+        <p>생성형 AI로 제작한 뮤직비디오를 소개합니다. 작곡·영상·연출을 AI와 함께 완성한 작업으로, 유튜브 채널 <strong>Korisian</strong>과 <strong>Maison d’Étoile</strong>에서 감상할 수 있습니다.</p>
+
+        <h2>채널</h2>
+        <ul>
+          <li>Korisian — AI 음악·뮤직비디오</li>
+          <li>Maison d’Étoile — AI 영상 콘텐츠 시리즈</li>
+        </ul>
+
+        <p>감독의 <a href="/works">AI 영화 작품</a>과 <a href="/about">프로필</a>도 함께 확인해 보세요.</p>
+      </section>`
+  },
+  contact: {
+    canonical: 'https://hjyouh.com/contact',
+    title: '생성형 AI 강의 문의 · 연락처 | AI강사 유형재',
+    description: '생성형 AI 강의·컨설팅 문의를 받습니다. 기업·공공기관·소상공인 대상 맞춤 교육 일정과 커리큘럼을 상담해 드립니다.',
+    body: `      <section class="seo-intro">
+        <h1>강의 문의 · 연락처</h1>
+        <p>생성형 AI 강의와 AI 콘텐츠 제작, 업무 제안을 환영합니다. 기업·공공기관·소상공인·시니어·농업인 대상 맞춤 교육 일정과 커리큘럼을 상담해 드립니다.</p>
+
+        <h2>연락처</h2>
+        <ul>
+          <li>이메일 — hjyouh@naver.com</li>
+          <li>전화 — 010-3558-6960</li>
+          <li>홈페이지 — aitalker.co.kr/hjyouh</li>
+        </ul>
+
+        <p>먼저 <a href="/lectures">강의 안내</a>와 <a href="/about">강사 프로필</a>을 참고하시면 상담이 수월합니다.</p>
+      </section>`
   }
 };
 
@@ -111,10 +164,8 @@ function getRoute(req) {
     const u = new URL(req.url, 'http://x');
     const q = u.searchParams.get('route');
     if (q && (q === 'home' || ROUTE_CONTENT[q])) return q;
-    const p = u.pathname.replace(/\/+$/, '');
-    if (p === '/about') return 'about';
-    if (p === '/lectures') return 'lectures';
-    if (p === '/works') return 'works';
+    const p = u.pathname.replace(/\/+$/, '').replace(/^\//, '');
+    if (ROUTE_CONTENT[p]) return p;
   } catch (e) {}
   return 'home';
 }
