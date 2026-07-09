@@ -6,7 +6,10 @@
 (async function() {
   if (!window.sbLoad) return;
   try {
-    const d = await sbLoad('seoData', null);
+    const raw = await sbLoad('seoData', null);
+    if (!raw) return;
+    // 신구조({home,about,...})면 home을, 레거시 평면 구조면 그대로 사용
+    const d = (raw.home || raw.about || raw.lectures || raw.works) ? raw.home : raw;
     if (!d) return;
 
     function setMeta(selector, content) {

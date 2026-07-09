@@ -28,6 +28,20 @@ const INSTRUCTOR_DATA = {
   students: 200
 };
 
+// ===== URL ↔ PAGE 매핑 (SEO 다중 URL) =====
+// 독립 색인 대상 페이지만 실제 경로를 가진다. 나머지(prompts/mv/contact)는
+// SPA 전환만 하고 URL은 바꾸지 않는다(전용 서버 라우트가 없어 새로고침 404 방지).
+const PAGE_PATHS = { home: '/', about: '/about', lectures: '/lectures', works: '/works' };
+
+function pathToPage(pathname) {
+  const clean = (pathname || '/').replace(/\/+$/, '') || '/';
+  if (clean === '/' || clean === '/index.html') return 'home';
+  for (const [page, p] of Object.entries(PAGE_PATHS)) {
+    if (p !== '/' && clean === p) return page;
+  }
+  return 'home';
+}
+
 // ===== STATE MANAGEMENT =====
 let appState = {
   currentPage: 'home',
@@ -54,7 +68,12 @@ let elements = {
 document.addEventListener('DOMContentLoaded', () => {
   initializeElements();
   setupEventListeners();
-  loadPage('home');
+  // 현재 URL에서 초기 페이지 결정 (직접 접근·새로고침 대응)
+  const initialPage = pathToPage(window.location.pathname);
+  appState.currentPage = initialPage;
+  history.replaceState({ page: initialPage }, '', window.location.pathname);
+  loadPage(initialPage);
+  updateActiveNav(initialPage);
   initializeHeaderScroll();
   // defer 스크립트 실행 순서상 sbLoad는 이미 정의됨 — 직접 호출
   syncPromptsActiveState();
@@ -134,6 +153,15 @@ function setupEventListeners() {
     if (e.key === 'Escape' && elements.modal?.classList.contains('active')) {
       closeModal();
     }
+  });
+
+  // 브라우저 뒤로/앞으로 — URL에 맞는 페이지를 리로드 없이 로드
+  window.addEventListener('popstate', (e) => {
+    const page = (e.state && e.state.page) || pathToPage(window.location.pathname);
+    if (!PAGES[page] || UNDER_CONSTRUCTION.includes(page)) return;
+    appState.currentPage = page;
+    loadPage(page);
+    updateActiveNav(page);
   });
 }
 
@@ -231,6 +259,12 @@ function navigateTo(pageName) {
   appState.currentPage = pageName;
   loadPage(pageName);
   updateActiveNav(pageName);
+
+  // 색인 대상 페이지는 리로드 없이 URL을 갱신 (SPA + 딥링크)
+  const path = PAGE_PATHS[pageName];
+  if (path && window.location.pathname !== path) {
+    history.pushState({ page: pageName }, '', path);
+  }
   // No scroll - fullscreen design
 }
 

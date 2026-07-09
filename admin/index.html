@@ -778,6 +778,19 @@
       </div>
 
       <div class="card">
+        <div class="seo-field-header" style="align-items:center;">
+          <label style="font-size:12px;color:var(--sub);">📄 편집할 페이지</label>
+          <select id="seo-page" onchange="switchSeoPage()" style="background:#1a1a1a;color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;">
+            <option value="home">홈 (/)</option>
+            <option value="about">강사 (/about)</option>
+            <option value="lectures">강의 (/lectures)</option>
+            <option value="works">작품 (/works)</option>
+          </select>
+        </div>
+        <div style="font-size:11px;color:var(--sub);margin-top:8px;line-height:1.5;">홈은 title·description·OG·Twitter·Keywords를 모두 관리합니다. 서브페이지(강사·강의·작품)는 title·description만 사용합니다. 페이지를 바꿔도 <b>저장</b>을 눌러야 반영됩니다.</div>
+      </div>
+
+      <div class="card">
         <div class="card-title">🏷️ Title <span style="font-weight:400;color:var(--sub);font-size:11px;">권장 30~60자 · 검색 결과 제목으로 표시됩니다</span></div>
         <div class="seo-field-header">
           <label style="font-size:12px;color:var(--sub);">Title</label>
@@ -797,6 +810,7 @@
         <div class="seo-limit-bar"><div class="seo-limit-fill" id="fill-metaDesc"></div></div>
       </div>
 
+      <div id="seo-home-only">
       <div class="card">
         <div class="card-title">📘 OG Description <span style="font-weight:400;color:var(--sub);font-size:11px;">60–90자 권장</span></div>
         <div class="seo-field-header">
@@ -825,6 +839,7 @@
         </div>
         <textarea id="seo-keywords" class="seo-textarea" rows="4" oninput="updateCount('keywords')" placeholder="키워드1, 키워드2, 키워드3, ..."></textarea>
       </div>
+      </div><!-- /seo-home-only -->
     </div>
 
   </main>
@@ -1344,12 +1359,27 @@ function switchSection(name) {
 
 // ===== SEO =====
 
-const DEFAULT_SEO = {
-  title: 'AI강사 유형재 | 생성형 AI 교육 · AI영화감독 | 포인트넥스트',
-  metaDesc: '생성형 AI 강사·감독 유형재. IBM Korea·France 출신. Seoul International AI Film Festival Grand Prix · ARFF Paris Finalist · Berlin Red Carpet 초청. AI 교육·콘텐츠·영상 제작 · AIMT 브랜드 운영.',
-  ogDesc: 'AI 강사·감독 유형재. Seoul AI영화제 Grand Prix · ARFF Paris Finalist · Berlin Red Carpet. 생성형 AI 교육·영상 제작 전문.',
-  twitterDesc: 'Grand Prix에서 Berlin Red Carpet까지 — 생성형 AI로 세계를 두드리는 강사·감독 유형재의 포트폴리오.',
-  keywords: '유형재, Hyungjae Youh, 생성형AI 강사, AI 영화 감독, AIMT, AI Marketing Technology, Seoul International AI Film Festival, Grand Prix, ARFF Paris, ARFF Berlin, Berlin Red Carpet, Venice AI Film Festival, AI 콘텐츠 크리에이터, IBM Korea, 생성형AI 교육, 포인트넥스트, PointNext, Maison d Etoile, Korisian'
+// 페이지별 SEO 기본값. 홈은 전체 필드, 서브페이지는 title·metaDesc만 사용(함수 ROUTE_CONTENT와 일치).
+const DEFAULT_SEO_ALL = {
+  home: {
+    title: 'AI강사 유형재 | 생성형 AI 교육 · AI영화감독 | 포인트넥스트',
+    metaDesc: '생성형 AI 강사·감독 유형재. IBM Korea·France 출신. Seoul International AI Film Festival Grand Prix · ARFF Paris Finalist · Berlin Red Carpet 초청. AI 교육·콘텐츠·영상 제작 · AIMT 브랜드 운영.',
+    ogDesc: 'AI 강사·감독 유형재. Seoul AI영화제 Grand Prix · ARFF Paris Finalist · Berlin Red Carpet. 생성형 AI 교육·영상 제작 전문.',
+    twitterDesc: 'Grand Prix에서 Berlin Red Carpet까지 — 생성형 AI로 세계를 두드리는 강사·감독 유형재의 포트폴리오.',
+    keywords: '유형재, Hyungjae Youh, 생성형AI 강사, AI 영화 감독, AIMT, AI Marketing Technology, Seoul International AI Film Festival, Grand Prix, ARFF Paris, ARFF Berlin, Berlin Red Carpet, Venice AI Film Festival, AI 콘텐츠 크리에이터, IBM Korea, 생성형AI 교육, 포인트넥스트, PointNext, Maison d Etoile, Korisian'
+  },
+  about: {
+    title: 'AI강사 유형재 프로필 | IBM 출신 생성형 AI 교육 전문가',
+    metaDesc: 'IBM Korea와 IBM France에서 30년간 IT 경력을 쌓은 생성형 AI 교육 전문가 유형재를 소개합니다. 현재 포인트넥스트 대표이자 디지털융합교육원 지도교수로 활동하며 기업·공공기관 대상 AI 교육을 진행합니다.'
+  },
+  lectures: {
+    title: '생성형 AI 강의 | 기업·공공기관·소상공인 맞춤 교육 | AI강사 유형재',
+    metaDesc: '기업·공공기관·소상공인·시니어·농업인 대상으로 맞춤 설계한 생성형 AI 실습 강의를 안내합니다. ChatGPT·Claude 활용부터 AI 콘텐츠 제작까지 현장에서 바로 쓰는 실무 중심으로 교육합니다.'
+  },
+  works: {
+    title: 'AI 영화 작품 | 서울국제AI영화제 그랑프리 | AI영화감독 유형재',
+    metaDesc: '서울국제AI영화제 그랑프리를 수상한 AI영화감독 유형재의 작품과 국내외 영화제 수상 이력을 소개합니다. 생성형 AI로 제작한 영화·뮤직비디오를 만나보세요.'
+  }
 };
 
 const SEO_LIMITS = {
@@ -1360,14 +1390,56 @@ const SEO_LIMITS = {
   keywords:    { min: 0,   max: 9999 }
 };
 
-let seoData = loadData('seoData', DEFAULT_SEO);
+// 저장값을 신구조로 정규화 (레거시 평면 구조는 home으로 이관)
+function migrateSeo(raw) {
+  const base = JSON.parse(JSON.stringify(DEFAULT_SEO_ALL));
+  if (!raw || typeof raw !== 'object') return base;
+  const nested = raw.home || raw.about || raw.lectures || raw.works;
+  if (nested) {
+    ['home','about','lectures','works'].forEach(p => { base[p] = { ...base[p], ...(raw[p] || {}) }; });
+  } else {
+    base.home = { ...base.home, ...raw }; // 평면 = home
+  }
+  return base;
+}
+
+let seoAll = migrateSeo(loadData('seoData', null));
+let seoCurrentPage = 'home';
 
 function renderSeo() {
-  seoData = loadData('seoData', DEFAULT_SEO);
+  seoAll = migrateSeo(loadData('seoData', null));
+  seoCurrentPage = 'home';
+  const sel = document.getElementById('seo-page');
+  if (sel) sel.value = 'home';
+  fillSeoFields();
+}
+
+function fillSeoFields() {
+  const d = seoAll[seoCurrentPage] || {};
   ['title','metaDesc','ogDesc','twitterDesc','keywords'].forEach(k => {
     const el = document.getElementById('seo-' + k);
-    if (el) { el.value = seoData[k] || ''; updateCount(k); }
+    if (el) { el.value = d[k] || ''; updateCount(k); }
   });
+  const homeOnly = document.getElementById('seo-home-only');
+  if (homeOnly) homeOnly.style.display = (seoCurrentPage === 'home') ? '' : 'none';
+}
+
+// 현재 입력값을 메모리(seoAll)에 반영 — 페이지 전환 시 편집 내용 유지
+function captureSeoFields() {
+  const d = seoAll[seoCurrentPage] || (seoAll[seoCurrentPage] = {});
+  d.title = document.getElementById('seo-title').value.trim();
+  d.metaDesc = document.getElementById('seo-metaDesc').value.trim();
+  if (seoCurrentPage === 'home') {
+    d.ogDesc = document.getElementById('seo-ogDesc').value.trim();
+    d.twitterDesc = document.getElementById('seo-twitterDesc').value.trim();
+    d.keywords = document.getElementById('seo-keywords').value.trim();
+  }
+}
+
+function switchSeoPage() {
+  captureSeoFields();
+  seoCurrentPage = document.getElementById('seo-page').value;
+  fillSeoFields();
 }
 
 function updateCount(key) {
@@ -1395,28 +1467,35 @@ function updateCount(key) {
 }
 
 function saveSeo() {
-  seoData = {
-    title:       document.getElementById('seo-title').value.trim(),
-    metaDesc:    document.getElementById('seo-metaDesc').value.trim(),
-    ogDesc:      document.getElementById('seo-ogDesc').value.trim(),
-    twitterDesc: document.getElementById('seo-twitterDesc').value.trim(),
-    keywords:    document.getElementById('seo-keywords').value.trim()
-  };
-  saveData('seoData', seoData);
-  toast('SEO 설정이 저장되었습니다.');
+  captureSeoFields();
+  saveData('seoData', seoAll);
+  const label = { home: '홈', about: '강사', lectures: '강의', works: '작품' }[seoCurrentPage] || seoCurrentPage;
+  toast(label + ' 페이지 SEO가 저장되었습니다.');
 }
 
 function copySeoHtml() {
-  const d = seoData || loadData('seoData', DEFAULT_SEO);
-  const html = `<title>${d.title}</title>
+  captureSeoFields();
+  const d = seoAll[seoCurrentPage] || {};
+  let html;
+  if (seoCurrentPage === 'home') {
+    html = `<title>${d.title}</title>
 <meta name="description" content="${d.metaDesc}" />
 <meta name="keywords" content="${d.keywords}" />
 <meta property="og:title" content="${d.title}" />
 <meta property="og:description" content="${d.ogDesc}" />
 <meta name="twitter:title" content="${d.title}" />
 <meta name="twitter:description" content="${d.twitterDesc}" />`;
+  } else {
+    // 서브페이지: og·twitter description은 metaDesc로 통일
+    html = `<title>${d.title}</title>
+<meta name="description" content="${d.metaDesc}" />
+<meta property="og:title" content="${d.title}" />
+<meta property="og:description" content="${d.metaDesc}" />
+<meta name="twitter:title" content="${d.title}" />
+<meta name="twitter:description" content="${d.metaDesc}" />`;
+  }
   navigator.clipboard.writeText(html).then(() => {
-    toast('HTML이 클립보드에 복사되었습니다. index.html에 붙여넣기 하세요.');
+    toast('HTML이 클립보드에 복사되었습니다.');
   }).catch(() => {
     toast('복사 실패 — 브라우저 권한을 확인하세요.', true);
   });

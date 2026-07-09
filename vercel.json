@@ -3,8 +3,11 @@
     "api/seo-html.js": { "includeFiles": "index.html" }
   },
   "routes": [
-    { "src": "/", "dest": "/api/seo-html" },
-    { "src": "/index\\.html", "dest": "/api/seo-html" },
+    { "src": "/", "dest": "/api/seo-html?route=home" },
+    { "src": "/index\\.html", "dest": "/api/seo-html?route=home" },
+    { "src": "/about", "dest": "/api/seo-html?route=about" },
+    { "src": "/lectures", "dest": "/api/seo-html?route=lectures" },
+    { "src": "/works", "dest": "/api/seo-html?route=works" },
     { "src": "/css/(.*)", "headers": { "Cache-Control": "no-cache, no-store, must-revalidate" }, "continue": true },
     { "src": "/js/(.*)", "headers": { "Cache-Control": "no-cache, no-store, must-revalidate" }, "continue": true },
     { "src": "/pages/(.*)", "headers": { "Cache-Control": "no-cache, no-store, must-revalidate" }, "continue": true },
