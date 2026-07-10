@@ -244,6 +244,20 @@ function showConstructionMsg() {
 }
 
 /**
+ * 방문 기록 — 서버리스 함수(/api/track)에 비동기 전송. 실패해도 페이지에 영향 없음.
+ * path는 논리 경로(PAGE_PATHS), referrer는 외부 유입 원본을 그대로 보낸다(분류는 조회 시점).
+ */
+function trackPageView(pageName) {
+  try {
+    const path = PAGE_PATHS[pageName] || ('/' + pageName);
+    const ref = document.referrer || '';
+    let url = '/api/track?path=' + encodeURIComponent(path);
+    if (ref) url += '&ref=' + encodeURIComponent(ref);
+    fetch(url, { method: 'POST', keepalive: true }).catch(() => {});
+  } catch (e) { /* 조용히 무시 */ }
+}
+
+/**
  * Navigate to a page
  */
 function navigateTo(pageName) {
@@ -278,6 +292,9 @@ function loadPage(pageName) {
     return;
   }
 
+  // 방문 기록 (최초 진입·SPA 전환·뒤로가기 모두 loadPage를 거침) — fire-and-forget
+  trackPageView(pageName);
+
   const pagePath = pageData.path;
   console.log(`Loading page: ${pageName} from: ${pagePath}`);
 
@@ -293,7 +310,7 @@ function loadPage(pageName) {
     document.head.appendChild(s);
   }
 
-  fetch(pagePath + '?v=27')
+  fetch(pagePath + '?v=30')
     .then(response => {
       if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to load ${pageName}`);
       return response.text();

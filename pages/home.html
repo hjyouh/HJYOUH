@@ -2,6 +2,8 @@
 
   <!-- 전체 배경 슬라이드쇼 -->
   <div class="slideshow-container" id="homeSlideshowContainer">
+    <!-- 정적 첫 슬라이드: 프리로드된 히어로를 즉시 표시(LCP를 Supabase 쿼리와 분리). JS가 데이터 도착 후 재구성 -->
+    <div class="slide active"><img src="assets/images/lectures/main1.webp" alt="유형재 생성형 AI 강의" fetchpriority="high"></div>
     <!-- slides injected by JS -->
     <div class="slide-overlay"></div>
     <button class="prev-btn" aria-label="이전 슬라이드">&#10094;</button>
@@ -353,39 +355,29 @@
 
     function toWebPath(p) { return p ? p.replace(/^\.\.\//, '') : p; }
 
-    /* 슬라이드 로드 (Supabase → localStorage 폴백) */
+    /* 홈 첫 화면 데이터 병렬 로드 (순차 4회 왕복 → 1회로 단축, LCP 개선) */
     let slidePaths = DEFAULT_SLIDES_WEB;
-    try {
-      const raw = window.sbLoad
-        ? await sbLoad('landingSlides', null)
-        : JSON.parse(localStorage.getItem('landingSlides') || 'null');
-      if (raw && Array.isArray(raw) && raw.length) slidePaths = raw.map(toWebPath);
-    } catch(e) {}
-
-    /* 사이드 패널 로드 */
     let panels = DEFAULT_PANELS_WEB;
-    try {
-      const raw = window.sbLoad
-        ? await sbLoad('landingSidePanels', null)
-        : JSON.parse(localStorage.getItem('landingSidePanels') || 'null');
-      if (raw && Array.isArray(raw) && raw.length) panels = raw.map(p => ({ ...p, path: toWebPath(p.path) }));
-    } catch(e) {}
-
-    /* homeConfig 로드 */
     let cfg = {};
-    try {
-      cfg = window.sbLoad
-        ? await sbLoad('homeConfig', {})
-        : JSON.parse(localStorage.getItem('homeConfig') || '{}');
-    } catch(e) {}
-
-    /* 슬라이드 유지시간 로드 (초 단위, 최소 3초) */
     let slideDurationSec = 3;
     try {
-      const raw = window.sbLoad
-        ? await sbLoad('landingSlideDuration', 3)
-        : JSON.parse(localStorage.getItem('landingSlideDuration') || '3');
-      if (raw) slideDurationSec = Math.max(3, Number(raw) || 3);
+      const [rawSlides, rawPanels, rawCfg, rawDur] = window.sbLoad
+        ? await Promise.all([
+            sbLoad('landingSlides', null),
+            sbLoad('landingSidePanels', null),
+            sbLoad('homeConfig', {}),
+            sbLoad('landingSlideDuration', 3)
+          ])
+        : [
+            JSON.parse(localStorage.getItem('landingSlides') || 'null'),
+            JSON.parse(localStorage.getItem('landingSidePanels') || 'null'),
+            JSON.parse(localStorage.getItem('homeConfig') || '{}'),
+            JSON.parse(localStorage.getItem('landingSlideDuration') || '3')
+          ];
+      if (rawSlides && Array.isArray(rawSlides) && rawSlides.length) slidePaths = rawSlides.map(toWebPath);
+      if (rawPanels && Array.isArray(rawPanels) && rawPanels.length) panels = rawPanels.map(p => ({ ...p, path: toWebPath(p.path) }));
+      if (rawCfg && typeof rawCfg === 'object') cfg = rawCfg;
+      if (rawDur) slideDurationSec = Math.max(3, Number(rawDur) || 3);
     } catch(e) {}
 
     /* 슬라이드 DOM 주입 */
