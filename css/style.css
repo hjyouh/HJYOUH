@@ -752,6 +752,68 @@ footer {
   }
 }
 
+/* ===== 반응형 단일 페이지 셸 (≤768px) =====
+   데스크톱은 #app/body 풀스크린 고정(overflow:hidden). 모바일은 문서 흐름 + 세로 스크롤로 전환.
+   userAgent 리디렉트 제거(2026-07)에 따라 모바일도 index.html에서 직접 렌더된다. */
+@media (max-width: 768px) {
+  html { overflow-x: hidden; }
+  body {
+    overflow: visible;
+    overflow-x: hidden;
+    height: auto;
+    min-height: 100vh;
+    padding: 0;
+  }
+  #app {
+    position: relative;
+    top: 0; left: 0; right: 0; bottom: auto;
+    height: auto;
+    min-height: 100vh;
+    border-radius: 0;
+    overflow: visible;
+  }
+  .page-wrapper {
+    position: relative;
+    top: auto; left: auto; right: auto; bottom: auto;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+  .page-content { height: auto; overflow: visible; }
+
+  /* 헤더: 스크롤 시 상단 고정 */
+  header {
+    position: sticky;
+    top: 0;
+    background: var(--bg-primary);
+    justify-content: flex-end;
+  }
+
+  /* 각 페이지 최상위 섹션: 풀스크린 absolute → 흐름 배치 (페이지별 세부는 각 파일 @media에서) */
+  .home-section, .about-section, .lec-section, .works-section,
+  .prompts-section, .prompt-copy-section, .con-section {
+    position: relative;
+    top: auto; left: auto; right: auto; bottom: auto;
+    height: auto;
+    min-height: calc(100vh - var(--header-height));
+    overflow: visible;
+  }
+
+  /* 터치 타겟 최소 44px */
+  nav.mobile-nav a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .hamburger { padding: 10px; min-width: 44px; min-height: 44px; justify-content: center; }
+
+  /* seo-intro(크롤러·초기 렌더용 정적 블록) 모바일 가독성 */
+  .seo-intro { padding: 84px 20px 48px; }
+  .seo-intro h1 { font-size: 24px; }
+  .seo-intro h2 { font-size: 18px; margin: 26px 0 10px; }
+  .seo-intro p, .seo-intro li { font-size: 15px; }
+}
+
 /* ===== ANIMATIONS ===== */
 @keyframes fadeIn {
   from {

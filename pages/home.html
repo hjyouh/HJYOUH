@@ -325,6 +325,13 @@
     .message-box { left: 16px; right: 16px; bottom: 16px; width: auto; }
     .prev-btn { left: 10px; }
   }
+
+  /* 반응형 단일 페이지: 모바일에서 슬라이드쇼 풀폭 + 뷰포트 높이 히어로 */
+  @media (max-width: 768px) {
+    .home-section { height: calc(100vh - var(--header-height)); min-height: 0; }
+    .slideshow-container { right: 0; }   /* 사이드패널 자리 제거 */
+    .message-box-text { font-size: 16px; }
+  }
 </style>
 
 <script>
