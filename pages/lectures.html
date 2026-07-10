@@ -705,6 +705,14 @@
     .lec-list-wrap { padding: 16px 16px 80px; }
     .lec-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   }
+
+  /* 반응형 단일 페이지: 고정높이 래퍼 해제 → 콘텐츠가 페이지 스크롤로 흐름 */
+  @media (max-width: 768px) {
+    .lec-section { position: relative; flex-direction: column; height: auto; min-height: 0; overflow: visible; }
+    .lec-main { display: block; height: auto; overflow: visible; }
+    .lec-panel { width: 100%; height: auto; }
+    .lec-cards-area, .lec-list-wrap, .lec-tabs { height: auto; overflow: visible; }
+  }
 </style>
 
 <script>

@@ -530,6 +530,14 @@
   .detail-links { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 4px; }
   .detail-link-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border: 1px solid rgba(201,169,110,0.5); border-radius: 999px; color: var(--accent-gold); font-size: 12px; text-decoration: none; transition: all 0.2s ease; }
   .detail-link-btn:hover { background: var(--accent-gold); color: #0d0d0d; }
+
+  /* 반응형 단일 페이지: 고정높이 래퍼 해제 → 카드가 페이지 스크롤로 흐름 */
+  @media (max-width: 768px) {
+    .works-section { position: relative; flex-direction: column; height: auto; min-height: 0; overflow: visible; }
+    .works-main { display: block; height: auto; overflow: visible; }
+    .works-panel { width: 100%; height: auto; }
+    .card-grid-wrap { height: auto; overflow: visible; }
+  }
 </style>
 
 <script>

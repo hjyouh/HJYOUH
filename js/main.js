@@ -293,7 +293,7 @@ function loadPage(pageName) {
     document.head.appendChild(s);
   }
 
-  fetch(pagePath + '?v=25')
+  fetch(pagePath + '?v=27')
     .then(response => {
       if (!response.ok) throw new Error(`HTTP ${response.status}: Failed to load ${pageName}`);
       return response.text();

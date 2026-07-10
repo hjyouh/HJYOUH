@@ -450,6 +450,14 @@
     .stat-number { font-size: 16px; }
     .message-box { left: 16px; right: 16px; bottom: 16px; width: auto; }
   }
+
+  /* 반응형 단일 페이지: flex 패널을 block으로 풀어 소개 내용이 페이지 스크롤로 전부 보이게 */
+  @media (max-width: 768px) {
+    .about-section { position: relative; flex-direction: column; height: auto; min-height: 0; overflow: visible; }
+    .about-photo { flex: 0 0 auto; height: 220px; }
+    .about-panel { display: block; width: 100%; height: auto; overflow: visible; }
+    .panel-section, .panel-bio { height: auto; overflow: visible; }
+  }
 </style>
 
 <script>

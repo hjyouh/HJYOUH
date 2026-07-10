@@ -428,6 +428,14 @@
     .con-panel { width: 100%; flex: 0 0 auto; height: auto; }
     .con-msg { display: none; }
   }
+
+  /* 반응형 단일 페이지: 고정높이 래퍼 해제 */
+  @media (max-width: 768px) {
+    .con-section { position: relative; flex-direction: column; height: auto; min-height: 0; overflow: visible; }
+    .con-main { display: block; flex: 0 0 auto; height: 180px; overflow: hidden; }
+    .con-panel { display: block; width: 100%; height: auto; overflow: visible; }
+    .con-panel-content { display: block; height: auto; overflow: visible; }
+  }
 </style>
 
 <!-- 확인 팝업 -->
