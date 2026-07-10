@@ -542,6 +542,16 @@
   <script src="../../js/seo-meta.js"></script>
   <script src="../../assets/js/mobile-nav.js?v=1"></script>
   <script>
+    // 방문 기록 (모바일 랜딩 = 홈). fire-and-forget, 실패해도 무시.
+    (function() {
+      try {
+        var ref = document.referrer || '';
+        var url = '/api/track?path=' + encodeURIComponent('/') + (ref ? '&ref=' + encodeURIComponent(ref) : '');
+        fetch(url, { method: 'POST', keepalive: true }).catch(function(){});
+      } catch (e) {}
+    })();
+  </script>
+  <script>
     // 프롬프트 카드5: active 상태에 따라 동적 처리
     (async function() {
       try {
