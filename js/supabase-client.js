@@ -33,17 +33,44 @@ async function ensureSbClient() {
   return _sbClientPromise;
 }
 
-// Supabase settings 읽기 (REST) — 없으면 localStorage 폴백
+// ===== settings 통합 캐시 =====
+// 앱 시작 시 settings 테이블을 1회 전체 조회해 메모리에 캐시한다.
+// 이후 sbLoad(key)는 캐시를 재사용 → 페이지 전환마다 반복 쿼리하지 않음.
+// TTL(5분) 경과 또는 페이지 새로고침 시 갱신. sbSave는 캐시를 즉시 갱신.
+const SETTINGS_TTL_MS = 5 * 60 * 1000;
+let _settingsCache = null;     // { key: value }
+let _settingsCacheAt = 0;
+let _settingsPromise = null;   // 동시 호출 dedup
+
+function _loadAllSettings() {
+  if (_settingsCache && (Date.now() - _settingsCacheAt < SETTINGS_TTL_MS)) return Promise.resolve(_settingsCache);
+  if (_settingsPromise) return _settingsPromise;
+  _settingsPromise = (async () => {
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/settings?select=key,value`, { headers: SB_HEADERS });
+      if (r.ok) {
+        const rows = await r.json();
+        const map = {};
+        for (const row of rows) map[row.key] = row.value;
+        _settingsCache = map;
+        _settingsCacheAt = Date.now();
+        try { for (const k in map) localStorage.setItem(k, JSON.stringify(map[k])); } catch(e) {}
+      }
+    } catch(e) {}
+    _settingsPromise = null;
+    return _settingsCache || {};
+  })();
+  return _settingsPromise;
+}
+
+// 캐시 강제 무효화(어드민 저장 후 등)
+window.sbInvalidateSettings = function() { _settingsCache = null; _settingsCacheAt = 0; };
+
+// Supabase settings 읽기 — 통합 캐시 사용, 폴백은 localStorage
 window.sbLoad = async function(key, def) {
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/settings?key=eq.${encodeURIComponent(key)}&select=value`, { headers: SB_HEADERS });
-    if (r.ok) {
-      const rows = await r.json();
-      if (rows && rows[0] && rows[0].value !== undefined) {
-        try { localStorage.setItem(key, JSON.stringify(rows[0].value)); } catch(e) {}
-        return rows[0].value;
-      }
-    }
+    const all = await _loadAllSettings();
+    if (all && all[key] !== undefined) return all[key];
   } catch(e) {}
   try {
     const s = localStorage.getItem(key);
@@ -55,6 +82,7 @@ window.sbLoad = async function(key, def) {
 // Supabase settings 저장 (REST upsert) + localStorage 동시 저장
 window.sbSave = async function(key, val) {
   try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+  if (_settingsCache) _settingsCache[key] = val;   // 캐시 즉시 갱신(어드민 편집 반영)
   try {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/settings?on_conflict=key`, {
       method: 'POST',
