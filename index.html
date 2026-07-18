@@ -52,7 +52,16 @@
   }
   </script>
 
-  <!-- 반응형 단일 페이지: userAgent 리디렉트 제거됨(2026-07). 모바일은 CSS 브레이크포인트(768px)로 처리 -->
+  <!-- 모바일 리디렉트 (render 전 실행 필수) — 모바일은 전용 페이지(pages/mobile/)로 이동 -->
+  <script>
+    (function() {
+      var isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        || (navigator.maxTouchPoints > 1 && window.innerWidth <= 768);
+      if (isMobile) {
+        window.location.replace('pages/mobile/mobile-page.html');
+      }
+    })();
+  </script>
 
   <!-- 외부 CDN 사전 연결 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -85,7 +94,7 @@
   </style>
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=24">
+  <link rel="stylesheet" href="css/style.css?v=25">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="assets/images/favicon.png">

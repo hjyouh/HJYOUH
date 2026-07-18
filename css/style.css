@@ -229,6 +229,8 @@ nav.desktop-nav a.active {
   background: none;
   border: none;
   padding: 8px;
+  pointer-events: all;
+  z-index: 1001;
 }
 
 .hamburger span {
@@ -264,6 +266,7 @@ nav.mobile-nav {
   padding: var(--spacing-2xl);
   gap: var(--spacing-xl);
   z-index: 999;
+  pointer-events: all;
   animation: slideIn 0.3s ease forwards;
 }
 
