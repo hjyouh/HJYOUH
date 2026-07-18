@@ -770,7 +770,7 @@
   initLecturesData().then(() => renderLectures());
 </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <!-- Supabase UMD(206KB) 제거: supabase-client.js가 REST fetch(sbLoad)로 처리 -->
   <script src="../../js/supabase-client.js"></script>
   <script src="../../assets/js/mobile-nav.js?v=2"></script>
   <script>

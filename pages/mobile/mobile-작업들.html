@@ -427,7 +427,7 @@
 </div><!-- /view-detail -->
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<!-- Supabase UMD(206KB) 제거: supabase-client.js가 REST fetch(sbLoad)로 처리 -->
 <script src="../../js/supabase-client.js"></script>
 <script>
 let FILMS = [
@@ -861,7 +861,13 @@ document.addEventListener('scroll', function () {
   }, 800);
 });
 
-/* ===== 초기 렌더링 ===== */
+/* ===== 초기 렌더링 =====
+   하드코딩 기본 데이터로 즉시 렌더(네트워크 대기 없음) → 헤더/포스터가 바로 표시된다.
+   이후 Supabase 데이터가 도착하면(어드민 편집 반영) 다시 렌더한다. */
+renderFilms();
+renderBooks();
+updateWorksTopMsg('film');
+
 (async () => {
   await initData();
   renderFilms();
