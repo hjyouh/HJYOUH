@@ -1,6 +1,6 @@
 <!doctype html><html lang="ko" class="nojs"><head><meta charset="utf-8">
 <script>document.documentElement.classList.remove("nojs")</script>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#d9d2c5">
 <meta name="description" content="포토에세이 · 어느 가을날의 수채화 산책 · 유형재">
 <meta property="og:type" content="website">
@@ -15,6 +15,8 @@
 <meta name="twitter:image" content="https://hjyouh.com/flipbook/autumn-alley/og.jpg?v=cbd3c590">
 <title>가을이 머무는 골목</title>
 <style>*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{touch-action:manipulation}
 html,body{margin:0;height:100%;overflow:hidden;font-family:'SUIT','Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
  -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 #stage{position:fixed;left:0;right:0;top:0;bottom:var(--barh,0px);display:flex;align-items:center;justify-content:center}
@@ -81,13 +83,23 @@ html:not(.nojs) #fallback{display:none}
 </script>
 <script>window.FB={"studio": false, "mobileNav": "fold", "bg": "#d9d2c5", "flipMs": 900, "hold": 3.0, "vol": 0.6, "credit": "", "title": "가을이 머무는 골목", "sets": {"desk": {"w": 1400, "h": 1050, "single": false, "paper": "#ffffff", "kind": "desk", "fits": null, "ids": [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7]}, "mob": {"w": 1080, "h": 2340, "single": true, "paper": "#ffffff", "kind": "mob", "fits": ["full", "stack", "stack", "stack", "stack", "stack", "stack", "paper"], "ids": [0, 1, 2, 3, 4, 5, 6, 7]}}};
 /* Draw the top or bottom half of a phone page into a half-screen rectangle, filling it completely.
-   fit: 'full' (crop the whole page to the screen shape, halves stay continuous), 'stack' (photo half cropped to fill,
+   fit: 'full' (whole page shown without enlarging; leftover strips filled with a blurred copy, halves stay continuous), 'stack' (photo half cropped to fill,
    essay half centred on the paper colour), 'paper' (both halves centred on the paper colour). */
+function blurOf(im){ /* tiny copy, scaled up later = cheap blur that works in every browser */
+ if(!im._blur){const c=document.createElement('canvas');c.width=24;c.height=Math.max(8,Math.round(24*im.naturalHeight/im.naturalWidth));
+  c.getContext('2d').drawImage(im,0,0,c.width,c.height);im._blur=c;}
+ return im._blur;}
 function drawHalf(x,im,fit,bottom,dx,dy,dw,dh,paper){
  if(!im){x.fillStyle=paper;x.fillRect(dx,dy,dw,dh);return;}
  const iw=im.naturalWidth,ih=im.naturalHeight,hh=ih/2;
- if(fit==='full'){const s=Math.max(dw/iw,2*dh/ih),sw=dw/s,sh=2*dh/s,sx=(iw-sw)/2,sy=(ih-sh)/2;
-   x.drawImage(im,sx,sy+(bottom?sh/2:0),sw,sh/2,dx,dy,dw,dh);return;}
+ if(fit==='full'){ /* never enlarge or crop: whole page shown, side/top strips filled with a soft blurred copy */
+   const PW=dw,PH=2*dh,top=bottom?dy-dh:dy;
+   x.save();x.beginPath();x.rect(dx,dy,dw,dh);x.clip();
+   const b=blurOf(im),s1=Math.max(PW/iw,PH/ih),bw=iw*s1,bh=ih*s1;
+   x.imageSmoothingEnabled=true;x.drawImage(b,dx+(PW-bw)/2,top+(PH-bh)/2,bw,bh);
+   const s2=Math.min(PW/iw,PH/ih),fw=iw*s2,fh=ih*s2;
+   x.drawImage(im,dx+(PW-fw)/2,top+(PH-fh)/2,fw,fh);
+   x.restore();return;}
  if(fit==='stack'&&!bottom){const s=Math.max(dw/iw,dh/hh),sw=dw/s,sh=dh/s;
    x.drawImage(im,(iw-sw)/2,(hh-sh)/2,sw,sh,dx,dy,dw,dh);return;}
  x.fillStyle=paper;x.fillRect(dx,dy,dw,dh);
@@ -324,7 +336,8 @@ function build(start){
   const bar=$('bar'); document.body.style.setProperty('--barh',(STUDIO&&!CLEAN&&bar?bar.offsetHeight:0)+'px');
   const full=slideNow()&&!STUDIO;                        /* viewer on a phone: the page fills the screen */
   document.body.style.background=full?S().paper:FB.bg;
-  const st=$('stage').getBoundingClientRect(), pad=full?0:(innerWidth<640?12:28);
+  const st=stageSize(), pad=full?0:(innerWidth<640?12:28);
+  lastKey=st.width+'x'+st.height+mode;
   const [w,h]=fitTo(S(),st.width-pad*2,st.height-pad*2);
   if(w<40||h<40){setTimeout(()=>build(start),250);return;}   /* hidden / not laid out yet */
   if(pf){try{pf.destroy();}catch(e){}}
@@ -376,10 +389,23 @@ document.addEventListener('keydown',e=>{if(!pf)return;
   if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key))pf.flipPrev();
   if(e.key==='Home')goHome();});
 
-let rt;function relayout(){clearTimeout(rt);rt=setTimeout(()=>{
-  const nm=pickMode(),cur=pf?pf.getCurrentPageIndex():0;
-  if(nm!==mode){const idx=mode?mapIndex(mode,nm,cur):0;mode=nm;stop();build(idx);} else build(cur);},200);}
-addEventListener('resize',relayout); addEventListener('orientationchange',relayout);
+/* The visible area: in-app browsers (KakaoTalk etc.) can report a wrong size or zoom for a moment on first open,
+   so measure the real visible area and re-measure whenever it settles or changes. */
+let lastKey='';
+function stageSize(){const r=$('stage').getBoundingClientRect(),vv=window.visualViewport;
+  let w=r.width,h=r.height;
+  if(vv&&vv.scale&&Math.abs(vv.scale-1)<0.01){w=Math.min(w,vv.width);h=Math.min(h,vv.height-(r.top>0?r.top:0)-(innerHeight-r.bottom));}
+  return {width:Math.floor(w),height:Math.floor(h)};}
+let rt;function relayout(force){clearTimeout(rt);rt=setTimeout(()=>{
+  const nm=pickMode(),cur=pf?pf.getCurrentPageIndex():0,st=stageSize();
+  if(!force&&nm===mode&&st.width+'x'+st.height+mode===lastKey)return;   /* nothing changed */
+  if(pf&&pf.anim)return relayout(force);                                 /* let a turning page finish first */
+  if(nm!==mode){const idx=mode?mapIndex(mode,nm,cur):0;mode=nm;stop();build(idx);} else build(cur);},150);}
+addEventListener('resize',()=>relayout()); addEventListener('orientationchange',()=>relayout());
+addEventListener('pageshow',()=>relayout()); addEventListener('load',()=>relayout());
+if(window.visualViewport)visualViewport.addEventListener('resize',()=>relayout());
+if(window.ResizeObserver)new ResizeObserver(()=>relayout()).observe($('stage'));
+[300,800,1600].forEach(t=>setTimeout(()=>relayout(),t));                 /* catch late-settling in-app browsers */
 
 /* ---------- studio toolbar ---------- */
 function stop(){clearTimeout(timer);timer=null;if($('play'))$('play').textContent='▶ 자동넘김';}
