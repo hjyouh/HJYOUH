@@ -95,9 +95,12 @@ function drawHalf(x,im,fit,bottom,dx,dy,dw,dh,paper){
  if(fit==='full'){ /* never enlarge or crop: whole page shown, side/top strips filled with a soft blurred copy */
    const PW=dw,PH=2*dh,top=bottom?dy-dh:dy;
    x.save();x.beginPath();x.rect(dx,dy,dw,dh);x.clip();
-   const b=blurOf(im),s1=Math.max(PW/iw,PH/ih),bw=iw*s1,bh=ih*s1;
-   x.imageSmoothingEnabled=true;x.drawImage(b,dx+(PW-bw)/2,top+(PH-bh)/2,bw,bh);
-   const s2=Math.min(PW/iw,PH/ih),fw=iw*s2,fh=ih*s2;
+   const s2=Math.min(PW/iw,PH/ih),fw=iw*s2,fh=ih*s2,b=blurOf(im);
+   /* the blurred copy is stretched sideways at the page's own height, so colours continue straight across the edges;
+      if the screen is taller than the page, the copy also fills above and below */
+   x.imageSmoothingEnabled=true;
+   if(PH>fh+1){const s1=Math.max(PW/iw,PH/ih);x.drawImage(b,dx+(PW-iw*s1)/2,top+(PH-ih*s1)/2,iw*s1,ih*s1);}
+   x.drawImage(b,0,0,b.width,b.height,dx,top+(PH-fh)/2,PW,fh);
    x.drawImage(im,dx+(PW-fw)/2,top+(PH-fh)/2,fw,fh);
    x.restore();return;}
  if(fit==='stack'&&!bottom){const s=Math.max(dw/iw,dh/hh),sw=dw/s,sh=dh/s;
