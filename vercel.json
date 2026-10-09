@@ -11,6 +11,7 @@
     { "src": "/prompts", "dest": "/api/seo-html?route=prompts" },
     { "src": "/mv", "dest": "/api/seo-html?route=mv" },
     { "src": "/contact", "dest": "/api/seo-html?route=contact" },
+    { "src": "/flipbook/?", "status": 307, "headers": { "Location": "/flipbook/autumn-alley/" } },
     { "src": "/css/(.*)", "headers": { "Cache-Control": "no-cache, no-store, must-revalidate" }, "continue": true },
     { "src": "/js/(.*)", "headers": { "Cache-Control": "no-cache, no-store, must-revalidate" }, "continue": true },
     { "src": "/pages/(.*)", "headers": { "Cache-Control": "no-cache, no-store, must-revalidate" }, "continue": true },
